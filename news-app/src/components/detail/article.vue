@@ -2,7 +2,7 @@
     <article id="article">
         <h1 class="articleTitle">{{newsJson.title}}</h1>
         <div class="articleInfo">
-            <span class="author"><i class="icon-author"></i> 文 / {{newsJson.befrom}}</span>
+            <span class="author"><i class="icon-author"></i> <!-- 文 / {{newsJson.befrom}} --></span>
             <span class="publishTime">{{newsJson.newstime}}</span>
         </div>
         <template v-if="newsJson.playonlineurl">

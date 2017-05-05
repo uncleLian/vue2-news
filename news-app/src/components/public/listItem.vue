@@ -18,7 +18,7 @@
                     </div>
                     <div class='news_info'>
                         <span class="news_label recommend">视频</span>
-                        <span class='from' v-if='!$store.state.isIOS'>{{section.befrom}}</span>
+                        <!-- <span class='from' v-if='!$store.state.isIOS'>{{section.befrom}}</span> -->
                         <span class='news_click'>{{section.onclick | watchFilter }}阅</span>
                         <span class='news_time'>{{section.time}}</span>
                     </div>
@@ -36,7 +36,7 @@
                     <div class='news_info'>
                         <span v-if="section.isgood >= 6" class="news_label recommend">荐</span>
                         <span v-else-if="section.firsttitle >= 6" class="news_label hot">热</span>
-                        <span class='from' v-if='!$store.state.isIOS'>{{section.befrom}}</span>
+                        <!-- <span class='from' v-if='!$store.state.isIOS'>{{section.befrom}}</span> -->
                         <span class='news_click'>{{section.onclick | watchFilter }}阅</span>
                         <span class='news_time'>{{section.time}}</span>
                     </div>
@@ -58,7 +58,7 @@
                     <div class='news_info'>
                         <span class="news_label recommend" v-if="section.isgood >= 6">荐</span>
                         <span class="news_label hot" v-else-if="section.firsttitle >= 6">热</span>
-                        <span class='from' v-if='!$store.state.isIOS'>{{section.befrom}}</span>
+                        <!-- <span class='from' v-if='!$store.state.isIOS'>{{section.befrom}}</span> -->
                         <span class='news_click'>{{section.onclick | watchFilter }}阅</span>
                         <span class='news_time'>{{section.time}}</span>
                     </div>
@@ -72,7 +72,7 @@
                         <div class='news_info'>
                             <span class="news_label recommend" v-if="section.isgood >= 6">荐</span>
                             <span class="news_label hot" v-else-if="section.firsttitle >= 6">热</span>
-                            <span class='from' v-if='!$store.state.isIOS'>{{section.befrom}}</span>
+                            <!-- <span class='from' v-if='!$store.state.isIOS'>{{section.befrom}}</span> -->
                             <span class='news_click'>{{section.onclick | watchFilter }}阅</span>
                             <span class='news_time'>{{section.time}}</span>
                         </div>
