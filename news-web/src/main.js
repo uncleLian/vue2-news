@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import axios from 'axios'
 import spinnerLoad from '@/components/public/spinnerLoad'	// 转场load
 import listItem from '@/components/public/listItem'			// 列表
 import popupMenu from '@/components/public/popupMenu'     // 弹框
@@ -12,6 +13,7 @@ import 'mint-ui/lib/style.css'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import { swiperDirective } from '@/components/public/swiperDirective.js'
 
+Vue.prototype.$http = axios 
 Vue.use(MintUI)
 Vue.use(VueAwesomeSwiper)
 

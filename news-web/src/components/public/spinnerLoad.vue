@@ -1,5 +1,5 @@
 <template>
-    <div id="spinnerLoad" v-show="visible">
+    <div id="spinnerLoad" v-show="show">
         <mt-spinner :type="0" :color="color"></mt-spinner>
     </div>
 </template>
@@ -14,14 +14,8 @@ export default {
     },
     data() {
         return {
-            visible: false,
             size: 36,
             color: 'rgb(240, 61, 61)',
-        }
-    },
-    watch: {
-        show(val) {
-            this.visible = val;
         }
     },
 }

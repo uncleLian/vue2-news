@@ -153,6 +153,7 @@ export default {
     -webkit-line-clamp: 3;
     text-overflow: ellipsis;
     -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .news_info {

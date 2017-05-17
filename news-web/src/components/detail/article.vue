@@ -31,7 +31,9 @@ export default {
     name: 'article',
     props: {
         newsJson: {
-            default: {},
+            default(){
+                return {}
+            },
         }
     },
     data() {
@@ -42,7 +44,7 @@ export default {
     },
     methods: {
         shrinkArticle() {
-            if (!this.newsJson.playonlineurl && this.newsJson.newstext.length >= 1400) {
+            if ( this.newsJson.newstext && this.newsJson.newstext.length >= 1400) {
                 this.articleMore = true;
             }
         },
@@ -55,7 +57,7 @@ export default {
     watch: {
         newsJson(val) {
             this.shrinkArticle();
-        }
+        },
     },
 }
 </script>

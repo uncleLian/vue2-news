@@ -9,14 +9,20 @@
         </header>
         <div class="content">
             <div class="container" v-swiper:swiperRight='true'>
-                <detail-article :newsJson='detailJson'></detail-article>
-                <detail-tags :tagsJson='detailJson.infotags'></detail-tags>
+                <!-- 文章 -->
+                <detail-article :newsJson='currentArticle'></detail-article>
+                <!-- 标签 -->
+                <detail-tags :tagsJson='currentArticle.infotags'></detail-tags>
+                <!--  推荐 -->
                 <detail-recommend :recommendJson='recommendJson'></detail-recommend>
+                <!-- 下载 -->
                 <a class="downLoad" :href='$store.state.apkURL'>都翻到这儿了，就下载个头条呗~</a>
             </div>
         </div>
-        <spinner-load :show='status.spinnerLoad'></spinner-load>
+        <!-- 分享 -->
         <share :show="status.share" @on-status-change='shareStatusChange'></share>
+        <!-- 加载 -->
+        <spinner-load :show='status.spinnerLoad'></spinner-load>
     </div>
 </template>
 <script>
@@ -24,6 +30,7 @@ import detailArticle from './article'
 import detailTags from './tags'
 import detailRecommend from './recommend'
 import share from './share'
+import { mapActions } from 'vuex'
 export default {
     name: 'detail',
     components: {
@@ -34,84 +41,63 @@ export default {
     },
     data() {
         return {
-            classid: null,
-            id: null,
-            ArticleURL: this.$store.state.ajaxURL.detailArticleURL,
-            recommendURL: this.$store.state.ajaxURL.detailRecommendURL,
-            detailJson: '', // 文章数据
-            recommendJson: [], // 推荐数据
             title: '健康头条',
+            currentArticle:{},  // 文章数据
+            recommendJson: [], // 推荐数据
+            query: {
+                id: null,
+                classid: null
+            },
             status: {
                 share: false, // 菜单栏
-                spinnerLoad: false, // 加载动画
-                goTop: false, // 返回头部
+                spinnerLoad: true, // 加载动画
             },
+
         }
     },
     methods: {
+        ...mapActions([
+          'get_newsColumn_data',
+          'get_Article_data',
+          'get_Recommend_data',
+        ]),
         goTop() {
-            $("#detail .container").animate({
-                scrollTop: 0
-            });
+            $("#detail .container").animate({scrollTop: 0});
         },
         shareStatusChange(val) {
             this.status.share = val;
         },
         init() {
-            this.detailJson = '';
-            this.classid = this.$route.query.classid;
-            this.id = this.$route.query.id;
-            const columnTitle = ['推荐', '头条', '女性', '育儿', '中医', '本地', '政策', '产业', '旅游'];
-            this.title = `健康头条 · ${columnTitle[this.classid]}`;
+            this.status.spinnerLoad = true;
+            this.query.classid = this.$route.query.classid;
+            this.query.id = this.$route.query.id;
+            $("#detail .container").scrollTop(0);
+            this.get_newsColumn_data();
+            this.title = `健康头条 · ${this.$store.state.newsColumn[this.query.classid].name}`;
+            this.get_Article(); // 获取 文章数据
+            this.get_Recommend(); // 获取 推荐数据
+            this.visitCollect(); // 浏览数据统计
         },
-        detailAjax() {
-            const vm = this;
-            vm.status.spinnerLoad = true;
-            $('#detail .container').scrollTop(0);
-            $.ajax({
-                    url: vm.ArticleURL,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        classid: vm.classid,
-                        id: vm.id
-                    },
-                })
-                .done(function(json) {
-                    // console.log('detailAjax', json[0]);
-                    if (json) {
-                        vm.detailJson = json[0];
-                        vm.status.spinnerLoad = false;
-                    }
-                })
-                .fail(function() {
-                    console.log("error");
-                })
+        get_Article() {
+            this.get_Article_data(this.query.id)
+            .then(res => {
+                if (res) {
+                    this.currentArticle = res;
+                    this.status.spinnerLoad = false;
+                }
+            })
         },
-        recommendAjax() {
-            const vm = this;
-            $.ajax({
-                    url: vm.recommendURL,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        classid: vm.classid,
-                        id: vm.id
-                    }
-                })
-                .done(function(json) {
-                    // console.log('recommendAjax',json);
-                    if (json) {
-                        vm.recommendJson = json;
-                    }
-                })
-                .fail(function() {
-                    console.log("error");
-                })
+        get_Recommend() {
+            this.get_Recommend_data(this.query)
+            .then(res => {
+                if(res){
+                    this.recommendJson = res;
+                }
+            })
         },
-        visitCollect(){
+        visitCollect() {
             $.ajax({
-                url: `http://api.toutiaojk.com/public/ViewClick/?classid=${this.classid}&id=${this.id}&addclick=1`,
+                url: `http://api.toutiaojk.com/public/ViewClick/?classid=${this.query.classid}&id=${this.query.id}&addclick=1`,
                 type: 'GET'
             })
         }
@@ -120,19 +106,12 @@ export default {
         $route(val) {
             if (val.name == "detail") {
                 this.init();
-                this.detailAjax();
-                this.recommendAjax();
-                this.visitCollect();
             }
         },
     },
     mounted: function() {
         this.init();
-        this.detailAjax();
-        this.recommendAjax();
-        this.visitCollect();
-
-    },
+    }
 }
 </script>
 <style lang='stylus'>
