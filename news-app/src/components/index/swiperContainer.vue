@@ -1,18 +1,17 @@
 <template>
     <swiper :options="swiperOption" class="swiper-box" ref="mySwiper" :class="{isIOS:$store.state.isIOS}">
-        <swiper-slide v-for='(item,index) in contentJson' class="swiper-item" :key='index'>
+        <swiper-slide v-for='(item,index) in columnJson' :key='index'>
             <pull-container :type='item.type'></pull-container>
         </swiper-slide>
     </swiper>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import pullContainer from './pullContainer'
 export default {
     name: 'swiperContainer',
-    props: ['contentJson'],
-    components: {
-        pullContainer
-    },
+    components: { pullContainer},
+    props:['columnJson'],
     data() {
         return {
             active: 0,
@@ -26,41 +25,35 @@ export default {
         }
     },
     methods: {
-        init() {
-            const index = sessionStorage.getItem('indexActive');
-            if (index) {
-                this.active = index;
-                this.swiper.slideTo(index, 0, false);
-            }
-        },
         slideChangeCallBack(swiper) {
             this.active = swiper.activeIndex;
         },
-        slideMoveCallBack(swiper, event) {
-            this.$store.commit('swiperMoveChange', true);
+        slideMoveCallBack() {
+            this.$store.commit('indexSwiper', true);
         },
-        touchEndCallBack(swiper) {
-            this.$store.commit('swiperMoveChange', false);
+        touchEndCallBack() {
+            this.$store.commit('indexSwiper', false);
         },
     },
     computed: {
+        ...mapGetters([
+          'indexActive',
+        ]),
         swiper() {
             return this.$refs.mySwiper.swiper
-        },
-        stateIndex() {
-            return this.$store.state.indexActive
         },
     },
     watch: {
         active(val) {
-            this.$store.commit('indexActiveMutation', val);
-        },
-        stateIndex(val) {
             this.swiper.slideTo(val, 300, true);
+            this.$store.commit('indexActive', val);
+        },
+        indexActive(val){
+            this.active = val;
         },
     },
     mounted() {
-        this.init(); // 初始化组件状态
+        this.$nextTick(function () {this.swiper.slideTo(this.active, 0, false)})
     },
 }
 </script>
@@ -74,9 +67,5 @@ export default {
     padding-top: 80px;
     z-index: 0;
     background: #fff;
-}
-
-.swiper-item {
-    height: 100%;
 }
 </style>

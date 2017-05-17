@@ -60,8 +60,6 @@ export default {
 }
 </script>
 <style >
-/* 左右边距 */
-
 #article {
     padding-left: 16px;
     padding-right: 16px;
@@ -102,9 +100,11 @@ export default {
 .articleText_html {
     overflow: hidden;
 }
+
 .articleText_html p,span{
     font-size: inherit!important;
 }
+
 .articleMore {
     margin-top: 15px;
     padding: 5px 0;

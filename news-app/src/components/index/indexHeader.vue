@@ -9,7 +9,7 @@
         </header>
         <nav class="nav">
             <div class="nav_ul">
-                <dl v-for="(item,index) in navJson" :class='{active: item.type == active}' @click='active = item.type' :key="index">
+                <dl v-for="(item,index) in columnJson" :class='{active: item.type == active}' @click='active = item.type' :key="index">
                     <dd>
                         <a :class='{active: item.type == active}'>{{item.name}}
                 </a>
@@ -20,66 +20,67 @@
     </div>
 </template>
 <script>
+
+import { mapGetters } from 'vuex'
 export default {
     name: 'indexHeader',
-    props: ['navJson'],
+    props: ['columnJson'],
     data() {
         return {
             active: 0,
         }
     },
     methods: {
-        init() {
-            const move = sessionStorage.getItem('headerScrollLeft');
-            if (move) {
-                $('.nav_ul').scrollLeft(move)
-            }
-            const index = sessionStorage.getItem('indexActive');
-            if (index) {
-                this.active = index;
-            }
-        },
-        goTop(params) {
-            $(`.container.${this.active}`).animate({
-                scrollTop: 0
-            });
+        goTop() {
+            $(`.container.${this.active}`).animate({scrollTop: 0});
         },
         slideTo(index) {
-            var $ul = $(".nav_ul");
-            var $activeEle = $(".nav_ul a").eq(index);
-            var ulWitch = $ul.width();
-            var aWidth = $activeEle.width(); // 当前 a 宽度
-            var midWidth = (ulWitch - aWidth) / 2; // 屏幕中心线的宽度
-            var ullLeft = $ul.scrollLeft(); // 当前 ul 滚动条的值
-            var aLeft = $activeEle.offset().left; // 当前 a 距离屏幕左边的距离
-            var move; // 滚动距离
-            if (ullLeft === 0 && aLeft <= midWidth) {
-                move = 0;
-            } else {
-                move = ullLeft + (aLeft - midWidth);
+            let $activeEle = $('.nav_ul a').eq(index);
+            if ($activeEle.length == 0) { return } 
+            else {
+                let $ul = $(".nav_ul");
+                let ulWitch = $ul.width();
+                let aWidth = $activeEle.width(); // 当前 a 宽度
+                let midWidth = (ulWitch - aWidth) / 2; // 屏幕中心线的宽度
+                let ullLeft = $ul.scrollLeft(); // 当前 ul 滚动条的值
+                let aLeft = $activeEle.offset().left; // 当前 a 距离屏幕左边的距离
+                let move; // 滚动距离
+                if (ullLeft === 0 && aLeft <= midWidth) {
+                    move = 0;
+                } else {
+                    move = ullLeft + (aLeft - midWidth);
+                }
+                if (move == 0) {return} 
+                else {
+                    $ul.animate({
+                        'scrollLeft': move
+                    }, 300);
+                    sessionStorage.setItem('navScrollLeft', move);
+                }
             }
-            $ul.animate({
-                'scrollLeft': move
-            }, 300);
-            sessionStorage.setItem('headerScrollLeft', move);
         },
     },
     computed: {
-        stateIndex() {
-            return this.$store.state.indexActive
-        }
+        ...mapGetters([
+          'indexActive',
+        ]),
     },
     watch: {
         active(val) {
-            this.$store.commit('indexActiveMutation', val);
             this.slideTo(val);
+            this.$store.commit('indexActive', val);
         },
-        stateIndex(val) {
+        indexActive(val) {
             this.active = val;
-        }
+        },
     },
     activated() {
-        this.init();
+        this.$nextTick(function() {
+            let navScrollLeft = sessionStorage.getItem('navScrollLeft');
+            if (navScrollLeft) {
+                $('.nav_ul').scrollLeft(navScrollLeft);
+            }
+        })
     },
 }
 </script>

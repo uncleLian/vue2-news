@@ -96,7 +96,6 @@ export default {
     filters: {
         urlFilter(val) {
             if (!val) return ''
-
             function GetQueryString(url, name) {
                 var reg = new RegExp("(^|&|\\?)" + name + "=([^&]*)(&|$)");
                 var r = url.substr(0).match(reg);

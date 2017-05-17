@@ -1,7 +1,9 @@
 <template>
     <div id="search">
+
         <div class="header">
-         <div class="iosHeader" v-if='$store.state.isIOS'></div>
+            <div class="iosHeader" v-if='$store.state.isIOS'></div>
+            <!-- header -->
             <header>
                 <div class="top_bar">
                     <div class="abs_l">
@@ -10,21 +12,24 @@
                     <div class="abs_m" @click.stop='goTop'>搜索</div>
                 </div>
             </header>
+
+            <!-- form -->
             <form id='search_form'>
                 <div id="search_container">
                     <i class="icon-search search_icon"></i>
-                    <input id='search_input' type="search" placeholder="请输入搜索关键词" v-model.trim='searchVal'>
+                    <input id='search_input' type="search" placeholder="请输入搜索关键词" v-model.trim='query.searchVal'>
                 </div>
             </form>
+
         </div>
         <div class="content" v-swiper:swiperRight='true' :class="{isIOS:$store.state.isIOS}">
             <div class="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="bottomStatus" infinite-scroll-distance="20" infinite-scroll-immediate-check="false">
-                <div class="empty" v-if="!searchJson.length">
+                <div class="empty" v-if="!searchJson">
                     <p>空空如也</p>
                     <p>快去搜索吧</p>
                 </div>
                 <list-item :itemJson="searchJson"></list-item>
-                <div v-if="searchJson.length > 0" class="bottomLoad">
+                <div v-if="searchJson && searchJson.length > 0" class="bottomLoad">
                     <div class="loading" v-show='bottomLoading'>加载中...</div>
                     <div class="noData" v-if='bottomNoData'>没有更多的内容了</div>
                 </div>
@@ -34,85 +39,53 @@
     </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
 export default {
     name: 'search',
     data() {
         return {
-            searchVal: '',
-            searchPage: 2,
-            searchURL: this.$store.state.ajaxURL.searchURL,
+            query:{
+                searchVal: '',
+                searchPage: 1,
+            },
             searchJson: [],
             bottomStatus: false,
-            spinnerLoad: false,
             bottomLoading: true,
             bottomNoData: false,
+            spinnerLoad: false,
         }
     },
     methods: {
+        ...mapActions([
+          'get_Search_data',
+        ]),
         goTop() {
-            $("#search .container").animate({
-                scrollTop: 0
-            });
+            $("#search .container").animate({scrollTop: 0});
         },
         searchAjax() {
-            const vm = this;
-            vm.spinnerLoad = true;
+            this.spinnerLoad = true;
             $('#search .container').scrollTop(0);
-            $.ajax({
-                    url: vm.searchURL,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        key: vm.searchVal,
-                        page: 1
-                    },
-                })
-                .done(function(json) {
-                    // console.log('searchAjax',json);
-                    vm.spinnerLoad = false;
-                    if (json) {
-                        vm.searchJson = json;
-                        vm.searchPage = 2;
-                    }
-                })
-                .fail(function() {
-                    console.log("error");
-                })
+            this.query.searchPage = 1;
+            this.get_Search_data(this.query)
+            .then(res => {
+                this.searchJson = res;
+                this.query.searchPage = 2;
+                this.spinnerLoad = false;
+            })
         },
         loadMore() {
-            const vm = this;
-            vm.bottomStatus = true;
-            $.ajax({
-                    url: vm.searchURL,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        key: vm.searchVal,
-                        page: vm.searchPage
-                    }
-                })
-                .done(function(json) {
-                    // console.log('searchLoadMore',json);
-                    if (json) {
-                        for (var i = 0; i < json.length; i++) {
-                            vm.searchJson.push(json[i]);
-                        }
-                        vm.searchPage++;
-                    } else {
-                        vm.bottomLoading = false;
-                        vm.bottomNoData = true;
-                    }
-                    vm.bottomStatus = false;
-                })
-                .fail(function() {
-                    console.log("error");
-                })
-        },
-        tagsSearch() {
-            if (this.$route.query.key) {
-                this.searchVal = this.$route.query.key;
-                this.searchAjax();
-            }
+            this.bottomStatus = true;
+            this.$store.dispatch('get_Search_data',this.query)
+            .then(res =>{
+                if (res) {
+                    this.searchJson = [...this.searchJson,...res]
+                    this.searchPage++;
+                }else {
+                    this.bottomLoading = false;
+                    this.bottomNoData = true;
+                }
+                this.bottomStatus = false;
+            })
         },
         getLocation() {
             const location = this.$store.state.searchLocation;
@@ -135,16 +108,18 @@ export default {
     },
     activated() {
         this.getLocation();
-        this.tagsSearch();
+        if (this.$route.query.key) {
+            this.query.searchVal = this.$route.query.key;
+            this.searchAjax();
+        }
     },
     deactivated() {
         this.setLocation();
     },
     mounted() {
-        const vm = this;
-        $('#search_form').on('submit', function(event) {
+        $('#search_form').on('submit', event => {
             event.preventDefault();
-            vm.searchAjax();
+            this.searchAjax();
         });
     }
 }
