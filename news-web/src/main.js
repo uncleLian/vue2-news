@@ -4,16 +4,14 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-import axios from 'axios'
-import spinnerLoad from '@/components/public/spinnerLoad'	// 转场load
-import listItem from '@/components/public/listItem'			// 列表
-import popupMenu from '@/components/public/popupMenu'     // 弹框
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
-import { swiperDirective } from '@/components/public/swiperDirective.js'
+import spinnerLoad from '@/components/spinnerLoad' // 转场load
+import listItem from '@/components/listItem'     // 列表
+import popupMenu from '@/components/popupMenu'     // 弹框
+import { swiperDirective } from '@/components/swiperDirective.js'
 
-Vue.prototype.$http = axios 
 Vue.use(MintUI)
 Vue.use(VueAwesomeSwiper)
 
@@ -26,13 +24,13 @@ Vue.component('popup-menu', popupMenu)
 
 // 注册全局 指令
 Vue.directive('swiper', {
-  	inserted: function (el,binding,vnode) {
-	  	if(binding.value){
-	  		{ swiperDirective( el , binding.arg , vnode.context) }
-	  	}else{
-	  		return
-	  	}
-  	}
+    inserted: function (el,binding,vnode) {
+      if(binding.value){
+        { swiperDirective( el , binding.arg , vnode.context) }
+      }else{
+        return
+      }
+    }
 })
 
 new Vue({

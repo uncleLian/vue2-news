@@ -47,7 +47,6 @@ export default {
     historyArticle(state,val){
         state.historyArticle = val;
         setStore('historyArticle', val);
-        console.log('historyArticle',val);
     },
     currentSearch(state,val){
         state.currentSearch = val;

@@ -117,8 +117,6 @@ export default {
 
     // Search
     async get_Search_data({ commit, state }, {searchVal, searchPage}) {
-        console.log(searchVal);
-        console.log(searchPage);
         let result, historyData;
         historyData = JSON.parse(getStore('historySearch'));
         if (historyData && historyData[searchVal] && searchPage == 1) {

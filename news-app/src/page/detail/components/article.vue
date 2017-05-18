@@ -1,0 +1,208 @@
+<template>
+    <article id="article">
+        <h1 class="articleTitle">{{newsJson.title}}</h1>
+        <div class="articleInfo">
+            <span class="author"><i class="icon-author"></i> <!-- 文 / {{newsJson.befrom}} --></span>
+            <span class="publishTime">{{newsJson.newstime}}</span>
+        </div>
+        <template v-if="newsJson.playonlineurl">
+            <div class="detail_video">
+                <div class="video">
+                    <div class="video_info" v-if='!videoplaying'>
+                        <img :src="newsJson.titlepic">
+                    </div>
+                    <div class="playRound" v-if='!videoplaying' @click="videoPlay">
+                        <div class="playSan"></div>
+                    </div>
+                    <video :src="newsJson.playonlineurl"></video>
+                </div>
+            </div>
+        </template>
+        <template v-else>
+            <div class="articleText">
+                <div class="articleText_html" v-html='newsJson.newstext' :class="{articleClose : articleMore}"></div>
+                <div class='articleMore' v-if="articleMore" @click="articleMore = false">展开全文...</div>
+            </div>
+        </template>
+    </article>
+</template>
+<script>
+export default {
+    name: 'article',
+    props: {
+        newsJson: {
+            default: {},
+        }
+    },
+    data() {
+        return {
+            videoplaying: false,
+            articleMore: false,
+        }
+    },
+    methods: {
+        shrinkArticle() {
+            if (!this.newsJson.playonlineurl && this.newsJson.newstext.length >= 1400) {
+                this.articleMore = true;
+            }
+        },
+        videoPlay() {
+            $('.video video').get(0).play();
+            $('.video video').attr('controls', 'controls');
+            this.videoplaying = true;
+        },
+    },
+    watch: {
+        newsJson(val) {
+            this.shrinkArticle();
+        }
+    },
+}
+</script>
+<style >
+#article {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.articleTitle {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+    padding-top: 15px;
+    padding-bottom: 10px;
+}
+
+.articleInfo {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 12px;
+    color: #999;
+}
+
+.articleInfo .publishTime {
+    float: right;
+}
+
+.articleText {
+    position: relative;
+    color: #333;
+    font-size: 18px!important;
+    line-height: 30px;
+    margin: 10px 0;
+}
+
+.articleText img {
+    width: 100%!important;
+    height: auto!important;
+}
+
+.articleText_html {
+    overflow: hidden;
+}
+
+.articleText_html p,span{
+    font-size: inherit!important;
+    font-family: inherit!important;
+    line-height: inherit!important;
+}
+
+.articleMore {
+    margin-top: 15px;
+    padding: 5px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #5784df;
+}
+
+.articleClose {
+    height: 1200px;
+}
+
+
+/* video */
+
+.detail_video {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.video {
+    position: relative;
+    width: 100%;
+}
+
+.video video {
+    width: 100%;
+}
+
+.video .video_info {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.video .video_info img {
+    position: absolute;
+    width: 100%;
+    display: block;
+    left: 0;
+    top: 0;
+    z-index: 111;
+}
+
+.video .playRound {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    left: 50%;
+    top: 50%;
+    margin-left: -25px;
+    margin-top: -25px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .3);
+    z-index: 222;
+    border: 1px solid #fff;
+}
+
+.video .playSan {
+    position: absolute;
+    width: 0;
+    height: 0;
+    font-size: 0;
+    border-width: 16px;
+    border-style: solid;
+    border-color: transparent transparent transparent rgba(255, 255, 255, .6);
+    left: 50%;
+    top: 50%;
+    margin-left: -5px;
+    margin-top: -16px;
+}
+
+@media screen and (min-width: 414px) and (max-width: 500px){
+    #detail{
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+}
+@media screen and (min-width: 501px) and (max-width: 620px){
+    #detail{
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+@media screen and (min-width: 621px) and (max-width: 767px){
+    #detail{
+        padding-left: 22px;
+        padding-right: 22px;
+    }
+}
+@media only screen and (min-width: 768px){
+    #detail{
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+</style>
