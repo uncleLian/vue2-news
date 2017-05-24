@@ -5,6 +5,7 @@
             <span class="author"><i class="icon-author"></i> 文 / {{newsJson.befrom}}</span>
             <span class="publishTime">{{newsJson.newstime}}</span>
         </div>
+
         <template v-if="newsJson.playonlineurl">
             <div class="detail_video">
                 <div class="video">
@@ -18,6 +19,7 @@
                 </div>
             </div>
         </template>
+        
         <template v-else>
             <div class="articleText">
                 <div class="articleText_html" v-html='newsJson.newstext' :class="{articleClose : articleMore}"></div>
@@ -28,7 +30,6 @@
 </template>
 <script>
 export default {
-    name: 'article',
     props: {
         newsJson: {
             default: {},

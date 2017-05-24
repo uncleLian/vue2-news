@@ -1,41 +1,30 @@
-import {setStore} from './cache'
+import {setCache} from './cache'
 
 export default {
-    indexActive(state, val) {
+    set_indexActive(state, val) {
         state.indexActive = val;
-        setStore('indexActive', val);
+        setCache('index_Active', val);
     },
-    newsColumn(state,val){
-        state.newsColumn = val;
-        setStore('newsColumn', val);
-    },
-    currentContent(state,val){
-        state.currentContent = val;
-        setStore(`${state.indexActive}Json`, val);
-    },
-    indexPage(state, obj) {
+    set_indexPage(state, obj) {
         state.indexPage = obj;
+        setCache('index_Page', obj);
     },
-    indexLocation(state, obj) {
+    set_indexLocation(state, obj) {
         state.indexLocation = obj;
+        setCache('index_Location', obj);
     },
-    indexSwiper(state, val) {
+    set_indexColumn(state, arr){
+        state.indexColumn = arr;
+        setCache('index_Column', arr);
+    },
+    set_currentContent(state,val){
+        state.currentContent = val;
+        setCache(`${state.indexActive}_json`, val);
+    },
+    set_indexSwiper(state, val) {
         state.indexSwiper = val;
     },
-    LocationChange(state, obj) {
-        state.indexLocation[obj.index].location = obj.location;
-        sessionStorage.setItem('indexLocation', JSON.stringify(state.indexLocation));
-    },
-    topBottomPageChange(state, obj) {
-        state.indexPage[0].loadTopPage = obj.topPage;
-        state.indexPage[0].loadBottomPage = obj.bottomPage;
-        sessionStorage.setItem('indexPage', JSON.stringify(state.indexPage));
-    },
-    classPageChange(state, obj) {
-        state.indexPage[obj.index].classPage = obj.page;
-        sessionStorage.setItem('indexPage', JSON.stringify(state.indexPage));
-    },
-    searchLocationChange(state, val) {
+    set_searchLocation(state, val) {
         state.searchLocation = val;
     },
     apkURLChange(state, val) {
@@ -44,16 +33,15 @@ export default {
     currentArticle(state,val){
         state.currentArticle = val;
     },
-    historyArticle(state,val){
-        state.historyArticle = val;
-        setStore('historyArticle', val);
-    },
     currentSearch(state,val){
         state.currentSearch = val;
     },
+    historyArticle(state,val){
+        state.historyArticle = val;
+        setCache('history_Article', val);
+    },
     historySearch(state,val){
         state.historySearch = val;
-        setStore('historySearch', val);
-        console.log('historySearch',val);
+        setCache('history_Search', val);
     },
 }

@@ -6,9 +6,7 @@
             <!-- header -->
             <header>
                 <div class="top_bar">
-                    <div class="abs_l">
-                        <a class="back" @click='$router.go(-1)'></a>
-                    </div>
+                    <div class="abs_l"> <a class="back" @click='$router.go(-1)'></a></div>
                     <div class="abs_m" @click.stop='goTop'>搜索</div>
                 </div>
             </header>
@@ -17,13 +15,13 @@
             <form id='search_form'>
                 <div id="search_container">
                     <i class="icon-search search_icon"></i>
-                    <input id='search_input' type="search" placeholder="请输入搜索关键词" v-model.trim='query.searchVal'>
+                    <input id='search_input' type="search" placeholder="请输入搜索关键词" v-model.trim='key'>
                 </div>
             </form>
-
         </div>
+
         <div class="content" v-swiper:swiperRight='true' :class="{isIOS:$store.state.isIOS}">
-            <div class="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="bottomStatus" infinite-scroll-distance="20" infinite-scroll-immediate-check="false">
+            <div class="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="bottomStatus" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
                 <div class="empty" v-if="!searchJson">
                     <p>空空如也</p>
                     <p>快去搜索吧</p>
@@ -39,15 +37,13 @@
     </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapMutations, mapActions } from 'vuex'
 export default {
     name: 'search',
     data() {
         return {
-            query:{
-                searchVal: '',
-                searchPage: 1,
-            },
+            key: '',
+            page: 1,
             searchJson: [],
             bottomStatus: false,
             bottomLoading: true,
@@ -56,30 +52,38 @@ export default {
         }
     },
     methods: {
+        ...mapMutations([
+            'set_searchLocation',
+        ]),
         ...mapActions([
-          'get_Search_data',
+            'get_Search_data',
         ]),
         goTop() {
             $("#search .container").animate({scrollTop: 0});
         },
+        init(){
+            this.key = '';
+            this.page = 1;
+            this.searchJson = [];
+        },
         searchAjax() {
             this.spinnerLoad = true;
+            this.page = 1;
             $('#search .container').scrollTop(0);
-            this.query.searchPage = 1;
-            this.get_Search_data(this.query)
+            this.get_Search_data({'key': this.key, 'page': this.page})
             .then(res => {
                 this.searchJson = res;
-                this.query.searchPage = 2;
+                this.page = 2;
                 this.spinnerLoad = false;
             })
         },
         loadMore() {
             this.bottomStatus = true;
-            this.$store.dispatch('get_Search_data',this.query)
+            this.get_Search_data({'key': this.key, 'page': this.page})
             .then(res =>{
                 if (res) {
                     this.searchJson = [...this.searchJson,...res]
-                    this.searchPage++;
+                    this.page++;
                 }else {
                     this.bottomLoading = false;
                     this.bottomNoData = true;
@@ -93,23 +97,22 @@ export default {
                 $('#search .container').scrollTop(location);
             }
         },
-        setLocation() {
+        setLocation(){
             const location = $('#search .container').scrollTop();
-            this.$store.commit('searchLocationChange', location);
+            this.set_searchLocation(location)
         },
     },
     watch: {
         $route(to, from) {
             if (from.path.includes('index')) {
-                this.searchVal = '';
-                this.searchJson = [];
+                this.init();
             }
         },
     },
     activated() {
         this.getLocation();
         if (this.$route.query.key) {
-            this.query.searchVal = this.$route.query.key;
+            this.key = this.$route.query.key;
             this.searchAjax();
         }
     },

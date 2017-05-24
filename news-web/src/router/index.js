@@ -17,7 +17,7 @@ export default new Router({
 	// mode:'history',
   	routes:[
 	    {	
-	    	path: '/', 
+	    	path: '', 
 	    	redirect: '/index',
 	    	component: App,
 	    	children:[

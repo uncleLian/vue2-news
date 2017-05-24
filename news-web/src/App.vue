@@ -13,7 +13,6 @@ import '@/assets/css/icon.css'
 import fastClick from 'fastclick'
 
 export default {
-    name: 'app',
     data() {
         return {
             transitionName: ''

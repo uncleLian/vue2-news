@@ -30,7 +30,6 @@
 </template>
 <script>
 export default {
-    name: 'share',
     props:{
         show: {
             type: Boolean,

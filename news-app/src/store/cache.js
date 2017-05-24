@@ -1,12 +1,12 @@
 
 // 获取localStorage
-export const getStore = name => {
+export const getCache = name => {
 	if (!name) return;
 	return window.sessionStorage.getItem(name);
 }
 
  //存储localStorage
-export const setStore = (name, content) => {
+export const setCache = (name, content) => {
     if (!name) return;
     if (typeof content !== 'string') {
         content = JSON.stringify(content);

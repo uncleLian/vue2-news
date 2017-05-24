@@ -1,17 +1,15 @@
 <template>
     <swiper :options="swiperOption" class="swiper-box" ref="mySwiper">
-        <swiper-slide v-for='(item,index) in columnJson' :key='index'>
-            <pull-container :type='item.type'></pull-container>
+        <swiper-slide v-for='(item,index) in indexColumn' :key='index'>
+            <pull-container :type='item.classpath'></pull-container>
         </swiper-slide>
     </swiper>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import pullContainer from './pullContainer'
 export default {
-    name: 'swiperContainer',
     components: { pullContainer},
-    props:['columnJson'],
     data() {
         return {
             active: 0,
@@ -25,19 +23,24 @@ export default {
         }
     },
     methods: {
+        ...mapMutations([
+            'set_indexActive',
+            'set_indexSwiper',
+        ]),
         slideChangeCallBack(swiper) {
             this.active = swiper.activeIndex;
         },
         slideMoveCallBack() {
-            this.$store.commit('indexSwiper', true);
+            this.set_indexSwiper(true)
         },
         touchEndCallBack() {
-            this.$store.commit('indexSwiper', false);
+            this.set_indexSwiper(false)
         },
     },
     computed: {
         ...mapGetters([
           'indexActive',
+          'indexColumn',
         ]),
         swiper() {
             return this.$refs.mySwiper.swiper
@@ -46,10 +49,10 @@ export default {
     watch: {
         active(val) {
             this.swiper.slideTo(val, 300, true);
-            this.$store.commit('indexActive', val);
+            this.set_indexActive(this.indexColumn[val].classpath);
         },
-        indexActive(val){
-            this.active = val;
+        indexActive(val) {
+            this.active = this.indexColumn.findIndex(obj => obj.classpath == val);
         },
     },
     mounted() {
@@ -63,5 +66,13 @@ export default {
     height: 100%;
     z-index: 0;
     background: #fff;
+    padding-top: 80px;
+}
+
+[data-dpr="2"] .swiper-box{
+    padding-top: 160px;
+}
+[data-dpr="3"] .swiper-box{
+    padding-top: 240px;
 }
 </style>

@@ -21,84 +21,88 @@
             </div>
         </div>
         <!-- 分享 -->
-        <share :show="status.share" @on-status-change='shareStatusChange' :detailJson='currentArticle'></share>
+        <detail-share :show="share" @on-status-change='shareStatusChange' :detailJson='currentArticle'></detail-share>
         <!-- 加载 -->
-        <spinner-load :show='status.spinnerLoad'></spinner-load>
+        <spinner-load :show='spinnerLoad'></spinner-load>
     </div>
 </template>
 <script>
 import detailArticle from './components/article'
 import detailTags from './components/tags'
 import detailRecommend from './components/recommend'
-import share from './components/share'
-import { mapActions } from 'vuex'
+import detailShare from './components/share'
+import { mapGetters, mapActions } from 'vuex'
 export default {
-    name: 'detail',
     components: {
         detailArticle,
         detailTags,
         detailRecommend,
-        share,
+        detailShare,
     },
     data() {
         return {
+            id: null,
+            classid: null,
             title: '健康头条',
-            currentArticle:{},  // 文章数据
+            currentArticle: {}, // 文章数据
             recommendJson: [], // 推荐数据
-            query: {
-                id: null,
-                classid: null
-            },
-            status: {
-                share: false, // 菜单栏
-                spinnerLoad: true, // 加载动画
-            },
+            share: false, // 菜单栏
+            spinnerLoad: true, // 加载动画
 
         }
     },
+    computed: {
+        ...mapGetters([
+            'indexColumn',
+        ]),
+    },
     methods: {
         ...mapActions([
-          'get_newsColumn_data',
-          'get_Article_data',
-          'get_Recommend_data',
+            'get_indexColumn_data',
+            'get_Article_data',
+            'get_Recommend_data',
         ]),
         goTop() {
-            $("#detail .container").animate({scrollTop: 0});
+            $("#detail .container").animate({
+                scrollTop: 0
+            });
         },
         shareStatusChange(val) {
-            this.status.share = val;
+            this.share = val;
         },
-        init() {
-            this.status.spinnerLoad = true;
-            this.query.classid = this.$route.query.classid;
-            this.query.id = this.$route.query.id;
+        async init() {
+            this.spinnerLoad = true;
+            this.classid = this.$route.query.classid;
+            this.id = this.$route.query.id;
             $("#detail .container").scrollTop(0);
-            this.get_newsColumn_data();
-            this.title = `健康头条 · ${this.$store.state.newsColumn[this.query.classid].name}`;
+            if (!this.indexColumn.length > 0) {
+                await this.get_indexColumn_data();
+            }
+            this.title = `健康头条 · ${this.indexColumn[this.classid].classname}`;
             this.get_Article(); // 获取 文章数据
             this.get_Recommend(); // 获取 推荐数据
             this.visitCollect(); // 浏览数据统计
         },
         get_Article() {
-            this.get_Article_data(this.query.id)
+            this.get_Article_data(this.id)
             .then(res => {
                 if (res) {
                     this.currentArticle = res;
-                    this.status.spinnerLoad = false;
+                    this.spinnerLoad = false;
                 }
             })
         },
         get_Recommend() {
-            this.get_Recommend_data(this.query)
+            this.get_Recommend_data({'classid': this.classid,'id': this.id})
             .then(res => {
-                if(res){
+                if (res) {
                     this.recommendJson = res;
                 }
             })
         },
         visitCollect() {
             $.ajax({
-                url: `http://api.toutiaojk.com/public/ViewClick/?classid=${this.query.classid}&id=${this.query.id}&addclick=1`,
+                url: `http://api.toutiaojk.com/public/ViewClick/?classid=${this.classid}&id=${this.id}&addclick=1`,
                 type: 'GET'
             })
         }

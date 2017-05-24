@@ -8,19 +8,19 @@ import { setStore } from './cache'
 Vue.use(Vuex)
 
 const state = {
-    indexActive: 0,
-    newsColumn:[],
-    currentContent:[],
-    indexPage: [{ loadTopPage: 1, loadBottomPage: 1 }, ...new Array(8).fill({ classPage: 1 })],
-    indexLocation: new Array(9).fill({ location: 0 }),
+    indexActive: null,
+    indexPage: {},
+    indexColumn: [],
+    indexLocation: {},
     indexSwiper: false,
-    currentArticle:{},
-    historyArticle:{},
-    currentSearch:{},
-    historySearch:{},
+    currentContent: [],
+    currentArticle: {},
+    currentSearch: {},
+    historyArticle: {},
+    historySearch: {},
     searchLocation: 0,
     apkURL: '../toutiaojk.apk',
-    isIOS:false,
+    isIOS: false,
 }
 
 export default new Vuex.Store({
@@ -29,4 +29,3 @@ export default new Vuex.Store({
     mutations,
     actions,
 })
-

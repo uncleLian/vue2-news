@@ -11,8 +11,9 @@
                 <span v-show="topStatus == 'drop'">释放更新↑</span>
                 <span v-show="topStatus == 'loading'">加载中...</span>
             </div>
+
             <list-item :itemJson="contentJson"></list-item>
-            <!-- 上滑提示 -->
+
             <div v-if="contentJson.length > 0" class="bottomLoad">
                 <div class="loading" v-show='bottomLoading'>加载中...</div>
                 <div class="noData" v-if='bottomNoData'>没有更多的内容了</div>
@@ -22,15 +23,14 @@
 </template>
 <script>
 import { Indicator } from 'mint-ui'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
     props: ['type'],
     data() {
         return {
-            location: 0,
-            loadTopPage: 1,
-            loadBottomPage: 1,
+            active: 0,
             classPage: 1,
+            location: 0,
             contentJson: [], // 整个json数据arr
             topStatus: '', // 下拉状态
             distance: false, // 左右移动中，是否可以下拉
@@ -41,22 +41,26 @@ export default {
         }
     },
     methods: {
-        handleTopChange(status) {
+        ...mapMutations([
+            'set_currentContent',
+            'set_indexPage',
+            'set_indexLocation',
+        ]),
+        ...mapActions([
+            'get_listItem_cache',
+            'get_listItem_data',
+        ]),
+        handleTopChange(status){
             this.topStatus = status;
         },
-        init() {
+        init(){
             if(this.indexActive == this.type && !this.contentJson.length > 0 ){
-                const sessionPageJson = JSON.parse(sessionStorage.getItem('indexPage'));
-                if (sessionPageJson) {
-                    this.loadTopPage = sessionPageJson[0].loadTopPage; // loadTopPage
-                    this.loadBottomPage = sessionPageJson[0].loadBottomPage; // loadBottomPage
-                    this.classPage = sessionPageJson[this.type].classPage; // classPage
-                    this.$store.commit('indexPage',sessionPageJson);
-                }
-                this.$store.dispatch('get_currentContent_data',this.type)
-                .then(res => {
-                    if(res){
-                        this.contentJson = res;
+                this.active = this.indexColumn.findIndex(obj => obj.classpath == this.indexActive);
+                this.classPage = this.indexPage[this.indexActive];
+                this.get_listItem_cache()
+                .then(json=>{
+                    if(json){
+                        this.contentJson = json;
                     }else {
                         this.loadTopAjax();
                     }
@@ -65,37 +69,32 @@ export default {
         },
         loadTopAjax() {
             Indicator.open();
-            let page;
-            this.indexActive == 0 ? page = this.loadTopPage : page = this.classPage;
-            this.$store.dispatch('get_indexContent_top_data',page)
-            .then( res =>{
-                if( res ){
-                    this.contentJson = [...res,...this.contentJson];
-                    let lookIndex = this.contentJson.findIndex((n) => n.type == 'lookHere');
-                    this.contentJson.splice(lookIndex, 1);
-                    this.contentJson.splice(10, 0, {type: 'lookHere'});
-                    this.dataCount = res.length;
-                    this.indexActive == 0 ? this.loadTopPage++ : this.classPage++
+            this.get_listItem_data({index:this.active,page:this.classPage})
+            .then(json =>{
+                if(json){
+                    this.dataCount = json.length;
+                    this.contentJson = [...json,...this.contentJson];
+                    this.classPage++
                     $(`.container.${this.type} .pull_down .dataCount`).slideDown(200).delay(1000).slideUp(200);
+                    this.lookHereClick();
                 }else {
                     $(`.container.${this.type} .pull_down .noNewData`).slideDown(200).delay(1000).slideUp(200);
                 }
-                Indicator.close();
                 this.$refs.loadmore.onTopLoaded();
+                Indicator.close();
             })
             .catch(err =>{
+                console.log(err);
                 $(`.container.${this.type} .pull_down .requestFail`).show();
-            }) 
+            })
         },
         loadBottomAjax() {
             this.bottomStatus = true;
-            let page;
-            this.indexActive == 0 ? page = this.loadBottomPage : page = this.classPage;
-            this.$store.dispatch('get_indexContent_bottom_data', page)
+            this.get_listItem_data({index:this.active,page:this.classPage})
             .then(json => {
                 if (json) {
                     this.contentJson = [...this.contentJson,...json];
-                    this.indexActive == 0 ? this.loadBottomPage++ : this.classPage++
+                    this.classPage++
                 }else {
                     this.bottomLoading = false;
                     this.bottomNoData = true;
@@ -104,26 +103,19 @@ export default {
             })
         },
         getLocation() {
-            const vm = this;
-            const sessionLocationJson = JSON.parse(sessionStorage.getItem('indexLocation'));
-            if (sessionLocationJson) {
-                vm.location = sessionLocationJson[vm.type].location;
-                $(`.container.${vm.type}`).scrollTop(vm.location);
-                this.$store.commit('indexLocation', sessionLocationJson);
-            }
+           this.location = this.indexLocation[this.type];
+           $(`.container.${this.type}`).scrollTop(this.location);
         },
         setLocation() {
-            const vm = this;
-            var indexActive = vm.indexActive;
-            if (indexActive == vm.type) {
-                const locationObj = {
-                    index: indexActive,
-                    location: $(`.container.${vm.type}`).scrollTop(),
-                };
-                vm.$store.commit('LocationChange', locationObj);
-            }
+            this.indexLocation[this.type] = $(`.container.${this.type}`).scrollTop();
+            this.set_indexLocation(this.indexLocation);
         },
         lookHereClick() {
+            if(this.dataCount >= 10){
+                let lookIndex = this.contentJson.findIndex((n) => n.type == 'lookHere');
+                this.contentJson.splice(lookIndex, 1);
+                this.contentJson.splice(10, 0, {type: 'lookHere'});
+            }
             $(`.container.${this.type}`).on('click', '#lookHere', () => { 
                 $(`.container.${this.type}`).animate({scrollTop: 0}, () => {
                     this.loadTopAjax();
@@ -134,40 +126,26 @@ export default {
     computed: {
         ...mapGetters([
           'indexActive',
+          'indexPage',
+          'indexLocation',
+          'indexColumn',
+          'indexSwiper',
         ]),
-        indexSwiper() {
-            return this.$store.state.indexSwiper
-        },
-        topBottomPage() {
-            return {
-                topPage: this.loadTopPage,
-                bottomPage: this.loadBottomPage
-            }
-        },
-        
     },
     watch: {
+        indexActive(val){
+            this.init(); 
+        },
+        classPage(val) {
+            this.indexPage[this.indexActive] = val;
+            this.set_indexPage(this.indexPage);
+        },
+        contentJson(val){
+            this.set_currentContent(val);
+        },
         indexSwiper(val) {
             this.distance = val;
         },
-        indexActive(val) {
-            if ( this.type == val && this.contentJson.length == 0 ) {
-                this.init(); 
-            }
-        },
-        topBottomPage(val) {
-            this.$store.commit('topBottomPageChange', val);
-        },
-        classPage(val) {
-            const obj = {
-                index: this.indexActive,
-                page: val
-            };
-            this.$store.commit('classPageChange', obj);
-        },
-        contentJson(val){
-            this.$store.commit('currentContent', val);
-        }
     },
     activated() {
         this.getLocation();
@@ -176,8 +154,7 @@ export default {
         this.setLocation();
     },
     mounted() {
-        this.init(); // 初始化组件
-        this.lookHereClick();
+        this.init(); 
     }
 }
 </script>

@@ -6,7 +6,6 @@
 </template>
 <script>
 export default {
-    name: 'recommend',
     props: ['recommendJson'],
 }
 </script>

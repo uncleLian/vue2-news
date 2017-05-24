@@ -5,7 +5,6 @@
 </template>
 <script>
 export default {
-    name: 'tags',
     props: ['tagsJson'],
     data() {
         return {
@@ -14,7 +13,7 @@ export default {
     },
     watch: {
         tagsJson(val) {
-            if(val){
+            if (val) {
                 this.tagsData = val.match(/[\u4e00-\u9fa5]+/g).slice(0, 4);
             }
         }

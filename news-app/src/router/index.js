@@ -1,6 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import App from '../App'
+
 Vue.use(Router)
+
+Router.prototype.go = function () {
+  this.isBack = true
+  window.history.go(-1)
+}
 
 // 一级页面
 const index = () => import('@/page/index/index')
@@ -24,65 +31,68 @@ const login = () => import('@/page/login/login')
 export default new Router({
 	// mode:'history',
   	routes:[
-  		{
-  			path: '', 
+	  	{	
+	    	path: '', 
 	    	redirect: '/index/home',
-	    },
-	    {	
-	    	path: '/index',
-	    	redirect: '/index/home',
-	    	component: index,
+	    	component: App,
 	    	children:[
-	    		{	
-	    			name:'home',
-	    			path:'home',
-	    			component: home	
-	    		},
-	    		{ 	
-	    			name:'video',
-	    			path:'video',
-	    			component: video	
-	    		},
-	    		{ 	
-	    			name:'collect',
-	    			path:'collect',
-	    			component: collect	
-	    		},
-	    		{
-	    			path:'user',
-	    			component: user,
-	    			children:[
-	    				{
-	    					path:'',
-	    					component: profile
-	    				},
-	    				{	
-	    					path:'userGuide', 
-	    					component: userGuide   	
-	    				},
-	    				{	
-	    					path:'QRcode', 
-	    					component: QRcode
-	    				},
-	    				{	
-	    					path:'feedBack',
-	    					component: feedBack	
-	    				},
-	    			],
-	    		},
-	    	],
-	    },
-	    {	
-	    	path: '/detail', 
-	    	component:  detail	
-	    },
-	    {	
-	    	path: '/search', 
-	    	component: search	
-	    },
-	    {	
-	    	path: '/login', 
-	    	component: login	
-	    },
+		    	{	
+			    	path: '/index',
+			    	redirect: '/index/home',
+			    	component: index,
+			    	children:[
+			    		{	
+			    			name:'home',
+			    			path:'home',
+			    			component: home	
+			    		},
+			    		{ 	
+			    			name:'video',
+			    			path:'video',
+			    			component: video	
+			    		},
+			    		{ 	
+			    			name:'collect',
+			    			path:'collect',
+			    			component: collect	
+			    		},
+			    		{
+			    			path:'user',
+			    			component: user,
+			    			children:[
+			    				{
+			    					path:'',
+			    					component: profile
+			    				},
+			    				{	
+			    					path:'userGuide', 
+			    					component: userGuide   	
+			    				},
+			    				{	
+			    					path:'QRcode', 
+			    					component: QRcode
+			    				},
+			    				{	
+			    					path:'feedBack',
+			    					component: feedBack	
+			    				},
+			    			],
+			    		},
+			    	],
+			    },
+			    {	
+			    	path: '/detail', 
+			    	component:  detail	
+			    },
+			    {	
+			    	path: '/search', 
+			    	component: search	
+			    },
+			    {	
+			    	path: '/login', 
+			    	component: login	
+			    },
+		    ]
+		},
 	],
 })

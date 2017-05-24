@@ -9,10 +9,9 @@
         </header>
         <nav class="nav">
             <div class="nav_ul">
-                <dl v-for="(item,index) in columnJson" :class='{active: item.type == active}' @click='active = item.type' :key="index">
+                <dl v-for="(item,index) in indexColumn" :class='{active: active == index}' @click='active = index' :key="index">
                     <dd>
-                        <a :class='{active: item.type == active}'>{{item.name}}
-                </a>
+                        <a :class='{active: item.type == active}'>{{item.classname}}</a>
                     </dd>
                 </dl>
             </div>
@@ -21,18 +20,19 @@
 </template>
 <script>
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
-    name: 'indexHeader',
-    props: ['columnJson'],
     data() {
         return {
             active: 0,
         }
     },
     methods: {
-        goTop() {
-            $(`.container.${this.active}`).animate({scrollTop: 0});
+        ...mapMutations([
+            'set_indexActive',
+        ]),
+        goTop(){
+            $(`.container.${this.indexActive}`).animate({scrollTop: 0});
         },
         slideTo(index) {
             let $activeEle = $('.nav_ul a').eq(index);
@@ -63,24 +63,23 @@ export default {
     computed: {
         ...mapGetters([
           'indexActive',
+          'indexColumn',
         ]),
     },
     watch: {
         active(val) {
             this.slideTo(val);
-            this.$store.commit('indexActive', val);
+            this.set_indexActive(this.indexColumn[val].classpath)
         },
         indexActive(val) {
-            this.active = val;
+            this.active = this.indexColumn.findIndex(obj => obj.classpath == val);
         },
     },
     activated() {
-        this.$nextTick(function() {
-            let navScrollLeft = sessionStorage.getItem('navScrollLeft');
-            if (navScrollLeft) {
-                $('.nav_ul').scrollLeft(navScrollLeft);
-            }
-        })
+        let navScrollLeft = sessionStorage.getItem('navScrollLeft');
+        if (navScrollLeft) {
+            $('.nav_ul').scrollLeft(navScrollLeft);
+        }
     },
 }
 </script>

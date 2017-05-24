@@ -1,6 +1,6 @@
 <template>
     <ul id="listItem">
-        <template v-for="section in itemJson">
+       <template v-for="section in itemJson">
             <!-- 视频 -->
             <li v-if="section.playonlineurl">
                 <router-link :to="section.titleurl | urlFilter" class='video'>
@@ -16,12 +16,7 @@
                             <div class="playSan"></div>
                         </div>
                     </div>
-                    <div class='news_info'>
-                        <span class="news_label recommend">视频</span>
-                        <!-- <span class='from' v-if='!$store.state.isIOS'>{{section.befrom}}</span> -->
-                        <span class='news_click'>{{section.onclick | watchFilter }}阅</span>
-                        <span class='news_time'>{{section.time}}</span>
-                    </div>
+                    <list-info :infoJson='section'></list-info>
                 </router-link>
             </li>
             <!-- 1张大图 -->
@@ -33,13 +28,7 @@
                     <div class='news_img'>
                         <img :src="section.ptitlepic">
                     </div>
-                    <div class='news_info'>
-                        <span v-if="section.isgood >= 6" class="news_label recommend">荐</span>
-                        <span v-else-if="section.firsttitle >= 6" class="news_label hot">热</span>
-                        <!-- <span class='from' v-if='!$store.state.isIOS'>{{section.befrom}}</span> -->
-                        <span class='news_click'>{{section.onclick | watchFilter }}阅</span>
-                        <span class='news_time'>{{section.time}}</span>
-                    </div>
+                    <list-info :infoJson='section'></list-info>
                 </router-link>
             </li>
             <!-- 3张小图 -->
@@ -55,13 +44,7 @@
                             <li><img :src="section.titlepic3"></li>
                         </ul>
                     </div>
-                    <div class='news_info'>
-                        <span class="news_label recommend" v-if="section.isgood >= 6">荐</span>
-                        <span class="news_label hot" v-else-if="section.firsttitle >= 6">热</span>
-                        <!-- <span class='from' v-if='!$store.state.isIOS'>{{section.befrom}}</span> -->
-                        <span class='news_click'>{{section.onclick | watchFilter }}阅</span>
-                        <span class='news_time'>{{section.time}}</span>
-                    </div>
+                    <list-info :infoJson='section'></list-info>
                 </router-link>
             </li>
             <!-- 1张小图 -->
@@ -69,13 +52,7 @@
                 <router-link :to="section.titleurl | urlFilter" class='oneSmall clearfix'>
                     <div class="news_title">
                         <h3>{{section.title}}</h3>
-                        <div class='news_info'>
-                            <span class="news_label recommend" v-if="section.isgood >= 6">荐</span>
-                            <span class="news_label hot" v-else-if="section.firsttitle >= 6">热</span>
-                            <!-- <span class='from' v-if='!$store.state.isIOS'>{{section.befrom}}</span> -->
-                            <span class='news_click'>{{section.onclick | watchFilter }}阅</span>
-                            <span class='news_time'>{{section.time}}</span>
-                        </div>
+                        <list-info :infoJson='section'></list-info>
                     </div>
                     <div class='news_img'>
                         <img :src="section.titlepic">
@@ -90,9 +67,12 @@
     </ul>
 </template>
 <script>
+import listInfo from './info'
 export default {
-    name: 'listItem',
     props: ['itemJson'],
+    components: {
+        listInfo
+    },
     filters: {
         urlFilter(val) {
             if (!val) return ''
@@ -106,10 +86,6 @@ export default {
             const id = GetQueryString(val, 'id');
             const url = `/detail?classid=${classid}&id=${id}`;
             return url
-        },
-        watchFilter(val) {
-            if (!val) return ''
-            return 107 + parseInt(val)
         },
     },
     watch: {
@@ -152,32 +128,6 @@ export default {
     -webkit-line-clamp: 3;
     text-overflow: ellipsis;
     -webkit-box-orient: vertical;
-}
-
-.news_info {
-    font-size: 10px;
-    color: #999;
-    margin-top: 6px;
-    span {
-        display: inline-block;
-        margin-right: 2px;
-        border: 1px solid #fff;
-    }
-    .news_label {
-        font-size: 10px;
-        line-height: 11px;
-        text-align: center;
-        border-radius: 2px;
-        padding: 1px;
-    }
-    .recommend {
-        color: #fff;
-        background:#3d99d4;
-    }
-    .hot {
-        color: #fff;
-        background:#f85959;
-    }
 }
 
 .oneSmall {
@@ -323,6 +273,7 @@ export default {
         }
     }
 }
+
 #listItem #lookHere {
     width: 86%;
     margin: 10px 7%;
@@ -340,6 +291,7 @@ export default {
     margin: 0;
     padding: 5px 0;
 }
+
 @media screen and (min-width: 414px) and (max-width: 500px){
     #listItem li {
         margin: 0 18px;
