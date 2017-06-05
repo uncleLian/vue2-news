@@ -1,11 +1,12 @@
 <template>
     <div class='news_info'>
         <span class="news_label blue" v-if='infoJson.playonlineurl'>视频</span>
+        <span class="news_label red" v-else-if="infoJson.istop && infoJson.istop >= 9 ">置顶</span>
         <span class="news_label blue" v-else-if="infoJson.isgood >= 6">荐</span>
         <span class="news_label red" v-else-if="infoJson.firsttitle >= 6">热</span>
-        <span class='from'>{{infoJson.befrom}}</span>
-        <span class='news_click'>{{infoJson.onclick | watchFilter }}阅</span>
-        <span class='news_time'>{{infoJson.time}}</span>
+        <span class='from' v-if='infoJson.befrom'>{{infoJson.befrom}}</span>
+        <span class='news_click' v-if='infoJson.onclick'>{{infoJson.onclick | watchFilter }}阅</span>
+        <span class='news_time' v-if='infoJson.time'>{{infoJson.time}}</span>
     </div>
 </template>
 <script>
@@ -22,18 +23,16 @@ export default {
 <style lang='stylus' scoped>
 .news_info {
     font-size: 10px;
-    line-height: 12px;
     color: #999;
-    margin-top: 6px;
+    margin-top: 8px;
     span {
         display: inline-block;
         margin-right: 2px;
-        border: 1px solid #fff;
     }
     .news_label {
         font-size: 9px;
         border-radius: 2px;
-        padding: 0 1px;
+        padding: 1px 1px 0 1px;
     }
     .blue {
         color: #3d99d4;

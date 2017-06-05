@@ -56,7 +56,7 @@
 </template>
 
 <script>
-  import {getCache, setCache} from '@/store/cache'
+
   import {mapState,mapMutations} from 'vuex'
   export default{
     name: 'profile',
@@ -67,10 +67,10 @@
     },
     methods: {
       dologin(){
-        if (getCache('islogin')) {
-          this.showAlert = JSON.parse(getCache('islogin'));
-//          this.userInfo = JSON.parse(getCache('userInfo'))
-        }
+//         if (getCache('islogin')) {
+//           this.showAlert = JSON.parse(getCache('islogin'));
+// //          this.userInfo = JSON.parse(getCache('userInfo'))
+//         }
       },
       //退出登录
       outlogin(){

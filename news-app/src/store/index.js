@@ -1,31 +1,31 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import getters from './getters'
-import mutations from './mutations'
-import actions from './action'
-import { setStore } from './cache'
+import index_module from './index/index'
+import detail_module from './detail/index'
+import search_module from './search/index'
 
 Vue.use(Vuex)
 
 const state = {
-    indexActive: null,
-    indexPage: {},
-    indexColumn: [],
-    indexLocation: {},
-    indexSwiper: false,
-    currentContent: [],
-    currentArticle: {},
-    currentSearch: {},
-    historyArticle: {},
-    historySearch: {},
-    searchLocation: 0,
+    device:'android',
     apkURL: '../toutiaojk.apk',
-    isIOS: false,
+}
+
+const mutations = {
+    set_device(state,val){
+        state.device = val;
+    },
+    set_apkURL(state,val){
+        state.apkURL = val;
+    },
 }
 
 export default new Vuex.Store({
     state,
-    getters,
     mutations,
-    actions,
+    modules: {
+        index: index_module,
+        detail: detail_module,
+        search: search_module,
+    }
 })

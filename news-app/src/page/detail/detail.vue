@@ -1,14 +1,12 @@
 <template>
     <div id="detail">
-        <header>
-            <div class="iosHeader" v-if='$store.state.isIOS'></div>
-            <div class="top_bar">
-                <div class="abs_l" @click='$router.go(-1)'><i class="icon-back"></i></div>
-                <div class="abs_m" @click.stop='goTop'>{{title}}</div>
-                <div class="abs_r" @click='status.share = true'> <i class="icon-menu"></i></div>
-            </div>
-        </header>
-        <div class="content" :class="{isIOS:$store.state.isIOS}">
+        <my-header fixed>
+            <a slot="left" @click.stop='$router.go(-1)'><i class="icon-back"></i></a>
+            <a slot="mid" @click.stop='goTop'>{{title}}</a>
+            <a slot="right" @click.stop='share = true'> <i class="icon-menu"></i></a>
+        </my-header>
+
+        <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
             <div class="container" v-swiper:swiperRight='true'>
                 <!-- 文章 -->
                 <detail-article :newsJson='currentArticle'></detail-article>
@@ -16,7 +14,7 @@
                 <detail-tags :tagsJson='currentArticle.infotags'></detail-tags>
                 <!--  推荐 -->
                 <detail-recommend :recommendJson='recommendJson'></detail-recommend>
-
+                <!-- 下载 -->
                 <a class="downLoad">翻到底了哦~</a>
             </div>
         </div>
@@ -52,13 +50,15 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
+        ...mapGetters('index',[
             'indexColumn',
         ]),
     },
     methods: {
-        ...mapActions([
+        ...mapActions('index',[
             'get_indexColumn_data',
+        ]),
+        ...mapActions('detail',[
             'get_Article_data',
             'get_Recommend_data',
         ]),
@@ -75,10 +75,13 @@ export default {
             this.classid = this.$route.query.classid;
             this.id = this.$route.query.id;
             $("#detail .container").scrollTop(0);
-            if (!this.indexColumn.length > 0) {
+            if (this.indexColumn.length == 1 ) {
                 await this.get_indexColumn_data();
             }
-            this.title = `健康头条 · ${this.indexColumn[this.classid].classname}`;
+            let index = this.indexColumn.findIndex( n => n.classid == this.classid);
+            if(index > -1){
+                this.title = `健康头条 · ${this.indexColumn[index].classname}`
+            }
             this.get_Article(); // 获取 文章数据
             this.get_Recommend(); // 获取 推荐数据
             this.visitCollect(); // 浏览数据统计
@@ -119,71 +122,26 @@ export default {
     }
 }
 </script>
-<style lang='stylus'>
+<style scoped lang='stylus'>
 #detail .content.isIOS{
     padding-top: 64px;
 }
-.iosHeader{
-    width: 100%;
-    height: 20px;
-    background-color: #f8f8f8;
-}
-#detail {
-    background: #f8f8f8;
-}
-
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 44px;
-    z-index: 999;
-}
-
-.top_bar {
-    position: relative;
-    height: 44px;
-    background: #f8f8f8;
-}
-
-.top_bar .abs_l,
-.top_bar .abs_m,
-.top_bar .abs_r {
-    position: absolute;
-    top: 0;
-    width: 44px;
-    height: 44px;
-    line-height: 44px;
-    color: #333;
-    text-align: center;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.top_bar .abs_l {
-    left: 0;
-    z-index: 100;
-}
-
-.top_bar .abs_r {
-    right: 0;
-    z-index: 100;
-}
-
-.top_bar .abs_m {
-    width: 100%!important;
-}
-
-.top_bar .abs_l i,
-.top_bar .abs_r i {
-    vertical-align: middle;
-}
-
 #detail {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    background: #f8f8f8;
+}
+
+#detail header {
+    background: #f8f8f8;
+    color: #333;
+}
+
+#detail header i{
+    font-size: 20px;
+    font-weight: bold;
+    vertical-align: middle;
 }
 
 .content {

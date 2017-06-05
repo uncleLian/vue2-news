@@ -92,75 +92,7 @@ export default {
     text-align: center;
     font-size: 14px;
     padding: 5px;
-    background: url(../../../assets/img/close.png)no-repeat center center;
+    background: url(https://s3a.pstatp.com/resource/growth/mobile_detail/static/image/banner_ic_close_6951b35.png)no-repeat center center;
     background-size: 14px;
-}
-
-[data-dpr="2"] #indexFooter {
-    height: 80px;
-    line-height: 80px;
-}
-
-[data-dpr="2"] .img {
-    width: 120px;
-    background-size: 70px;
-}
-
-[data-dpr="2"] .text .small {
-    font-size: 24px;
-}
-
-[data-dpr="2"] .text {
-    font-size: 28px;
-    padding-top: 4px;
-    line-height: 36px;
-}
-
-[data-dpr="2"] .downBtn {
-    line-height: 50px;
-    font-size: 24px;
-    padding: 0 20px;
-    border-radius: 12px;
-}
-
-[data-dpr="2"] .closeBtn {
-    width: 80px;
-    font-size: 24px;
-    padding: 10px;
-    background-size: 24px;
-}
-
-[data-dpr="3"] #indexFooter {
-    height: 120px;
-    line-height: 120px;
-}
-
-[data-dpr="3"] .img {
-    width: 180px;
-    background-size: 112.5px;
-}
-
-[data-dpr="3"] .text {
-    font-size: 42px;
-    padding-top: 6px;
-    line-height: 54px;
-}
-
-[data-dpr="3"] .text .small {
-    font-size: 36px;
-}
-
-[data-dpr="3"] .downBtn {
-    line-height: 75px;
-    font-size: 36px;
-    padding: 0 30px;
-    border-radius: 18px;
-}
-
-[data-dpr="3"] .closeBtn {
-    width: 120px;
-    font-size: 36px;
-    padding: 15px;
-    background-size: 36px;
 }
 </style>

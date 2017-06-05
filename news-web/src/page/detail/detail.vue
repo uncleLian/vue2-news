@@ -1,12 +1,11 @@
 <template>
     <div id="detail">
-        <header>
-            <div class="top_bar">
-                <div class="abs_l" @click='$router.go(-1)'><i class="icon-back"></i></div>
-                <div class="abs_m" @click.stop='goTop'>{{title}}</div>
-                <div class="abs_r" @click='share = true'> <i class="icon-menu"></i></div>
-            </div>
-        </header>
+        <my-header fixed>
+            <a slot="left" @click.stop='$router.go(-1)'><i class="icon-back"></i></a>
+            <a slot="mid" @click.stop='goTop'>{{title}}</a>
+            <a slot="right" @click.stop='$refs.share.toggle()'><i class="icon-menu"></i></a>
+        </my-header>
+
         <div class="content">
             <div class="container" v-swiper:swiperRight='true'>
                 <!-- 文章 -->
@@ -20,9 +19,9 @@
             </div>
         </div>
         <!-- 分享 -->
-        <detail-share :show="share" @on-status-change='shareStatusChange'></detail-share>
+        <detail-share ref="share"></detail-share>
         <!-- 加载 -->
-        <spinner-load :show='spinnerLoad'></spinner-load>
+        <loading :show='loading'></loading>
     </div>
 </template>
 <script>
@@ -45,19 +44,20 @@ export default {
             title: '健康头条',
             currentArticle: {}, // 文章数据
             recommendJson: [], // 推荐数据
-            share: false, // 菜单栏
-            spinnerLoad: true, // 加载动画
+            loading: true, // 加载动画
 
         }
     },
     computed: {
-        ...mapGetters([
+        ...mapGetters('index',[
             'indexColumn',
         ]),
     },
     methods: {
-        ...mapActions([
+        ...mapActions('index',[
             'get_indexColumn_data',
+        ]),
+        ...mapActions('detail',[
             'get_Article_data',
             'get_Recommend_data',
         ]),
@@ -66,18 +66,18 @@ export default {
                 scrollTop: 0
             });
         },
-        shareStatusChange(val) {
-            this.share = val;
-        },
         async init() {
-            this.spinnerLoad = true;
+            this.loading = true;
             this.classid = this.$route.query.classid;
             this.id = this.$route.query.id;
             $("#detail .container").scrollTop(0);
-            if (!this.indexColumn.length > 0) {
+            if (this.indexColumn.length == 1 ) {
                 await this.get_indexColumn_data();
             }
-            this.title = `健康头条 · ${this.indexColumn[this.classid].classname}`;
+            let index = this.indexColumn.findIndex( n => n.classid == this.classid);
+            if(index > -1){
+                this.title = `健康头条 · ${this.indexColumn[index].classname}`
+            }
             this.get_Article(); // 获取 文章数据
             this.get_Recommend(); // 获取 推荐数据
             this.visitCollect(); // 浏览数据统计
@@ -87,7 +87,7 @@ export default {
             .then(res => {
                 if (res) {
                     this.currentArticle = res;
-                    this.spinnerLoad = false;
+                    this.loading = false;
                 }
             })
         },
@@ -104,7 +104,7 @@ export default {
                 url: `http://api.toutiaojk.com/public/ViewClick/?classid=${this.classid}&id=${this.id}&addclick=1`,
                 type: 'GET'
             })
-        }
+        },
     },
     watch: {
         $route(val) {
@@ -118,105 +118,23 @@ export default {
     }
 }
 </script>
-<style lang='stylus'>
-#detail {
-    background: #f8f8f8;
-}
-
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 44px;
-    z-index: 999;
-}
-
-.top_bar {
-    position: relative;
-    height: 44px;
-    background: #f8f8f8;
-}
-
-.top_bar .abs_l,
-.top_bar .abs_m,
-.top_bar .abs_r {
-    position: absolute;
-    top: 0;
-    width: 44px;
-    height: 44px;
-    line-height: 44px;
-    color: #333;
-    text-align: center;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.top_bar .abs_l {
-    left: 0;
-    z-index: 100;
-}
-
-.top_bar .abs_r {
-    right: 0;
-    z-index: 100;
-}
-
-.top_bar .abs_m {
-    width: 100%!important;
-}
-
-.top_bar .abs_l i,
-.top_bar .abs_r i {
-    vertical-align: middle;
-}
-
-[data-dpr="2"] header {
-    height: 88px;
-}
-
-[data-dpr="3"] header {
-    height: 132px;
-}
-
-[data-dpr="2"] .top_bar {
-    height: 88px;
-}
-
-[data-dpr="3"] .top_bar {
-    height: 132px;
-}
-
-[data-dpr="2"] .top_bar .abs_l,
-[data-dpr="2"] .top_bar .abs_m,
-[data-dpr="2"] .top_bar .abs_r {
-    width: 88px;
-    height: 88px;
-    line-height: 88px;
-    font-size: 40px;
-}
-
-[data-dpr="3"] .top_bar .abs_l,
-[data-dpr="3"] .top_bar .abs_m,
-[data-dpr="3"] .top_bar .abs_r {
-    width: 132px;
-    height: 132px;
-    line-height: 132px;
-    font-size: 60px;
-}
-
-[data-dpr="2"] .top_bar .abs_m {
-    font-size: 36px;
-}
-
-[data-dpr="3"] .top_bar .abs_m {
-    font-size: 54px;
-}
-
+<style scoped lang='stylus'>
 #detail {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    background: #f8f8f8;
+}
+
+#detail header {
+    background: #f8f8f8;
+    color: #333;
+}
+
+#detail header i{
+    font-size: 20px;
+    font-weight: bold;
+    vertical-align: middle;
 }
 
 .content {
@@ -244,23 +162,4 @@ header {
     font-size: 14px;
 }
 
-[data-dpr="2"] .content {
-    padding-top: 88px;
-}
-
-[data-dpr="3"] .content {
-    padding-top: 132px;
-}
-
-[data-dpr="2"] .downLoad {
-    height: 72px;
-    line-height: 72px;
-    font-size: 28px;
-}
-
-[data-dpr="3"] .downLoad {
-    height: 108px;
-    line-height: 108px;
-    font-size: 42px;
-}
 </style>

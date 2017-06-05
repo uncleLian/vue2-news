@@ -38,30 +38,4 @@ export default {
     background: #f8f8f8;
     margin: 0 0 10px 10px;
 }
-
-[data-dpr="2"] .tags {
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-[data-dpr="3"] .tags {
-    margin-top: 30px;
-    margin-bottom: 30px;
-}
-
-[data-dpr="2"] .tags a {
-    border: 2px solid rgb(238, 238, 238);
-    border-radius: 10px;
-    font-size: 24px;
-    padding: 8px 16px;
-    margin: 0 0 20px 20px;
-}
-
-[data-dpr="3"] .tags a {
-    border: 3px solid rgb(238, 238, 238);
-    border-radius: 15px;
-    font-size: 36px;
-    padding: 12px 24px;
-    margin: 0 0 30px 30px;
-}
 </style>

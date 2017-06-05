@@ -12,7 +12,6 @@
 </template>
 <script>
 export default {
-    name: 'popupMenu',
     props: {
         value: {
             type: Boolean,
@@ -78,17 +77,5 @@ export default {
     opacity: .5;
     background: #000;
     z-index: 1001;
-}
-
-[data-dpr="2"] .cancle{
-	font-size: 32px;
-	height: 100px;
-	line-height: 100px;
-}
-
-[data-dpr="3"] .cancle{
-	font-size: 48px;
-	height: 150px;
-	line-height: 150px;
 }
 </style>

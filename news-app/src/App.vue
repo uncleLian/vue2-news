@@ -11,7 +11,7 @@
 import '@/assets/css/reset.css'
 import '@/assets/css/icon.css'
 import fastClick from 'fastclick'
-
+import { mapMutations } from 'vuex'
 export default {
     data() {
         return {
@@ -29,12 +29,22 @@ export default {
         next()
     },
     methods: {
-        isBrowser() {
-            var u = navigator.userAgent.toLowerCase();
-            if (u.indexOf('iphone') >= 0 || u.indexOf("ipod") >= 0 || u.indexOf("ipad") >= 0) {
-                this.$store.commit('isIOSMutation', true);
-            } else if (u.indexOf("android") >= 0) {
-                this.$store.commit('isIOSMutation', false);
+        ...mapMutations([
+            'set_device',
+            'set_apkURL',
+        ]),
+        init(){
+            $(function() {
+                fastClick.attach(document.body);
+            })
+            this.checkOS();
+            this.dataCollection();
+        },
+        checkOS() {
+            var ua = navigator.userAgent.toLowerCase();
+            if (/iphone|ipad|ipod/.test(ua)) {
+                this.set_device('ios');
+                this.set_apkURL('');
             }
         },
         dataCollection() {
@@ -48,13 +58,8 @@ export default {
         }
     },
     mounted() {
-        $(function() {
-            fastClick.attach(document.body);
-        })
-        this.isBrowser();
-        this.dataCollection();
-    }
-
+        this.init();
+    },
 }
 </script>
 <style>

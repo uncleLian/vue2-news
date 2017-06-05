@@ -1,5 +1,5 @@
 <template>
-    <swiper :options="swiperOption" class="swiper-box" ref="mySwiper" :class="{isIOS:$store.state.isIOS}">
+    <swiper :options="swiperOption" class="swiper-box" ref="mySwiper" :class="{isIOS: $store.state.device == 'ios'}">
         <swiper-slide v-for='(item,index) in indexColumn' :key='index'>
             <pull-container :type='item.classpath'></pull-container>
         </swiper-slide>
@@ -23,7 +23,7 @@ export default {
         }
     },
     methods: {
-        ...mapMutations([
+        ...mapMutations('index',[
             'set_indexActive',
             'set_indexSwiper',
         ]),
@@ -38,7 +38,7 @@ export default {
         },
     },
     computed: {
-        ...mapGetters([
+        ...mapGetters('index',[
           'indexActive',
           'indexColumn',
         ]),

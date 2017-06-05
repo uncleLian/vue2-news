@@ -1,6 +1,6 @@
 <template>
     <div id="share">
-        <popup-menu v-model="contentFrame">
+        <popup-menu  v-model='contentFrame'>
             <div class="share_container">
                 <span class="wx_friend shareItem" @click="shareItemClick">
                     <img src="../../../assets/img/wx_friend.png">
@@ -30,12 +30,6 @@
 </template>
 <script>
 export default {
-    props:{
-        show: {
-            type: Boolean,
-            default: false,
-        }
-    },
     data() {
         return {
             contentFrame: false, // 内容框
@@ -43,18 +37,13 @@ export default {
             shareUrl: window.location.href, // 分享链接
         }
     },
-    watch:{
-        show(val){
-            this.contentFrame = val;
-        },
-        contentFrame(val){
-            this.$emit("on-status-change",val);
-        },
-    },
     methods: {
         shareItemClick() {
             this.contentFrame = false;
             this.shareFrame = true;
+        },
+        toggle(){
+            this.contentFrame = !this.contentFrame;
         },
     },
 }
@@ -104,78 +93,4 @@ export default {
     word-break: break-all;
     text-align: left;
 }
-
-
-/* share */
-
-[data-dpr="2"] .share_container {
-    padding: 40px 20px;
-}
-
-[data-dpr="3"] .share_container {
-    padding: 60px 30px;
-}
-
-[data-dpr="2"] .shareItem {
-    min-width: 120px;
-    margin: 0 10px;
-}
-
-[data-dpr="3"] .shareItem {
-    min-width: 180px;
-    margin: 0 15px;
-}
-
-[data-dpr="2"] .shareItem img {
-    width: 80px;
-    height: 80px;
-}
-
-[data-dpr="3"] .shareItem img {
-    width: 120px;
-    height: 120px;
-}
-
-[data-dpr="2"] .shareItem label {
-    font-size: 24px;
-    margin-top: 16px;
-}
-
-[data-dpr="3"] .shareItem label {
-    font-size: 36px;
-    margin-top: 24px;
-}
-
-[data-dpr="2"] .share_box {
-    padding: 30px 40px;
-}
-
-[data-dpr="3"] .share_box {
-    padding: 45px 60px;
-}
-
-[data-dpr="2"]  .share_tip {
-    padding: 0 20px;
-    font-size: 32px;
-}
-
-[data-dpr="3"]  .share_tip {
-    padding: 0 30px;
-    font-size: 48px;
-}
-
-[data-dpr="2"]  .share_url {
-    margin-top: 20px;
-    padding: 20px;
-    font-size: 24px;
-    border: 2px dotted rgb(217, 217, 217);
-}
-
-[data-dpr="3"]  .share_url {
-    margin-top: 30px;
-    padding: 30px;
-    font-size: 36px;
-    border: 3px dotted rgb(217, 217, 217);
-}
-
 </style>

@@ -1,17 +1,20 @@
 <template>
     <div class="container" :class="type" v-infinite-scroll="loadBottomAjax" infinite-scroll-disabled="bottomStatus" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
         <div class="pull_down">
-            <div class="dataCount messageBox">已为你推荐{{dataCount}}条新内容</div>
-            <div class="noNewData messageBox">没有最新的内容了</div>
-            <div class="requestFail messageBox">网络请求失败,请检查网络</div>
+            <div class="dataCount">已为你推荐{{dataCount}}条新内容</div>
+            <div class="noNewData">没有最新的内容了</div>
+            <div class="requestFail">网络请求失败,请检查网络</div>
         </div>
         <mt-loadmore :top-method="loadTopAjax" @top-status-change="handleTopChange" ref="loadmore" :auto-fill='false' :distance='indexSwiper'>
+
             <div slot="top" class="mint-loadmore-top">
                 <span v-show="topStatus == 'pull'">下拉刷新↓</span>
                 <span v-show="topStatus == 'drop'">释放更新↑</span>
                 <span v-show="topStatus == 'loading'">加载中...</span>
             </div>
-
+            
+            <!-- listItem -->
+            <list-item :itemJson="stickJson"></list-item>
             <list-item :itemJson="contentJson"></list-item>
 
             <div v-if="contentJson.length > 0" class="bottomLoad">
@@ -32,40 +35,54 @@ export default {
             classPage: 1,
             location: 0,
             contentJson: [], // 整个json数据arr
+            stickJson:[],
             topStatus: '', // 下拉状态
+            bottomLoading: true,
+            bottomNoData: false,
             distance: false, // 左右移动中，是否可以下拉
             dataCount: 0,   // 推荐数量
-            bottomStatus: false, // 上滑开关
-            bottomLoading: true,   // 底部加载 提示
-            bottomNoData: false,    // 底部无数据 提示
+            bottomLock: false, // 上滑开关
         }
     },
     methods: {
-        ...mapMutations([
+        ...mapMutations('index',[
             'set_currentContent',
             'set_indexPage',
             'set_indexLocation',
         ]),
-        ...mapActions([
+        ...mapActions('index',[
             'get_listItem_cache',
             'get_listItem_data',
+            'get_stick_data',
         ]),
         handleTopChange(status){
             this.topStatus = status;
         },
         init(){
-            if(this.indexActive == this.type && !this.contentJson.length > 0 ){
+            if(this.indexActive == this.type){
                 this.active = this.indexColumn.findIndex(obj => obj.classpath == this.indexActive);
                 this.classPage = this.indexPage[this.indexActive];
+                this.get_stick(); //置顶
                 this.get_listItem_cache()
-                .then(json=>{
-                    if(json){
-                        this.contentJson = json;
+                .then( cache =>{
+                    if(cache){
+                        this.contentJson = cache;
                     }else {
                         this.loadTopAjax();
                     }
                 })
             }
+        },
+        get_stick(){
+            this.get_stick_data(this.active)
+            .then(res=>{
+                if(res){
+                    this.stickJson = res;
+                }
+            })
+            .catch(err =>{
+                console.log(err);
+            })
         },
         loadTopAjax() {
             Indicator.open();
@@ -85,11 +102,12 @@ export default {
             })
             .catch(err =>{
                 console.log(err);
+                Indicator.close();
                 $(`.container.${this.type} .pull_down .requestFail`).show();
             })
         },
         loadBottomAjax() {
-            this.bottomStatus = true;
+            this.bottomLock = true;
             this.get_listItem_data({index:this.active,page:this.classPage})
             .then(json => {
                 if (json) {
@@ -99,7 +117,7 @@ export default {
                     this.bottomLoading = false;
                     this.bottomNoData = true;
                 }
-                this.bottomStatus = false;
+                this.bottomLock = false;
             })
         },
         getLocation() {
@@ -107,8 +125,11 @@ export default {
            $(`.container.${this.type}`).scrollTop(this.location);
         },
         setLocation() {
-            this.indexLocation[this.type] = $(`.container.${this.type}`).scrollTop();
-            this.set_indexLocation(this.indexLocation);
+            let scrollTop = $(`.container.${this.type}`).scrollTop();
+            if(scrollTop > 0){
+                this.indexLocation[this.type] = scrollTop;
+                this.set_indexLocation(this.indexLocation);
+            }
         },
         lookHereClick() {
             if(this.dataCount >= 10){
@@ -124,7 +145,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
+        ...mapGetters('index',[
           'indexActive',
           'indexPage',
           'indexLocation',
@@ -134,6 +155,7 @@ export default {
     },
     watch: {
         indexActive(val){
+            Indicator.close();
             this.init(); 
         },
         classPage(val) {
@@ -153,9 +175,6 @@ export default {
     deactivated() {
         this.setLocation();
     },
-    mounted() {
-        this.init(); 
-    }
 }
 </script>
 <style>
@@ -166,7 +185,7 @@ export default {
     position: relative;
 }
 
-.messageBox {
+.pull_down div{
     position: absolute;
     top: 0;
     left: 0;
@@ -181,25 +200,9 @@ export default {
     display: none;
 }
 
-.requestFail.messageBox {
+.requestFail {
     color: #f56767;
     background: #FBE9EF;
-}
-
-.bottomLoad {
-    width: 100%;
-    height: 50px;
-    overflow: hidden;
-    position: relative;
-}
-
-.bottomLoad div {
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    font-size: 16px;
-    color: #999;
 }
 
 .mint-loadmore-top {
@@ -207,5 +210,6 @@ export default {
     line-height: 50px;
     font-size: 16px;
 }
+
 
 </style>

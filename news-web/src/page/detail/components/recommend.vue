@@ -22,26 +22,4 @@ export default {
     font-weight: 400;
     border-bottom: 1px solid #f85959;
 }
-
-[data-dpr="2"] #recommend {
-    margin-top: 20px;
-}
-
-[data-dpr="3"] #recommend {
-    margin-top: 30px;
-}
-
-[data-dpr="2"] #recommend h2 {
-    font-size: 32px;
-    margin: 20px 0 0 32px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #f85959;
-}
-
-[data-dpr="3"] #recommend h2 {
-    font-size: 48px;
-    margin: 30px 0 0 48px;
-    padding-bottom: 30px;
-    border-bottom: 3px solid #f85959;
-}
 </style>

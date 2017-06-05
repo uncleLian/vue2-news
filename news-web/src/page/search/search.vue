@@ -1,14 +1,11 @@
 <template>
     <div id="search">
         <div class="header">
-            <!-- header -->
-            <header>
-                <div class="top_bar">
-                    <div class="abs_l"> <a class="back" @click='$router.go(-1)'></a></div>
-                    <div class="abs_m" @click.stop='goTop'>搜索</div>
-                </div>
-            </header>
-
+            <my-header>
+                <a class="back" slot='left' @click.stop='$router.go(-1)'></a>
+                <a slot='mid' @click.stop='goTop'>搜索</a>
+            </my-header>
+            
             <!-- form -->
             <form id='search_form'>
                 <div id="search_container">
@@ -18,18 +15,20 @@
             </form>
         </div>
 
-        <div class="content" v-swiper:swiperRight='true'>
-            <div class="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="bottomStatus" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
-                <div class="empty" v-if="!searchJson">
+        <div class="content">
+            <div class="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="bottomStatus" infinite-scroll-distance="10" infinite-scroll-immediate-check="false" v-swiper:swiperRight='true'>
+                <div class="empty" v-if="!searchJson.length > 0">
                     <p>空空如也</p>
                     <p>快去搜索吧</p>
                 </div>
                 <list-item :itemJson="searchJson"></list-item>
+
                 <div v-if="searchJson && searchJson.length > 0" class="bottomLoad">
                     <div class="loading" v-show='bottomLoading'>加载中...</div>
                     <div class="noData" v-if='bottomNoData'>没有更多的内容了</div>
                 </div>
-                <spinner-load :show='spinnerLoad'></spinner-load>
+                
+                <loading :show='loading'></loading>
             </div>
         </div>
     </div>
@@ -43,17 +42,17 @@ export default {
             key: '',
             page: 1,
             searchJson: [],
-            bottomStatus: false,
+            bottomLock: false,
             bottomLoading: true,
             bottomNoData: false,
-            spinnerLoad: false,
+            loading: false,
         }
     },
     methods: {
-        ...mapMutations([
+        ...mapMutations('search',[
             'set_searchLocation',
         ]),
-        ...mapActions([
+        ...mapActions('search',[
             'get_Search_data',
         ]),
         goTop() {
@@ -65,18 +64,18 @@ export default {
             this.searchJson = [];
         },
         searchAjax() {
-            this.spinnerLoad = true;
+            this.loading = true;
             this.page = 1;
             $('#search .container').scrollTop(0);
             this.get_Search_data({'key': this.key, 'page': this.page})
             .then(res => {
                 this.searchJson = res;
                 this.page = 2;
-                this.spinnerLoad = false;
+                this.loading = false;
             })
         },
         loadMore() {
-            this.bottomStatus = true;
+            this.bottomLock = true;
             this.get_Search_data({'key': this.key, 'page': this.page})
             .then(res =>{
                 if (res) {
@@ -86,7 +85,7 @@ export default {
                     this.bottomLoading = false;
                     this.bottomNoData = true;
                 }
-                this.bottomStatus = false;
+                this.bottomLock = false;
             })
         },
         getLocation() {
@@ -139,60 +138,12 @@ export default {
     right: 0;
     z-index: 999;
     overflow: hidden;
+    header {
+        font-size: 20px;
+    }
 }
-
-header {
-    display: block;
-    position: relative;
-    overflow: hidden;
-}
-
-
-/*top_bar*/
-
-.top_bar {
-    position: relative;
-    height: 44px;
-    background: #d43d3d;
-}
-
-.top_bar .back {
-    display: inline-block;
-    height: 44px;
-    top: 0;
-    width: 44px;
-    border-radius: 0;
-    background: url(http://s3.pstatp.com/image/toutiao_mobile/header_back.png) no-repeat center center;
-    background-size: 20px;
-}
-
-.top_bar .abs_l,
-.top_bar .abs_m,
-.top_bar .abs_r {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 44px;
-    height: 44px;
-}
-
-.top_bar .abs_l {
-    left: 0;
-    z-index: 100;
-}
-
-.top_bar .abs_m {
-    width: 100%;
-    font-size: 20px;
-    color: #fff;
-    text-align: center;
-    font-weight: 700;
-    line-height: 44px;
-}
-
 
 /*search*/
-
 #search_form {
     position: relative;
     background: #c9c9c9;
@@ -246,131 +197,5 @@ header {
     font-size: 16px;
     color: #aaa;
 }
-.bottomLoad div {
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    font-size: 16px;
-    color: #999;
-}
-[data-dpr="2"] .top_bar {
-    height: 88px;
-}
 
-[data-dpr="2"] .top_bar .back {
-    height: 88px;
-    width: 88px;
-    background-size: 40px;
-}
-
-[data-dpr="2"] .top_bar .abs_l,
-[data-dpr="2"] .top_bar .abs_m,
-[data-dpr="2"] .top_bar .abs_r {
-    width: 88px;
-    height: 88px;
-}
-
-[data-dpr="2"] .top_bar .abs_m {
-    width: 100%;
-    font-size: 40px;
-    line-height: 88px;
-}
-
-[data-dpr="2"] #search_container {
-    padding: 10px;
-}
-
-[data-dpr="2"] .search_icon {
-    left: 30px;
-    margin-top: -16px;
-    font-size: 32px;
-}
-
-[data-dpr="2"] #search_input {
-    border-radius: 6px;
-    font-size: 32px;
-    padding: 10px 20px 10px 80px;
-}
-
-[data-dpr="2"] .content {
-    padding-top: 166px;
-}
-
-[data-dpr="2"] .empty {
-    font-size: 32px;
-}
-
-[data-dpr="3"] .top_bar {
-    height: 132px;
-}
-
-[data-dpr="3"] .top_bar .back {
-    height: 132px;
-    width: 132px;
-    background-size: 60px;
-}
-
-[data-dpr="3"] .top_bar .abs_l,
-[data-dpr="3"] .top_bar .abs_m,
-[data-dpr="3"] .top_bar .abs_r {
-    width: 132px;
-    height: 132px;
-}
-
-[data-dpr="3"] .top_bar .abs_m {
-    width: 100%;
-    font-size: 60px;
-    line-height: 132px;
-}
-
-[data-dpr="3"] #search_container {
-    padding: 15px;
-}
-
-[data-dpr="3"] .search_icon {
-    left: 45px;
-    margin-top: -24px;
-    font-size: 48px;
-}
-
-[data-dpr="3"] #search_input {
-    border-radius: 9px;
-    font-size: 48px;
-    padding: 15px 30px 15px 120px;
-}
-
-[data-dpr="3"] .content {
-    padding-top: 249px;
-}
-
-[data-dpr="3"] .empty {
-    font-size: 48px;
-}
-
-.bottomLoad {
-    width: 100%;
-    height: 50px;
-    overflow: hidden;
-    position: relative;
-}
-[data-dpr="2"] .bottomLoad {
-    height: 100px;
-}
-
-[data-dpr="2"] .bottomLoad div {
-    height: 100px;
-    line-height: 100px;
-    font-size: 32px;
-}
-
-[data-dpr="3"] .bottomLoad {
-    height: 150px;
-}
-
-[data-dpr="3"] .bottomLoad div {
-    height: 150px;
-    line-height: 150px;
-    font-size: 48px;
-}
 </style>

@@ -11,7 +11,7 @@
 import '@/assets/css/reset.css'
 import '@/assets/css/icon.css'
 import fastClick from 'fastclick'
-
+import { mapMutations } from 'vuex'
 export default {
     data() {
         return {
@@ -29,12 +29,22 @@ export default {
         next()
     },
     methods: {
-        phoneSystem() {
+        ...mapMutations([
+            'set_device',
+            'set_apkURL',
+        ]),
+        init(){
+            $(function() {
+                fastClick.attach(document.body);
+            })
+            this.checkOS();
+            this.dataCollection();
+        },
+        checkOS() {
             var ua = navigator.userAgent.toLowerCase();
             if (/iphone|ipad|ipod/.test(ua)) {
-                this.$store.commit('apkURLChange', '') //ios
-            } else if (/android/.test(ua)) {
-                this.$store.commit('apkURLChange', '../toutiaojk.apk') //android
+                this.set_device('ios');
+                this.set_apkURL('');
             }
         },
         dataCollection() {
@@ -48,11 +58,7 @@ export default {
         }
     },
     mounted() {
-        $(function() {
-            fastClick.attach(document.body);
-        })
-        this.phoneSystem();
-        this.dataCollection();
+        this.init();
     },
 }
 </script>

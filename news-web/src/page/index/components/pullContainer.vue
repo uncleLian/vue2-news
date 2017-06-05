@@ -1,17 +1,21 @@
 <template>
     <div class="container" :class="type" v-infinite-scroll="loadBottomAjax" infinite-scroll-disabled="bottomStatus" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
         <div class="pull_down">
-            <div class="dataCount messageBox">已为你推荐{{dataCount}}条新内容</div>
-            <div class="noNewData messageBox">没有最新的内容了</div>
-            <div class="requestFail messageBox">网络请求失败,请检查网络</div>
+            <div class="dataCount">已为你推荐{{dataCount}}条新内容</div>
+            <div class="noNewData">没有最新的内容了</div>
+            <div class="requestFail">网络请求失败,请检查网络</div>
         </div>
         <mt-loadmore :top-method="loadTopAjax" @top-status-change="handleTopChange" ref="loadmore" :auto-fill='false' :distance='indexSwiper'>
+
             <div slot="top" class="mint-loadmore-top">
                 <span v-show="topStatus == 'pull'">下拉刷新↓</span>
                 <span v-show="topStatus == 'drop'">释放更新↑</span>
                 <span v-show="topStatus == 'loading'">加载中...</span>
             </div>
-
+            
+            <!-- 置顶 -->
+            <list-item :itemJson="stickJson"></list-item> 
+            <!-- listItem --> 
             <list-item :itemJson="contentJson"></list-item>
 
             <div v-if="contentJson.length > 0" class="bottomLoad">
@@ -32,40 +36,54 @@ export default {
             classPage: 1,
             location: 0,
             contentJson: [], // 整个json数据arr
+            stickJson:[],
             topStatus: '', // 下拉状态
+            bottomLoading: true,
+            bottomNoData: false,
             distance: false, // 左右移动中，是否可以下拉
             dataCount: 0,   // 推荐数量
-            bottomStatus: false, // 上滑开关
-            bottomLoading: true,   // 底部加载 提示
-            bottomNoData: false,    // 底部无数据 提示
+            bottomLock: false, // 上滑开关
         }
     },
     methods: {
-        ...mapMutations([
+        ...mapMutations('index',[
             'set_currentContent',
             'set_indexPage',
             'set_indexLocation',
         ]),
-        ...mapActions([
+        ...mapActions('index',[
             'get_listItem_cache',
             'get_listItem_data',
+            'get_stick_data',
         ]),
         handleTopChange(status){
             this.topStatus = status;
         },
         init(){
-            if(this.indexActive == this.type && !this.contentJson.length > 0 ){
+            if(this.indexActive == this.type){
                 this.active = this.indexColumn.findIndex(obj => obj.classpath == this.indexActive);
                 this.classPage = this.indexPage[this.indexActive];
+                this.get_stick(); //置顶
                 this.get_listItem_cache()
-                .then(json=>{
-                    if(json){
-                        this.contentJson = json;
+                .then( cache =>{
+                    if(cache){
+                        this.contentJson = cache;
                     }else {
                         this.loadTopAjax();
                     }
                 })
             }
+        },
+        get_stick(){
+            this.get_stick_data(this.active)
+            .then(res=>{
+                if(res){
+                    this.stickJson = res;
+                }
+            })
+            .catch(err =>{
+                console.log(err);
+            })
         },
         loadTopAjax() {
             Indicator.open();
@@ -85,11 +103,12 @@ export default {
             })
             .catch(err =>{
                 console.log(err);
+                Indicator.close();
                 $(`.container.${this.type} .pull_down .requestFail`).show();
             })
         },
         loadBottomAjax() {
-            this.bottomStatus = true;
+            this.bottomLock = true;
             this.get_listItem_data({index:this.active,page:this.classPage})
             .then(json => {
                 if (json) {
@@ -99,16 +118,22 @@ export default {
                     this.bottomLoading = false;
                     this.bottomNoData = true;
                 }
-                this.bottomStatus = false;
+                this.bottomLock = false;
             })
         },
         getLocation() {
-           this.location = this.indexLocation[this.type];
-           $(`.container.${this.type}`).scrollTop(this.location);
+           this.$nextTick(function(){
+                this.location = this.indexLocation[this.type];
+                $(`.container.${this.type}`).scrollTop(this.location);
+
+           })
         },
         setLocation() {
-            this.indexLocation[this.type] = $(`.container.${this.type}`).scrollTop();
-            this.set_indexLocation(this.indexLocation);
+            let scrollTop = $(`.container.${this.type}`).scrollTop();
+            if(scrollTop > 0){
+                this.indexLocation[this.type] = scrollTop;
+                this.set_indexLocation(this.indexLocation);
+            }
         },
         lookHereClick() {
             if(this.dataCount >= 10){
@@ -116,15 +141,13 @@ export default {
                 this.contentJson.splice(lookIndex, 1);
                 this.contentJson.splice(10, 0, {type: 'lookHere'});
             }
-            $(`.container.${this.type}`).on('click', '#lookHere', () => { 
-                $(`.container.${this.type}`).animate({scrollTop: 0}, () => {
-                    this.loadTopAjax();
-                });
-            });
+            this.$nextTick(()=>{
+                $(`.${this.indexActive} #lookHere`).prev().css('border', 'none');
+            })
         }
     },
     computed: {
-        ...mapGetters([
+        ...mapGetters('index',[
           'indexActive',
           'indexPage',
           'indexLocation',
@@ -134,6 +157,7 @@ export default {
     },
     watch: {
         indexActive(val){
+            Indicator.close();
             this.init(); 
         },
         classPage(val) {
@@ -153,8 +177,12 @@ export default {
     deactivated() {
         this.setLocation();
     },
-    mounted() {
-        this.init(); 
+    mounted(){
+        $(`.container.${this.type}`).on('click', '#lookHere', () => { 
+            $(`.container.${this.indexActive}`).animate({scrollTop: 0}, () => {
+                this.loadTopAjax();
+            });
+        });
     }
 }
 </script>
@@ -166,7 +194,7 @@ export default {
     position: relative;
 }
 
-.messageBox {
+.pull_down div{
     position: absolute;
     top: 0;
     left: 0;
@@ -181,25 +209,9 @@ export default {
     display: none;
 }
 
-.requestFail.messageBox {
+.requestFail {
     color: #f56767;
     background: #FBE9EF;
-}
-
-.bottomLoad {
-    width: 100%;
-    height: 50px;
-    overflow: hidden;
-    position: relative;
-}
-
-.bottomLoad div {
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    font-size: 16px;
-    color: #999;
 }
 
 .mint-loadmore-top {
@@ -208,61 +220,5 @@ export default {
     font-size: 16px;
 }
 
-[data-dpr="2"] .messageBox {
-    height: 64px;
-    line-height: 68px;
-    font-size: 28px;
-}
 
-[data-dpr="2"] .bottomLoad {
-    height: 100px;
-}
-
-[data-dpr="2"] .bottomLoad div {
-    height: 100px;
-    line-height: 100px;
-    font-size: 32px;
-}
-
-[data-dpr="2"] .mint-loadmore-top {
-    height: 100px;
-    line-height: 100px;
-    font-size: 32px;
-    margin-top: -100px;
-}
-
-[data-dpr="3"] .messageBox {
-    height: 96px;
-    line-height: 102px;
-    font-size: 42px;
-}
-
-[data-dpr="3"] .bottomLoad {
-    height: 150px;
-}
-
-[data-dpr="3"] .bottomLoad div {
-    height: 150px;
-    line-height: 150px;
-    font-size: 48px;
-}
-
-[data-dpr="3"] .mint-loadmore-top {
-    height: 150px;
-    line-height: 150px;
-    font-size: 48px;
-    margin-top: -150px;
-}
-
-[data-dpr="2"] .mint-indicator .mint-spinner-snake {
-    width: 64px!important;
-    height: 64px!important;
-    border: 8px solid transparent;
-}
-
-[data-dpr="3"] .mint-indicator .mint-spinner-snake {
-    width: 96px!important;
-    height: 96px!important;
-    border: 12px solid transparent;
-}
 </style>

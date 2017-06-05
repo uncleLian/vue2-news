@@ -7,12 +7,11 @@
             </div>
         </transition>
         <div class="black" @click="cancel" v-show='visible'></div>
-        <input type="text" :value="value" style='display:none;'>
+        <input type="text" :value="value" style='display:none'>
     </div>
 </template>
 <script>
 export default {
-    name: 'popupMenu',
     props: {
         value: {
             type: Boolean,
@@ -39,19 +38,16 @@ export default {
     },
 }
 </script>
-<style>
-.toggleSide-enter,
-.toggleSide-leave-active {
+<style scoped>
+.toggleSide-enter,.toggleSide-leave-active{
     -webkit-transform: translate3d(0, 100%, 0);
     transform: translate3d(0, 100%, 0);
 }
-
-.toggleSide-enter-active，.toggleSide-leave {
+.toggleSide-enter-active，.toggleSide-leave{
     -webkit-transform: translate3d(0, 0%, 0);
     transform: translate3d(0, 0%, 0);
 }
-
-.functionItem {
+.functionItem{
     position: fixed;
     background: #f8f8f8;
     bottom: 0;
@@ -61,20 +57,18 @@ export default {
     transition: -webkit-transform .3s ease-out;
     transition: transform .3s ease-out;
     z-index: 1002;
-}
-
-.cancle {
+} 
+.cancle{
     width: 100%;
     text-align: center;
     color: rgb(51, 51, 51);
     font-size: 16px;
     height: 50px;
     line-height: 50px;
-    background-color: #f8f8f8;
+    background-color:#f8f8f8;
     border-top: 1px solid rgb(223, 223, 223);
 }
-
-.black {
+.black{
     position: fixed;
     left: 0;
     top: 0;

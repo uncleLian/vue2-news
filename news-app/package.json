@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "axios": "^0.16.1",
+    "babel-polyfill": "^6.23.0",
     "fastclick": "^1.0.6",
     "jquery": "^3.2.1",
     "mint-ui": "^2.2.5",

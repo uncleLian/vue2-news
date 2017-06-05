@@ -1,6 +1,6 @@
 <template>
     <swiper :options="swiperOption" class="swiper-box" ref="mySwiper">
-        <swiper-slide v-for='(item,index) in indexColumn' :key='index'>
+        <swiper-slide v-for='(item,index) in indexColumn' :key='item'>
             <pull-container :type='item.classpath'></pull-container>
         </swiper-slide>
     </swiper>
@@ -23,7 +23,7 @@ export default {
         }
     },
     methods: {
-        ...mapMutations([
+        ...mapMutations('index',[
             'set_indexActive',
             'set_indexSwiper',
         ]),
@@ -38,7 +38,7 @@ export default {
         },
     },
     computed: {
-        ...mapGetters([
+        ...mapGetters('index',[
           'indexActive',
           'indexColumn',
         ]),
@@ -55,7 +55,7 @@ export default {
             this.active = this.indexColumn.findIndex(obj => obj.classpath == val);
         },
     },
-    mounted() {
+    mounted(){
         this.$nextTick(function () {this.swiper.slideTo(this.active, 0, false)})
     },
 }
@@ -67,12 +67,5 @@ export default {
     z-index: 0;
     background: #fff;
     padding-top: 80px;
-}
-
-[data-dpr="2"] .swiper-box{
-    padding-top: 160px;
-}
-[data-dpr="3"] .swiper-box{
-    padding-top: 240px;
 }
 </style>

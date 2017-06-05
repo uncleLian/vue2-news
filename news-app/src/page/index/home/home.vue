@@ -4,6 +4,10 @@
         <home-header></home-header>
         <!-- content -->
         <swiper-container></swiper-container>
+
+        <keep-alive>
+            <router-view></router-view>
+        </keep-alive>
     </div>
 </template>
 <script>
@@ -13,12 +17,18 @@ import { mapGetters, mapActions} from 'vuex'
 export default {
     components: { homeHeader, swiperContainer },
     methods: {
-        ...mapActions([
+        ...mapActions('index',[
             'get_indexActive',
             'get_indexPage',
             'get_indexLocation',
             'get_indexColumn_data',
         ]),
+        async init(){
+            let res = await this.get_indexColumn_data();
+            await this.get_indexPage(res);
+            await this.get_indexLocation(res);
+            await this.get_indexActive();
+        },
         onBackKeyDown() {
             window.plugins.toast.showShortBottom('再点击一次退出程序');
             document.removeEventListener("backbutton", this.onBackKeyDown, false);
@@ -45,15 +55,13 @@ export default {
         document.addEventListener("backbutton", this.onBackKeyDown, false);
     },
     mounted() {
-        this.get_indexActive();
-        this.get_indexPage();
-        this.get_indexLocation();
-        this.get_indexColumn_data();
+        this.init();
     }
 }
 </script>
 <style scoped>
 #home {
+    position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;

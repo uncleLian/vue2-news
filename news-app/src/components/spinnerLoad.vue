@@ -5,7 +5,6 @@
 </template>
 <script>
 export default {
-    name: 'spinnerLoad',
     props: {
         show: {
             type: Boolean,
@@ -38,4 +37,5 @@ export default {
     left: 50%;
     margin-left: -15px;
 }
+
 </style>

@@ -63,6 +63,13 @@
             <li v-else-if='section.type' id="lookHere">
                 <p>上次看到这里，点击刷新 <i class="icon-refresh"></i></p>
             </li>
+            <!-- 文字 -->
+            <li v-else-if='section.title'>
+                <router-link :to="section.titleurl | urlFilter" class='text'>
+                    <p>{{section.title}}</p>
+                    <list-info :infoJson='section'></list-info>
+                </router-link>
+            </li>
         </template>
     </ul>
 </template>
@@ -88,14 +95,6 @@ export default {
             return url
         },
     },
-    watch: {
-        itemJson() {
-            $('#lookHere').prev().css('border', 'none');
-        }
-    },
-    mounted() {
-        $('#lookHere').prev().css('border', 'none');
-    }
 }
 </script>
 <style scoped lang='stylus'>
@@ -142,11 +141,11 @@ export default {
     }
     .news_img {
         width: 33%;
-        height: 1.96875rem;
+        height: 68px;
         overflow: hidden;
         img {
             width: 100%;
-            min-height: 1.96875rem;
+            min-height: 68px;
         }
     }
 }
@@ -156,11 +155,11 @@ export default {
         width: 100%;
         margin-top: 6px;
         overflow: hidden;
-        height: 4.6875rem;
+        height: 190px;
     }
     img {
         width: 100%;
-        min-height: 4.6875rem;
+        min-height: 190px;
     }
 }
 
@@ -174,7 +173,7 @@ export default {
         }
         li {
             width: 33%;
-            height: 1.96875rem;
+            height: 68px;
             overflow: hidden;
             margin: 0!important;
             flex: 1;
@@ -184,7 +183,7 @@ export default {
         }
         img {
             width: 100%;
-            min-height: 1.96875rem;
+            min-height: 68px;
         }
     }
 }
@@ -195,7 +194,7 @@ export default {
     }
     .video_wrapper {
         width: 100%;
-        height: 4.6875rem;
+        height: 190px;
         position: relative;
         overflow: hidden;
         color: #999;
@@ -208,7 +207,7 @@ export default {
             img {
                 position: absolute;
                 width: 100%;
-                min-height: 4.6875rem;
+                min-height: 190px;
                 display: block;
                 left: 0;
                 top: 0;
@@ -218,7 +217,7 @@ export default {
         .video_title {
             position: absolute;
             width: 100%;
-            height: 1.6rem;
+            height: 80px;
             top: 0;
             left: 0;
             color: #fff;
@@ -275,9 +274,6 @@ export default {
     }
 }
 
-
-/* ajax尾部红色标志*/
-
 #listItem #lookHere {
     width: 86%;
     margin: 10px 7%;
@@ -296,149 +292,180 @@ export default {
     padding: 5px 0;
 }
 
-[data-dpr="2"] .news_title h3 {
-    font-size: 34px;
-    line-height: 42px;
+@media screen and (min-width: 414px) and (max-width: 500px){
+    #listItem li {
+        margin: 0 18px;
+    }
+    #listItem li a.oneSmall .news_img{
+        height: 92px;
+    }
+    #listItem li a.oneSmall .news_img img{
+        min-height:92px;
+    }
+    #listItem li a.oneLarge .news_img{
+        height: 160px;
+    }
+    #listItem li a.oneLarge .news_img img{
+        min-height: 160px;
+    }
+    #listItem li a.threeSmall .list_img li {
+        height: 92px;
+        padding:0;
+        margin:0;
+    }
+    #listItem li a.threeSmall .list_img  li img{
+        min-height: 92px;
+    }
+    #listItem .video .video_wrapper{
+        height: 180px;
+    }
+    #listItem .video .video_info img{
+        min-height: 180px;
+    }
 }
 
-[data-dpr="2"] #listItem li {
-    margin: 0 30px;
-    border-bottom: 2px solid hsla(0, 0%, 87%, .6);
+@media screen and (min-width: 501px) and (max-width: 620px){
+    #listItem .nav_ul a{
+        padding: 0 10px;
+        margin-left:8px;
+    }
+    #listItem li {
+        margin: 0 20px;
+    }
+    #listItem li a.oneSmall .news_title h3{
+        margin-right: 20px;
+    }
+    #listItem li a.oneSmall .news_title{
+        width: 65%;
+    }
+    #listItem li a.oneSmall .news_img{
+        width: 35%;
+        height: 116px;
+    }
+    #listItem li a.oneSmall .news_img img{
+        min-height:116px;
+    }
+    #listItem li a.oneLarge .news_img{
+        height: 200px;
+    }
+    #listItem li a.oneLarge .news_img img{
+        min-height: 200px;
+    }
+    #listItem li a.threeSmall .list_img li {
+        height: 116px;
+        padding:0;
+        margin:0;
+    }
+    #listItem li a.threeSmall .list_img  li img{
+        min-height: 116px;
+    }
+    #listItem .video .video_wrapper{
+        height: 220px;
+    }
+    #listItem .video .video_info img{
+        min-height: 220px;
+    }
 }
+    
+@media screen and (min-width: 621px) and (max-width: 767px){
+    #listItem .nav_ul a{
+        padding: 0 12px;
+        margin-left:8px;
+    }
+    /*图片*/
+    #listItem li {
+        margin: 0 22px;
+    }
+    #listItem li a.oneSmall .news_title h3{
+        margin-right: 30px;
+    }
+    #listItem li a.oneSmall .news_title{
+        width: 64%;
+    }
+    #listItem li a.oneSmall .news_img{
+        width: 36%;
+        height: 140px;
+    }
+    #listItem li a.oneSmall .news_img img{
+        min-height:140px;
+    }
+    #listItem li a.oneLarge .news_img{
+        height: 240px;
+    }
+    #listItem li a.oneLarge .news_img img{
+        min-height: 240px;
+    }
+    #listItem li a.threeSmall .list_img li {
+        height: 140px;
+        padding:0;
+        margin:0;
+    }
+    #listItem li a.threeSmall .list_img  li img{
+        min-height: 140px;
+    }
+    #listItem .video .video_wrapper{
+        height: 260px;
+    }
+    #listItem .video .video_info img{
+        min-height: 260px;
+    }
 
-[data-dpr="2"] #listItem a {
-    padding-top: 32px;
-    padding-bottom: 32px;
 }
-
-[data-dpr="2"] .news_title h3 {
-    margin-right: 24px;
-}
-
-[data-dpr="2"] .oneLarge .news_img {
-    margin-top: 12px;
-}
-
-[data-dpr="2"] .threeSmall .list_img {
-    margin-top: 12px;
-}
-
-[data-dpr="2"] .threeSmall .list_img li:nth-child(2) {
-    padding: 0 4px;
-}
-
-[data-dpr="2"] .video .video_title p {
-    font-size: 24px;
-    line-height: 48px;
-    padding: 16px 30px 0;
-}
-
-[data-dpr="2"] .video .totalTime {
-    width: 80px;
-    right: 10px;
-    bottom: 10px;
-    font-size: 24px;
-    height: 40px;
-    line-height: 40px;
-    border-radius: 20px;
-}
-
-[data-dpr="2"] .video .playRound {
-    width: 100px;
-    height: 100px;
-    margin-left: -50px;
-    margin-top: -50px;
-}
-
-[data-dpr="2"] .video .playSan {
-    border: 32px solid white;
-    margin-left: -10px;
-    margin-top: -32px;
-    border-color: transparent transparent transparent rgba(255, 255, 255, 0.6);
-}
-
-[data-dpr="3"] .news_title h3 {
-    font-size: 51px;
-    line-height: 63px;
-}
-
-[data-dpr="3"] #listItem li {
-    margin: 0 45px;
-    border-bottom: 3px solid hsla(0, 0%, 87%, .6);
-}
-
-[data-dpr="3"] #listItem a {
-    padding-top: 48px;
-    padding-bottom: 48px;
-}
-
-[data-dpr="3"] .news_title h3 {
-    margin-right: 36px;
-}
-
-[data-dpr="3"] .oneLarge .news_img {
-    margin-top: 18px;
-}
-
-[data-dpr="3"] .threeSmall .list_img {
-    margin-top: 18px;
-}
-
-[data-dpr="3"] .threeSmall .list_img li:nth-child(2) {
-    padding: 0 6px;
-}
-
-[data-dpr="3"] .video .video_title p {
-    font-size: 36px;
-    line-height: 72px;
-    padding: 24px 45px 0;
-}
-
-[data-dpr="3"] .video .totalTime {
-    width: 120px;
-    right: 15px;
-    bottom: 15px;
-    font-size: 36px;
-    height: 60px;
-    line-height: 60px;
-    border-radius: 30px;
-}
-
-[data-dpr="3"] .video .playRound {
-    width: 150px;
-    height: 150px;
-    margin-left: -75px;
-    margin-top: -75px;
-}
-
-[data-dpr="3"] .video .playSan {
-    border: 48px solid white;
-    margin-left: -15px;
-    margin-top: -48px;
-    border-color: transparent transparent transparent rgba(255, 255, 255, 0.6);
-}
-
-[data-dpr="2"] #listItem #lookHere {
-    margin: 20px 7%;
-    border-radius: 10px;
-    border: 2px solid rgb(245, 103, 103);
-}
-
-[data-dpr="3"] #listItem #lookHere {
-    margin: 30px 7%;
-    border-radius: 15px;
-    border: 3px solid rgb(245, 103, 103);
-}
-
-[data-dpr="2"] #lookHere p {
-    font-size: 24px;
-    line-height: 36px;
-    padding: 10px 0;
-}
-
-[data-dpr="3"] #lookHere p {
-    font-size: 36px;
-    line-height: 54px;
-    padding: 15px 0;
+    
+@media only screen and (min-width: 768px){
+    #listItem li a .news_info{
+        margin-top: 8px;
+    }
+    /*导航*/
+    #listItem .nav_ul a{
+        padding: 0 12px;
+        margin-left:10px;
+    }
+    /*图片*/
+    #listItem li {
+        margin: 0 24px;
+    }
+    #listItem li a.oneSmall .news_title h3{
+        margin-right: 50px;
+    }
+    #listItem li a.oneSmall .news_title{
+        width: 64%;
+    }
+    #listItem li a.oneSmall .news_img{
+        width: 36%;
+        height: 160px;
+    }
+    #listItem li a.oneSmall .news_img img{
+        min-height:160px;
+    }
+    #listItem li a.oneLarge .news_img{
+        height: 280px;
+        margin-top: 8px;
+    }
+    #listItem li a.oneLarge .news_img img{
+        min-height: 280px;
+    }
+    #listItem li a.threeSmall .list_img{
+        width: 100%;
+        margin-top: 8px;
+    }
+    #listItem li a.threeSmall .news_info{
+        margin-top: 6px;
+    }
+    #listItem li a.threeSmall .list_img li {
+        height: 160px;
+        padding:0;
+        margin:0;
+    }
+    #listItem li a.threeSmall .list_img  li img{
+        min-height: 160px;
+    }
+    /*视频*/
+    #listItem .video .video_wrapper{
+        height: 300px;
+    }
+    #listItem .video .video_info img{
+        min-height: 300px;
+    }
 }
 </style>

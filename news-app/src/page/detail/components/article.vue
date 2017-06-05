@@ -2,9 +2,10 @@
     <article id="article">
         <h1 class="articleTitle">{{newsJson.title}}</h1>
         <div class="articleInfo">
-            <span class="author"><i class="icon-author"></i> <!-- 文 / {{newsJson.befrom}} --></span>
+            <span class="author"><i class="icon-author"></i> 文 / {{newsJson.befrom}}</span>
             <span class="publishTime">{{newsJson.newstime}}</span>
         </div>
+
         <template v-if="newsJson.playonlineurl">
             <div class="detail_video">
                 <div class="video">
@@ -18,6 +19,7 @@
                 </div>
             </div>
         </template>
+        
         <template v-else>
             <div class="articleText">
                 <div class="articleText_html" v-html='newsJson.newstext' :class="{articleClose : articleMore}"></div>
@@ -28,7 +30,6 @@
 </template>
 <script>
 export default {
-    name: 'article',
     props: {
         newsJson: {
             default: {},
@@ -42,7 +43,7 @@ export default {
     },
     methods: {
         shrinkArticle() {
-            if (!this.newsJson.playonlineurl && this.newsJson.newstext.length >= 1400) {
+            if ( this.newsJson.newstext && this.newsJson.newstext.length >= 1400) {
                 this.articleMore = true;
             }
         },
@@ -55,11 +56,13 @@ export default {
     watch: {
         newsJson(val) {
             this.shrinkArticle();
-        }
+        },
     },
 }
 </script>
-<style >
+<style lang='stylus'>
+/* 左右边距 */
+
 #article {
     padding-left: 16px;
     padding-right: 16px;
@@ -181,28 +184,4 @@ export default {
     margin-top: -16px;
 }
 
-@media screen and (min-width: 414px) and (max-width: 500px){
-    #detail{
-        padding-left: 18px;
-        padding-right: 18px;
-    }
-}
-@media screen and (min-width: 501px) and (max-width: 620px){
-    #detail{
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-}
-@media screen and (min-width: 621px) and (max-width: 767px){
-    #detail{
-        padding-left: 22px;
-        padding-right: 22px;
-    }
-}
-@media only screen and (min-width: 768px){
-    #detail{
-        padding-left: 24px;
-        padding-right: 24px;
-    }
-}
 </style>

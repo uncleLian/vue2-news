@@ -13,6 +13,8 @@ Router.prototype.go = function () {
 const index = () => import('@/page/index/index')
 	// 二级页面
 	const home = () => import('@/page/index/home/home')
+		// 三级页面
+		const channel = () => import('@/page/index/home/children/channel')
 	const video = () => import('@/page/index/video/video')
 	const collect = () => import('@/page/index/collect/collect')
 	const user = () => import('@/page/index/user/user')
@@ -44,7 +46,13 @@ export default new Router({
 			    		{	
 			    			name:'home',
 			    			path:'home',
-			    			component: home	
+			    			component: home	,
+			    			children:[
+				    			{
+				    				path: 'channel',
+				    				component: channel
+				    			}
+				    		]
 			    		},
 			    		{ 	
 			    			name:'video',

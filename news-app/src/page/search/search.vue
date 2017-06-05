@@ -1,15 +1,10 @@
 <template>
     <div id="search">
-
         <div class="header">
-            <div class="iosHeader" v-if='$store.state.isIOS'></div>
-            <!-- header -->
-            <header>
-                <div class="top_bar">
-                    <div class="abs_l"> <a class="back" @click='$router.go(-1)'></a></div>
-                    <div class="abs_m" @click.stop='goTop'>搜索</div>
-                </div>
-            </header>
+            <my-header>
+                <a class="back" slot='left' @click='$router.go(-1)'></a>
+                <a slot='mid' @click.stop='goTop'>搜索</a>
+            </my-header>
 
             <!-- form -->
             <form id='search_form'>
@@ -20,17 +15,19 @@
             </form>
         </div>
 
-        <div class="content" v-swiper:swiperRight='true' :class="{isIOS:$store.state.isIOS}">
-            <div class="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="bottomStatus" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
+        <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
+            <div class="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="bottomStatus" infinite-scroll-distance="10" infinite-scroll-immediate-check="false" v-swiper:swiperRight='true'>
                 <div class="empty" v-if="!searchJson">
                     <p>空空如也</p>
                     <p>快去搜索吧</p>
                 </div>
                 <list-item :itemJson="searchJson"></list-item>
+
                 <div v-if="searchJson && searchJson.length > 0" class="bottomLoad">
                     <div class="loading" v-show='bottomLoading'>加载中...</div>
                     <div class="noData" v-if='bottomNoData'>没有更多的内容了</div>
                 </div>
+
                 <spinner-load :show='spinnerLoad'></spinner-load>
             </div>
         </div>
@@ -45,17 +42,17 @@ export default {
             key: '',
             page: 1,
             searchJson: [],
-            bottomStatus: false,
+            bottomLock: false,
             bottomLoading: true,
             bottomNoData: false,
             spinnerLoad: false,
         }
     },
     methods: {
-        ...mapMutations([
+        ...mapMutations('search',[
             'set_searchLocation',
         ]),
-        ...mapActions([
+        ...mapActions('search',[
             'get_Search_data',
         ]),
         goTop() {
@@ -78,7 +75,7 @@ export default {
             })
         },
         loadMore() {
-            this.bottomStatus = true;
+            this.bottomLock = true;
             this.get_Search_data({'key': this.key, 'page': this.page})
             .then(res =>{
                 if (res) {
@@ -88,7 +85,7 @@ export default {
                     this.bottomLoading = false;
                     this.bottomNoData = true;
                 }
-                this.bottomStatus = false;
+                this.bottomLock = false;
             })
         },
         getLocation() {
@@ -128,12 +125,8 @@ export default {
 }
 </script>
 
-<style scoped>
-.iosHeader {
-    width: 100%;
-    height: 20px;
-    background-color: #d43d3d;
-}
+<style scoped lang='stylus'>
+
 .content.isIOS{
     padding-top: 103px;
 }
@@ -150,60 +143,12 @@ export default {
     right: 0;
     z-index: 999;
     overflow: hidden;
+    header {
+        font-size: 20px;
+    }
 }
-
-header {
-    display: block;
-    position: relative;
-    overflow: hidden;
-}
-
-
-/*top_bar*/
-
-.top_bar {
-    position: relative;
-    height: 44px;
-    background: #d43d3d;
-}
-
-.top_bar .back {
-    display: inline-block;
-    height: 44px;
-    top: 0;
-    width: 44px;
-    border-radius: 0;
-    background: url(http://s3.pstatp.com/image/toutiao_mobile/header_back.png) no-repeat center center;
-    background-size: 20px;
-}
-
-.top_bar .abs_l,
-.top_bar .abs_m,
-.top_bar .abs_r {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 44px;
-    height: 44px;
-}
-
-.top_bar .abs_l {
-    left: 0;
-    z-index: 100;
-}
-
-.top_bar .abs_m {
-    width: 100%;
-    font-size: 20px;
-    color: #fff;
-    text-align: center;
-    font-weight: 700;
-    line-height: 44px;
-}
-
 
 /*search*/
-
 #search_form {
     position: relative;
     background: #c9c9c9;
@@ -256,13 +201,5 @@ header {
     text-align: center;
     font-size: 16px;
     color: #aaa;
-}
-.bottomLoad div {
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    font-size: 16px;
-    color: #999;
 }
 </style>

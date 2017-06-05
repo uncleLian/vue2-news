@@ -1,6 +1,6 @@
 <template>
     <ul id="listItem">
-       <template v-for="section in itemJson">
+        <template v-for="section in itemJson">
             <!-- 视频 -->
             <li v-if="section.playonlineurl">
                 <router-link :to="section.titleurl | urlFilter" class='video'>
@@ -62,6 +62,13 @@
             <!-- 上次观看到这里 -->
             <li v-else-if='section.type' id="lookHere">
                 <p>上次看到这里，点击刷新 <i class="icon-refresh"></i></p>
+            </li>
+            <!-- 文字 -->
+            <li v-else-if='section.title'>
+                <router-link :to="section.titleurl | urlFilter" class='text'>
+                    <p>{{section.title}}</p>
+                    <list-info :infoJson='section'></list-info>
+                </router-link>
             </li>
         </template>
     </ul>
@@ -128,6 +135,7 @@ export default {
     -webkit-line-clamp: 3;
     text-overflow: ellipsis;
     -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .oneSmall {
@@ -217,7 +225,7 @@ export default {
         .video_title {
             position: absolute;
             width: 100%;
-            height: 1.6rem;
+            height: 80px;
             top: 0;
             left: 0;
             color: #fff;
@@ -323,7 +331,8 @@ export default {
         min-height: 180px;
     }
 }
- @media screen and (min-width: 501px) and (max-width: 620px){
+
+@media screen and (min-width: 501px) and (max-width: 620px){
     #listItem .nav_ul a{
         padding: 0 10px;
         margin-left:8px;
