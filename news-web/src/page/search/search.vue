@@ -155,8 +155,9 @@ export default {
     },
     activated() {
         this.getLocation();
-        if (this.$route.query.key) {
-            this.key = this.$route.query.key;
+        let routeKey = this.$route.query.key;
+        if(routeKey && routeKey != this.key){
+            this.key = routeKey;
             this.searchAjax();
         }
     },
