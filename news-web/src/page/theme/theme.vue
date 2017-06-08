@@ -27,10 +27,10 @@
 	            	<div class="theme_pic">
 	            		<swiper :options="swiperOption" class="swiper-box" ref="mySwiper">
 					        <swiper-slide v-for='item in imgArr' :key='item'>
-					        	<img :src="item.img" alt="">
+					        	<img :src="item.img">
 					        </swiper-slide>
 					    </swiper>
-					    <div class="swiper-pagination"  slot="pagination"></div>
+					    <div class="swiper-pagination" slot="pagination"></div>
 	            	</div>
 
 
@@ -109,10 +109,11 @@ export default {
         		{img:'http://p.soyilu.com/data/nfs/guest/20170601143241.jpg'},
         	],
         	swiperOption: {
-        		notNextTick: true,
+        		// notNextTick: true,
+        		loop : true,
                 direction: 'horizontal',
-                autoplay: 5000,
-                pagination : '.swiper-pagination'
+                autoplay: 3000,
+                pagination : '.swiper-pagination',
             },
         }
     },
@@ -125,7 +126,7 @@ export default {
     },
 }
 </script>
-<style scoped lang='stylus'>
+<style  lang='stylus'>
 #theme{
 	width: 100%;
 	height: 100%;
@@ -209,9 +210,13 @@ export default {
 		    overflow: hidden;
 		}
 		.swiper-pagination{
-	    	left: 48%;
-	    	bottom: 5px;
-	    }
+			left: 50%;
+			bottom: 10px;
+			transform: translateX(-50%);
+		}
+		.swiper-pagination-bullet{
+			margin: 0  2px;
+		}
 		img{
 			width: 100%;
 			height:100%;

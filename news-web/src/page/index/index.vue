@@ -1,9 +1,9 @@
 <template>
     <div id="index">
         <!-- header -->
-        <index-header></index-header>
+        <index-header :column='indexColumn'></index-header>
         <!-- content -->
-        <swiper-container></swiper-container>
+        <swiper-container :column='indexColumn'></swiper-container>
         <!-- footer -->
         <index-footer></index-footer>
 
@@ -23,6 +23,11 @@ export default {
         indexHeader,
         indexFooter,
         swiperContainer
+    },
+    computed: {
+        ...mapGetters('index',[
+          'indexColumn',
+        ]),
     },
     methods: {
         ...mapActions('index',[

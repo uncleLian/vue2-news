@@ -5,15 +5,14 @@
             <a slot="mid" @click.stop='goTop'>{{title}}</a>
             <a slot="right" @click.stop='$refs.share.toggle()'><i class="icon-menu"></i></a>
         </my-header>
-
         <div class="content">
             <div class="container" v-swiper:swiperRight='true'>
                 <!-- 文章 -->
-                <detail-article :newsJson='currentArticle'></detail-article>
+                <detail-article class='article' :newsJson='currentArticle'></detail-article>
                 <!-- 标签 -->
-                <detail-tags :tagsJson='currentArticle.infotags'></detail-tags>
+                <detail-tags class='tag' :tagsJson='currentArticle.infotags'></detail-tags>
                 <!--  推荐 -->
-                <detail-recommend :recommendJson='recommendJson'></detail-recommend>
+                <detail-recommend class='recommend' :recommendJson='recommendJson'></detail-recommend>
                 <!-- 下载 -->
                 <a class="downLoad" :href='$store.state.apkURL'>都翻到这儿了，就下载个头条呗~</a>
             </div>
@@ -31,12 +30,7 @@ import detailRecommend from './components/recommend'
 import detailShare from './components/share'
 import { mapGetters, mapActions } from 'vuex'
 export default {
-    components: {
-        detailArticle,
-        detailTags,
-        detailRecommend,
-        detailShare,
-    },
+    components: { detailArticle, detailTags, detailRecommend, detailShare },
     data() {
         return {
             id: null,
@@ -45,37 +39,36 @@ export default {
             currentArticle: {}, // 文章数据
             recommendJson: [], // 推荐数据
             loading: true, // 加载动画
-
         }
     },
     computed: {
-        ...mapGetters('index',[
+        ...mapGetters('index', [
             'indexColumn',
         ]),
     },
     methods: {
-        ...mapActions('index',[
+        ...mapActions('index', [
             'get_indexColumn_data',
         ]),
-        ...mapActions('detail',[
+        ...mapActions('detail', [
             'get_Article_data',
             'get_Recommend_data',
         ]),
         goTop() {
-            $("#detail .container").animate({
-                scrollTop: 0
-            });
+            $("#detail .container").animate({scrollTop: 0});
         },
         async init() {
             this.loading = true;
             this.classid = this.$route.query.classid;
             this.id = this.$route.query.id;
+            this.currentArticle = {};
+            this.recommendJson = [];
             $("#detail .container").scrollTop(0);
-            if (this.indexColumn.length == 1 ) {
+            if (!this.indexColumn.length > 1) {
                 await this.get_indexColumn_data();
             }
-            let index = this.indexColumn.findIndex( n => n.classid == this.classid);
-            if(index > -1){
+            let index = this.indexColumn.findIndex(n => n.classid == this.classid);
+            if (index > -1) {
                 this.title = `健康头条 · ${this.indexColumn[index].classname}`
             }
             this.get_Article(); // 获取 文章数据
@@ -90,13 +83,19 @@ export default {
                     this.loading = false;
                 }
             })
+            .catch(err => {
+                console.log(err);
+            })
         },
         get_Recommend() {
-            this.get_Recommend_data({'classid': this.classid,'id': this.id})
+            this.get_Recommend_data({'classid': this.classid, 'id': this.id})
             .then(res => {
                 if (res) {
                     this.recommendJson = res;
                 }
+            })
+            .catch(err => {
+                console.log(err);
             })
         },
         visitCollect() {
@@ -113,7 +112,7 @@ export default {
             }
         },
     },
-    mounted: function() {
+    mounted() {
         this.init();
     }
 }
@@ -124,42 +123,45 @@ export default {
     height: 100%;
     overflow: hidden;
     background: #f8f8f8;
+    header {
+        background: #f8f8f8;
+        color: #333;
+        i {
+            font-size: 20px;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+    }
+    .content {
+        width: 100%;
+        height: 100%;
+        padding-top: 44px;
+        position: relative;
+        .container {
+            height: 100%;
+            overflow: auto;
+            position: relative;
+            -webkit-overflow-scrolling: touch;
+        }
+        .article {
+            padding: 0 16px;
+        }
+        .tag {
+            margin: 10px 0;
+        }
+        .recommend {
+            margin-top: 10px;
+        }
+        .downLoad {
+            display: block;
+            width: 100%;
+            height: 36px;
+            line-height: 36px;
+            background: #f67373;
+            color: #fff;
+            text-align: center;
+            font-size: 14px;
+        }
+    }
 }
-
-#detail header {
-    background: #f8f8f8;
-    color: #333;
-}
-
-#detail header i{
-    font-size: 20px;
-    font-weight: bold;
-    vertical-align: middle;
-}
-
-.content {
-    width: 100%;
-    height: 100%;
-    padding-top: 44px;
-    position: relative;
-}
-
-.content .container {
-    height: 100%;
-    overflow: auto;
-    position: relative;
-    -webkit-overflow-scrolling: touch;
-}
-
-.downLoad {
-    display: block;
-    width: 100%;
-    height: 36px;
-    line-height: 36px;
-    background: #f67373;
-    color: #fff;
-    text-align: center;
-    font-size: 14px;
-}
-
 </style>

@@ -6,22 +6,24 @@
             </my-header>
             
             <div class="content">
-                <section class="column">
-                    <p class="title">点击删除以下频道</p>
-                    <transition-group name="list" tag="ul">
-                        <li v-for='(item,index) in indexColumn' @click='remove(item,index)' :key='item' >
-                            <a href='javascript:;' :class='item.classpath'>{{item.classname}}</a>
-                        </li>
-                    </transition-group>
-                </section>
-                <section class="column">
-                    <p class="title">点击添加以下频道</p>
-                    <transition-group name="zoom" tag="ul">
-                        <li v-for='(item,index) in json' @click='add(index)' :key='item'>
-                            <a href='javascript:;'>{{item.classname}}</a>
-                        </li>
-                    </transition-group>
-                </section>
+                <div class="container" v-swiper:swiperRight='true'>
+                    <section class="column">
+                        <p class="title">点击删除以下频道</p>
+                        <ul>
+                            <li v-for='(item,index) in indexColumn' @click='remove(item,index)' :key='item' >
+                                <a href='javascript:;' :class='item.classpath'>{{item.classname}}</a>
+                            </li>
+                        </ul>
+                    </section>
+                    <section class="column">
+                        <p class="title">点击添加以下频道</p>
+                        <ul>
+                            <li v-for='(item,index) in json' @click='add(index)' :key='item'>
+                                <a href='javascript:;'>{{item.classname}}</a>
+                            </li>
+                        </ul>
+                    </section>
+                </div>
             </div>
         </div>
     </transition>
@@ -32,12 +34,12 @@ export default {
     data() {
         return {
             json: [
-                {classname:'20',classid:20,classpath:'t1'},
-                {classname:'21',classid:21,classpath:'t2'},
-                {classname:'22',classid:22,classpath:'t3'},
-                {classname:'23',classid:23,classpath:'t4'},
-                {classname:'24',classid:24,classpath:'t5'},
-                {classname:'25',classid:25,classpath:'t6'},
+                {classname:'Test20',classid:20,classpath:'t1'},
+                {classname:'Test21',classid:21,classpath:'t2'},
+                {classname:'Test22',classid:22,classpath:'t3'},
+                {classname:'Test23',classid:23,classpath:'t4'},
+                {classname:'Test24',classid:24,classpath:'t5'},
+                {classname:'Test25',classid:25,classpath:'t6'},
             ],
         }
     },
@@ -112,12 +114,13 @@ export default {
         font-size: 16px;
     }
     .content {
-        width: 100%;
         height: 100%;
         padding-top: 44px;
         background-color: #f8f8f8;
+        .container{
+            height: 100%;
+        }
         .column {
-            width: 100%;
             margin-top: 5px;
             .title {
                 font-size: 12px;
@@ -132,6 +135,8 @@ export default {
                     display: inline-block;
                     width: 25%;
                     margin-bottom: 10px;
+                    -webkit-animation: zoomIn .3s ease;
+                    animation: zoomIn .3s ease;
                     a {
                         display: block;
                         font-size: 16px;
@@ -150,25 +155,5 @@ export default {
         }
     }
 }
-
-
-.zoom-enter-active, .zoom-leave-active {
-  transition: all .3s;
-}
-.zoom-enter, .zoom-leave-active {
-  opacity: 0;
-  transform: scale3d(.3, .3, .3);
-}
-
-@keyframes zoomIn {
-    from {
-        opacity: 0;
-        transform: scale3d(.3, .3, .3);
-    }
-    50% {
-        opacity: 1;
-    }
-}
-
 
 </style>

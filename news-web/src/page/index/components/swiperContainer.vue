@@ -1,66 +1,56 @@
 <template>
     <swiper :options="swiperOption" class="swiper-box" ref="mySwiper">
-        <swiper-slide v-for='(item,index) in indexColumn' :key='item'>
+        <swiper-slide v-for='(item,index) in column' :key='item'>
             <pull-container :type='item.classpath'></pull-container>
         </swiper-slide>
     </swiper>
 </template>
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters , mapMutations } from 'vuex'
 import pullContainer from './pullContainer'
 export default {
-    components: { pullContainer},
+    components: {  pullContainer },
+    props: ['column'],
     data() {
         return {
-            active: 0,
             swiperOption: {
                 notNextTick: true,
-                direction: 'horizontal',
                 onSlideChangeStart: this.slideChangeCallBack,
                 onSliderMove: this.slideMoveCallBack,
                 onTouchEnd: this.touchEndCallBack,
             }
         }
     },
+    computed: {
+        ...mapGetters('index', [
+            'indexActive',
+            'activeIndex',
+        ]),
+    },
+    watch: {
+        indexActive() {
+            this.$refs.mySwiper.swiper.slideTo(this.activeIndex, 300, true);
+        },
+    },
     methods: {
-        ...mapMutations('index',[
+        ...mapMutations('index', [
             'set_indexActive',
             'set_indexSwiper',
         ]),
         slideChangeCallBack(swiper) {
-            this.active = swiper.activeIndex;
+            let index = swiper.activeIndex;
+            this.set_indexActive(this.column[index].classpath);
         },
         slideMoveCallBack() {
-            this.set_indexSwiper(true)
+            this.set_indexSwiper(true);
         },
         touchEndCallBack() {
-            this.set_indexSwiper(false)
+            this.set_indexSwiper(false);
         },
-    },
-    computed: {
-        ...mapGetters('index',[
-          'indexActive',
-          'indexColumn',
-        ]),
-        swiper() {
-            return this.$refs.mySwiper.swiper
-        },
-    },
-    watch: {
-        active(val) {
-            this.swiper.slideTo(val, 300, true);
-            this.set_indexActive(this.indexColumn[val].classpath);
-        },
-        indexActive(val) {
-            this.active = this.indexColumn.findIndex(obj => obj.classpath == val);
-        },
-    },
-    mounted(){
-        this.$nextTick(function () {this.swiper.slideTo(this.active, 0, false)})
     },
 }
 </script>
-<style scoped>
+<style scoped lang='stylus'>
 .swiper-box {
     width: 100%;
     height: 100%;

@@ -10,7 +10,7 @@
                                 <p>{{section.title}}</p>
                             </div>
                             <div class="totalTime">{{section.playtime}}</div>
-                            <img :src="section.titlepic">
+                            <img v-lazy.container='section.titlepic'>
                         </div>
                         <div class="playRound">
                             <div class="playSan"></div>
@@ -26,7 +26,7 @@
                         <h3>{{section.title}}</h3>
                     </div>
                     <div class='news_img'>
-                        <img :src="section.ptitlepic">
+                        <img v-lazy.container='section.ptitlepic'>
                     </div>
                     <list-info :infoJson='section'></list-info>
                 </router-link>
@@ -39,9 +39,9 @@
                     </div>
                     <div class='list_img'>
                         <ul class='clearfix'>
-                            <li><img :src="section.titlepic"></li>
-                            <li><img :src="section.titlepic2"></li>
-                            <li><img :src="section.titlepic3"></li>
+                            <li><img v-lazy.container='section.titlepic'></li>
+                            <li><img v-lazy.container='section.titlepic2'></li>
+                            <li><img v-lazy.container='section.titlepic3'></li>
                         </ul>
                     </div>
                     <list-info :infoJson='section'></list-info>
@@ -55,7 +55,7 @@
                         <list-info :infoJson='section'></list-info>
                     </div>
                     <div class='news_img'>
-                        <img :src="section.titlepic">
+                        <img v-lazy.container='section.titlepic'>
                     </div>
                 </router-link>
             </li>
@@ -115,6 +115,9 @@ export default {
     }
     img {
         background: #ddd;
+    }
+    img[lazy=loading] {
+        height: 100%;
     }
 }
 
@@ -280,16 +283,15 @@ export default {
     border-radius: 5px;
     border: 1px solid rgb(245, 103, 103);
     background: rgb(255, 240, 245);
-}
-
-#lookHere p {
-    font-size: 12px;
-    line-height: 18px;
-    color: rgb(255, 51, 51);
-    text-align: center;
-    user-select: none;
-    margin: 0;
-    padding: 5px 0;
+    p {
+        font-size: 12px;
+        line-height: 18px;
+        color: rgb(255, 51, 51);
+        text-align: center;
+        user-select: none;
+        margin: 0;
+        padding: 5px 0;
+    }
 }
 
 @media screen and (min-width: 414px) and (max-width: 500px){

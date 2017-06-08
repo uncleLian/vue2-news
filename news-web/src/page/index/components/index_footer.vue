@@ -1,37 +1,31 @@
 <template>
-    <footer id="indexFooter" v-if="footerVisibel">
-        <div class="img left"></div>
-        <div class="text left">
-            <p class="mid">健康头条</p>
-            <p class="small">看头条，知健康</p>
+    <footer id="indexFooter" v-if="visible">
+        <div class="logo center"></div>
+        <div class="text center">
+            <p class="title">健康头条</p>
+            <p class="title-sub">看头条，知健康</p>
         </div>
-        <div class="closeBtn right" @click='close'></div>
-        <div class="right">
-            <a :href='$store.state.apkURL' class="downBtn">立即下载</a>
-        </div>
+        <a class="down_btn center" :href='$store.state.apkURL'>立即下载</a>
+        <a class="close_btn center" @click='close'></a>
     </footer>
 </template>
 <script>
 export default {
-    name: 'indexFooter',
     data() {
         return {
-            footerVisibel: false,
+            visible: false,
         }
     },
     methods: {
-        init() {
-            if (!sessionStorage.getItem('downLoad')) {
-                this.footerVisibel = true;
-            }
-        },
         close() {
-            this.footerVisibel = false;
+            this.visible = false;
             sessionStorage.setItem('downLoad', 'false');
         },
     },
     mounted() {
-        this.init();
+        if (!sessionStorage.getItem('downLoad')) {
+            this.visible = true;
+        }
     }
 }
 </script>
@@ -43,56 +37,51 @@ export default {
     right: 0;
     z-index: 999;
     width: 100%;
-    height: 40px;
-    line-height: 40px;
+    height: 50px;
     background: rgba(0, 0, 0, .7) no-repeat;
     color: #fff;
     overflow: hidden;
-    div {
+    .center{
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .logo {
+        left: 10px;
+        width: 35px;
+        height: 35px;
+        background: url(../../../assets/img/downLoad.png)no-repeat center center;
+        background-size: 35px;
+    }
+    .text {
+        left: 50px;
+        font-size: 15px;
+        .title-sub{
+            font-size: 12px;
+        }
+    }
+    .down_btn {
+        right: 40px;
+        display: inline-block;
+        width: 80px;
+        line-height: 30px;
+        font-size: 13px;
+        padding: 0 10px;
+        border-radius: 6px;
+        background: #ff424b;
+        color: #fff;
+        text-align: center;
+        text-decoration: none;
+    }
+    .close_btn {
+        right: 0;
+        width: 40px;
         height: 100%;
+        text-align: center;
+        font-size: 14px;
+        padding: 5px;
+        background: url(https://s3a.pstatp.com/resource/growth/mobile_detail/static/image/banner_ic_close_6951b35.png)no-repeat center center;
+        background-size: 14px;
     }
-    .left {
-        float: left;
-    }
-    .right {
-        float: right;
-    }
-}
-
-.img {
-    width: 60px;
-    background: url(../../../assets/img/downLoad.png)no-repeat center center;
-    background-size: 35px;
-}
-
-.text {
-    font-size: 14px;
-    padding-top: 2px;
-    line-height: 18px;
-}
-
-.text .small {
-    font-size: 12px;
-}
-
-.downBtn {
-    line-height: 25px;
-    font-size: 12px;
-    padding: 0 10px;
-    border-radius: 6px;
-    background: rgb(255, 66, 75);
-    display: inline-block;
-    color: rgb(255, 255, 255);
-    text-align: center;
-    text-decoration: none;
-}
-
-.closeBtn {
-    width: 40px;
-    text-align: center;
-    font-size: 14px;
-    padding: 5px;
-    background: url(https://s3a.pstatp.com/resource/growth/mobile_detail/static/image/banner_ic_close_6951b35.png)no-repeat center center;
-    background-size: 14px;
 }
 </style>

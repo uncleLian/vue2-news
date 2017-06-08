@@ -6,7 +6,6 @@
             <div class="requestFail">网络请求失败,请检查网络</div>
         </div>
         <mt-loadmore :top-method="loadTopAjax" @top-status-change="handleTopChange" ref="loadmore" :auto-fill='false' :distance='indexSwiper'>
-
             <div slot="top" class="mint-loadmore-top">
                 <span v-show="topStatus == 'pull'">下拉刷新↓</span>
                 <span v-show="topStatus == 'drop'">释放更新↑</span>
@@ -29,14 +28,12 @@
 import { Indicator } from 'mint-ui'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
-    props: ['type'],
+    props:['type'],
     data() {
         return {
-            active: 0,
             classPage: 1,
-            location: 0,
             contentJson: [], // 整个json数据arr
-            stickJson:[],
+            stickJson:[],   // 置顶数据
             topStatus: '', // 下拉状态
             bottomLoading: true,
             bottomNoData: false,
@@ -45,113 +42,12 @@ export default {
             bottomLock: false, // 上滑开关
         }
     },
-    methods: {
-        ...mapMutations('index',[
-            'set_currentContent',
-            'set_indexPage',
-            'set_indexLocation',
-        ]),
-        ...mapActions('index',[
-            'get_listItem_cache',
-            'get_listItem_data',
-            'get_stick_data',
-        ]),
-        handleTopChange(status){
-            this.topStatus = status;
-        },
-        init(){
-            if(this.indexActive == this.type){
-                this.active = this.indexColumn.findIndex(obj => obj.classpath == this.indexActive);
-                this.classPage = this.indexPage[this.indexActive];
-                this.get_stick(); //置顶
-                this.get_listItem_cache()
-                .then( cache =>{
-                    if(cache){
-                        this.contentJson = cache;
-                    }else {
-                        this.loadTopAjax();
-                    }
-                })
-            }
-        },
-        get_stick(){
-            this.get_stick_data(this.active)
-            .then(res=>{
-                if(res){
-                    this.stickJson = res;
-                }
-            })
-            .catch(err =>{
-                console.log(err);
-            })
-        },
-        loadTopAjax() {
-            Indicator.open();
-            this.get_listItem_data({index:this.active,page:this.classPage})
-            .then(json =>{
-                if(json){
-                    this.dataCount = json.length;
-                    this.contentJson = [...json,...this.contentJson];
-                    this.classPage++
-                    $(`.container.${this.type} .pull_down .dataCount`).slideDown(200).delay(1000).slideUp(200);
-                    this.lookHereClick();
-                }else {
-                    $(`.container.${this.type} .pull_down .noNewData`).slideDown(200).delay(1000).slideUp(200);
-                }
-                this.$refs.loadmore.onTopLoaded();
-                Indicator.close();
-            })
-            .catch(err =>{
-                console.log(err);
-                Indicator.close();
-                $(`.container.${this.type} .pull_down .requestFail`).show();
-            })
-        },
-        loadBottomAjax() {
-            this.bottomLock = true;
-            this.get_listItem_data({index:this.active,page:this.classPage})
-            .then(json => {
-                if (json) {
-                    this.contentJson = [...this.contentJson,...json];
-                    this.classPage++
-                }else {
-                    this.bottomLoading = false;
-                    this.bottomNoData = true;
-                }
-                this.bottomLock = false;
-            })
-        },
-        getLocation() {
-           this.$nextTick(function(){
-                this.location = this.indexLocation[this.type];
-                $(`.container.${this.type}`).scrollTop(this.location);
-
-           })
-        },
-        setLocation() {
-            let scrollTop = $(`.container.${this.type}`).scrollTop();
-            if(scrollTop > 0){
-                this.indexLocation[this.type] = scrollTop;
-                this.set_indexLocation(this.indexLocation);
-            }
-        },
-        lookHereClick() {
-            if(this.dataCount >= 10){
-                let lookIndex = this.contentJson.findIndex((n) => n.type == 'lookHere');
-                this.contentJson.splice(lookIndex, 1);
-                this.contentJson.splice(10, 0, {type: 'lookHere'});
-            }
-            this.$nextTick(()=>{
-                $(`.${this.indexActive} #lookHere`).prev().css('border', 'none');
-            })
-        }
-    },
     computed: {
         ...mapGetters('index',[
           'indexActive',
+          'activeIndex',
           'indexPage',
           'indexLocation',
-          'indexColumn',
           'indexSwiper',
         ]),
     },
@@ -171,22 +67,127 @@ export default {
             this.distance = val;
         },
     },
+    methods: {
+        ...mapMutations('index',[
+            'set_currentContent',
+            'set_indexPage',
+            'set_indexLocation',
+        ]),
+        ...mapActions('index',[
+            'get_listItem_cache',
+            'get_listItem_data',
+            'get_stick_data',
+        ]),
+        handleTopChange(status){
+            this.topStatus = status;
+        },
+        init(){
+            if(this.indexActive == this.type){
+                this.classPage = this.indexPage[this.indexActive];
+                this.get_stick(); //置顶
+                this.get_listItem_cache(this.indexActive)
+                .then( cache =>{
+                    if(cache){
+                        this.contentJson = cache;
+                        this.getLocation();
+                    }else {
+                        this.loadTopAjax();
+                    }
+                })
+            }
+        },
+        get_stick(){
+            this.get_stick_data(this.activeIndex)
+            .then(res=>{
+                if(res){
+                    this.stickJson = res;
+                }
+            })
+            .catch(err =>{
+                console.log(err);
+            })
+        },
+        loadTopAjax() {
+            Indicator.open();
+            this.get_listItem_data({index:this.activeIndex,page:this.classPage})
+            .then(json =>{
+                if(json){
+                    this.dataCount = json.length;
+                    this.contentJson = [...json,...this.contentJson];
+                    this.classPage++
+                    $(`.container.${this.type} .pull_down .dataCount`).slideDown(200).delay(1000).slideUp(200);
+                    this.newLookHere();
+                }else {
+                    $(`.container.${this.type} .pull_down .noNewData`).slideDown(200).delay(1000).slideUp(200);
+                }
+                this.$refs.loadmore.onTopLoaded();
+                Indicator.close();
+            })
+            .catch(err =>{
+                console.log(err);
+                Indicator.close();
+                $(`.container.${this.type} .pull_down .requestFail`).show();
+            })
+        },
+        loadBottomAjax() {
+            this.bottomLock = true;
+            this.get_listItem_data({index:this.activeIndex,page:this.classPage})
+            .then(json => {
+                if (json) {
+                    this.contentJson = [...this.contentJson,...json];
+                    this.classPage++
+                }else {
+                    this.bottomLoading = false;
+                    this.bottomNoData = true;
+                }
+                this.bottomLock = false;
+            })
+        },
+        getLocation() {
+            if(this.indexActive == this.type){
+                this.$nextTick( ()=> {
+                    $(`.container.${this.type}`).scrollTop(this.indexLocation[this.type]);
+               })
+            }
+        },
+        setLocation() {
+            let scrollTop = $(`.container.${this.type}`).scrollTop();
+            if(scrollTop > 0){
+                this.indexLocation[this.type] = scrollTop;
+                this.set_indexLocation(this.indexLocation);
+            }
+        },
+        newLookHere() {
+            if(this.dataCount >= 10){
+                let lookIndex = this.contentJson.findIndex((n) => n.type == 'lookHere');
+                this.contentJson.splice(lookIndex, 1);
+                this.contentJson.splice(10, 0, {type: 'lookHere'});
+            }
+            this.$nextTick(()=>{
+                $(`.${this.indexActive} #lookHere`).prev().css('border', 'none');
+            })
+        },
+        lookHereClick(){
+            $(`.container.${this.type}`).on('click', '#lookHere', () => { 
+                $(`.container.${this.indexActive}`).animate({scrollTop: 0}, () => {
+                    this.loadTopAjax();
+                });
+            });
+        }
+    },
+    mounted(){
+        this.lookHereClick();
+    },
     activated() {
         this.getLocation();
     },
     deactivated() {
         this.setLocation();
     },
-    mounted(){
-        $(`.container.${this.type}`).on('click', '#lookHere', () => { 
-            $(`.container.${this.indexActive}`).animate({scrollTop: 0}, () => {
-                this.loadTopAjax();
-            });
-        });
-    }
+    
 }
 </script>
-<style>
+<style scoped>
 .container {
     height: 100%;
     overflow: auto;

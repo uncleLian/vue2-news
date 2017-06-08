@@ -24,7 +24,8 @@ export default {
 .news_info {
     font-size: 10px;
     color: #999;
-    margin-top: 8px;
+    margin-top: 6px;
+    overflow: hidden;
     span {
         display: inline-block;
         margin-right: 2px;
@@ -32,7 +33,7 @@ export default {
     .news_label {
         font-size: 9px;
         border-radius: 2px; 
-        padding: 1px 1px 0 1px;
+        /*padding: 1px 1px 0 1px;*/
     }
     .blue {
         color: #3d99d4;

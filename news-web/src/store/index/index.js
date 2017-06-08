@@ -20,6 +20,9 @@ export default {
         indexActive: state => {
             return state.indexActive
         },
+        activeIndex : getters => {
+            return getters.indexColumn.findIndex(obj => obj.classpath == getters.indexActive)
+        },
         indexPage: state => {
             return state.indexPage
         },
@@ -111,8 +114,8 @@ export default {
             return res
         },
 
-        get_listItem_cache({ commit, state }) {
-            const data = JSON.parse(getCache(`${state.indexActive}_json`));
+        get_listItem_cache({ commit, state },type) {
+            let data = JSON.parse(getCache(`${type}_json`));
             return data
         },
 
