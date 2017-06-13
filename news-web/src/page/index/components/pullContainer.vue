@@ -6,14 +6,19 @@
             <div class="requestFail">网络请求失败,请检查网络</div>
         </div>
         <mt-loadmore :top-method="loadTopAjax" @top-status-change="handleTopChange" ref="loadmore" :auto-fill='false' :distance='indexSwiper'>
+        
             <div slot="top" class="mint-loadmore-top">
                 <span v-show="topStatus == 'pull'">下拉刷新↓</span>
                 <span v-show="topStatus == 'drop'">释放更新↑</span>
                 <span v-show="topStatus == 'loading'">加载中...</span>
             </div>
-            
+
+            <!-- banner -->
+            <banner :bannerJson="bannerJson"></banner> 
+
             <!-- 置顶 -->
-            <list-item :itemJson="stickJson"></list-item> 
+            <list-item :itemJson="stickJson" v-if='stickJson'></list-item> 
+            
             <!-- listItem --> 
             <list-item :itemJson="contentJson"></list-item>
 
@@ -32,8 +37,9 @@ export default {
     data() {
         return {
             classPage: 1,
-            contentJson: [], // 整个json数据arr
-            stickJson:[],   // 置顶数据
+            bannerJson:'',  // banner数据
+            stickJson:'',   // 置顶数据
+            contentJson: '', // 整个列表数据arr
             topStatus: '', // 下拉状态
             bottomLoading: true,
             bottomNoData: false,
@@ -82,8 +88,9 @@ export default {
             this.topStatus = status;
         },
         init(){
-            if(this.indexActive == this.type){
+            if(this.indexActive == this.type && !this.contentJson){
                 this.classPage = this.indexPage[this.indexActive];
+                this.get_banner(); //banner
                 this.get_stick(); //置顶
                 this.get_listItem_cache(this.indexActive)
                 .then( cache =>{
@@ -96,15 +103,26 @@ export default {
                 })
             }
         },
+        get_banner(){
+            this.get_stick_data({index:this.activeIndex,type:'banner'})
+            .then(res=>{
+                if(res){
+                    this.bannerJson = res;
+                }
+            })
+            .catch(err =>{
+                console.log('banner',err);
+            })
+        },
         get_stick(){
-            this.get_stick_data(this.activeIndex)
+            this.get_stick_data({index:this.activeIndex,type:'stick'})
             .then(res=>{
                 if(res){
                     this.stickJson = res;
                 }
             })
             .catch(err =>{
-                console.log(err);
+                console.log('stick',err);
             })
         },
         loadTopAjax() {
@@ -152,7 +170,7 @@ export default {
         },
         setLocation() {
             let scrollTop = $(`.container.${this.type}`).scrollTop();
-            if(scrollTop > 0){
+            if(scrollTop >= 0){
                 this.indexLocation[this.type] = scrollTop;
                 this.set_indexLocation(this.indexLocation);
             }

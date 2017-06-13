@@ -5,14 +5,14 @@
 </template>
 <script>
 export default {
-    props: ['tagsJson'],
+    props: ['json'],
     data() {
         return {
             tagsData: '',
         }
     },
     watch: {
-        tagsJson(val) {
+        json(val) {
             if (val) {
                 this.tagsData = val.match(/[\u4e00-\u9fa5]+/g).slice(0, 4);
             }else{

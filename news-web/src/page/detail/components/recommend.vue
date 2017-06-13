@@ -1,12 +1,12 @@
 <template>
-    <div id="recommend" v-if='recommendJson'>
+    <div id="recommend" v-if='json'>
         <h2>精彩推荐</h2>
-        <list-item :itemJson="recommendJson"></list-item>
+        <list-item :itemJson="json"></list-item>
     </div>
 </template>
 <script>
 export default {
-    props: ['recommendJson'],
+    props: ['json'],
 }
 </script>
 <style scoped lang='stylus'>

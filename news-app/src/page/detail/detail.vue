@@ -3,25 +3,25 @@
         <my-header fixed>
             <a slot="left" @click.stop='$router.go(-1)'><i class="icon-back"></i></a>
             <a slot="mid" @click.stop='goTop'>{{title}}</a>
-            <a slot="right" @click.stop='share = true'> <i class="icon-menu"></i></a>
+            <a slot="right" @click.stop='$refs.share.toggle()'><i class="icon-menu"></i></a>
         </my-header>
 
         <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
             <div class="container" v-swiper:swiperRight='true'>
                 <!-- 文章 -->
-                <detail-article :newsJson='currentArticle'></detail-article>
+                <detail-article class='article' :json='currentArticle'></detail-article>
                 <!-- 标签 -->
-                <detail-tags :tagsJson='currentArticle.infotags'></detail-tags>
+                <detail-tags class='tag' :json='currentArticle.infotags'></detail-tags>
                 <!--  推荐 -->
-                <detail-recommend :recommendJson='recommendJson'></detail-recommend>
+                <detail-recommend class='recommend' :json='recommendJson'></detail-recommend>
                 <!-- 下载 -->
                 <a class="downLoad">翻到底了哦~</a>
             </div>
         </div>
         <!-- 分享 -->
-        <detail-share :show="share" @on-status-change='shareStatusChange' :detailJson='currentArticle'></detail-share>
+        <detail-share ref="share" :detailJson='currentArticle'></detail-share>
         <!-- 加载 -->
-        <spinner-load :show='spinnerLoad'></spinner-load>
+        <loading :show='loading'></loading>
     </div>
 </template>
 <script>
@@ -31,12 +31,7 @@ import detailRecommend from './components/recommend'
 import detailShare from './components/share'
 import { mapGetters, mapActions } from 'vuex'
 export default {
-    components: {
-        detailArticle,
-        detailTags,
-        detailRecommend,
-        detailShare,
-    },
+    components: { detailArticle, detailTags, detailRecommend, detailShare },
     data() {
         return {
             id: null,
@@ -44,42 +39,37 @@ export default {
             title: '健康头条',
             currentArticle: {}, // 文章数据
             recommendJson: [], // 推荐数据
-            share: false, // 菜单栏
-            spinnerLoad: true, // 加载动画
-
+            loading: true, // 加载动画
         }
     },
     computed: {
-        ...mapGetters('index',[
+        ...mapGetters('index', [
             'indexColumn',
         ]),
     },
     methods: {
-        ...mapActions('index',[
+        ...mapActions('index', [
             'get_indexColumn_data',
         ]),
-        ...mapActions('detail',[
+        ...mapActions('detail', [
             'get_Article_data',
             'get_Recommend_data',
         ]),
         goTop() {
-            $("#detail .container").animate({
-                scrollTop: 0
-            });
-        },
-        shareStatusChange(val) {
-            this.share = val;
+            $("#detail .container").animate({scrollTop: 0});
         },
         async init() {
-            this.spinnerLoad = true;
+            this.loading = true;
             this.classid = this.$route.query.classid;
             this.id = this.$route.query.id;
+            this.currentArticle = {};
+            this.recommendJson = [];
             $("#detail .container").scrollTop(0);
-            if (this.indexColumn.length == 1 ) {
+            if (!(this.indexColumn.length > 1 )) {
                 await this.get_indexColumn_data();
             }
-            let index = this.indexColumn.findIndex( n => n.classid == this.classid);
-            if(index > -1){
+            let index = this.indexColumn.findIndex(n => n.classid == this.classid);
+            if (index > -1) {
                 this.title = `健康头条 · ${this.indexColumn[index].classname}`
             }
             this.get_Article(); // 获取 文章数据
@@ -91,16 +81,22 @@ export default {
             .then(res => {
                 if (res) {
                     this.currentArticle = res;
-                    this.spinnerLoad = false;
+                    this.loading = false;
                 }
+            })
+            .catch(err => {
+                console.log(err);
             })
         },
         get_Recommend() {
-            this.get_Recommend_data({'classid': this.classid,'id': this.id})
+            this.get_Recommend_data({'classid': this.classid, 'id': this.id})
             .then(res => {
                 if (res) {
                     this.recommendJson = res;
                 }
+            })
+            .catch(err => {
+                console.log(err);
             })
         },
         visitCollect() {
@@ -108,7 +104,7 @@ export default {
                 url: `http://api.toutiaojk.com/public/ViewClick/?classid=${this.classid}&id=${this.id}&addclick=1`,
                 type: 'GET'
             })
-        }
+        },
     },
     watch: {
         $route(val) {
@@ -117,7 +113,7 @@ export default {
             }
         },
     },
-    mounted: function() {
+    mounted() {
         this.init();
     }
 }
@@ -131,41 +127,46 @@ export default {
     height: 100%;
     overflow: hidden;
     background: #f8f8f8;
-}
-
-#detail header {
-    background: #f8f8f8;
-    color: #333;
-}
-
-#detail header i{
-    font-size: 20px;
-    font-weight: bold;
-    vertical-align: middle;
-}
-
-.content {
-    width: 100%;
-    height: 100%;
-    padding-top: 44px;
-    position: relative;
-}
-
-.content .container {
-    height: 100%;
-    overflow: auto;
-    position: relative;
-    -webkit-overflow-scrolling: touch;
-}
-
-.downLoad {
-    display: block;
-    width: 100%;
-    height: 36px;
-    line-height: 36px;
-    background: #f67373;
-    color: #fff;
-    text-align: center;
-    font-size: 14px;
+    header {
+        background: #f8f8f8;
+        color: #333;
+        font-size: 16px;
+        i {
+            font-size: 20px;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+    }
+    .content {
+        width: 100%;
+        height: 100%;
+        padding-top: 44px;
+        position: relative;
+        .container {
+            height: 100%;
+            overflow: auto;
+            position: relative;
+            -webkit-overflow-scrolling: touch;
+        }
+        .article {
+            padding: 0 16px;
+        }
+        .tag {
+            margin: 10px 0;
+        }
+        .recommend {
+            margin-top: 10px;
+        }
+        .downLoad {
+            display: block;
+            width: 100%;
+            height: 36px;
+            line-height: 36px;
+            background: #f67373;
+            color: #fff;
+            text-align: center;
+            font-size: 14px;
+        }
+    }
 }
 </style>

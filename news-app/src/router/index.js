@@ -26,7 +26,7 @@ const index = () => import('@/page/index/index')
 const detail = () => import('@/page/detail/detail')
 const search = () => import('@/page/search/search')
 const login = () => import('@/page/login/login')
-		
+const theme = () => import('@/page/theme/theme')
 	
 
 
@@ -99,6 +99,10 @@ export default new Router({
 			    {	
 			    	path: '/login', 
 			    	component: login	
+			    },
+			    {	
+			    	path: '/theme', 
+			    	component: theme
 			    },
 		    ]
 		},

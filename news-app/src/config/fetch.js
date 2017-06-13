@@ -13,7 +13,7 @@ const ajaxURL = {
 }
 
 export var fetch = async(type = 'POST', url = '', data = {}) => {
-    let result, params;
+	let result, params;
     type = type.toUpperCase();
     url = baseUrl + ajaxURL[url];
 

@@ -34,6 +34,7 @@
 
 <script>
 //  import {getStore, setStore} from '../config/mUtils'
+import md5 from 'js-md5'
   import {mapMutations} from 'vuex'
   export default{
     data(){
@@ -71,7 +72,7 @@
     },
     computed: {},
     mounted(){
-
+      console.log(md5('123456'))
     },
   }
 </script>

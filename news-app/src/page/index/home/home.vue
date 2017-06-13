@@ -1,9 +1,9 @@
 <template>
     <div id="home">
         <!-- header -->
-        <home-header></home-header>
+        <home-header :column='indexColumn'></home-header>
         <!-- content -->
-        <swiper-container></swiper-container>
+        <swiper-container :column='indexColumn'></swiper-container>
 
         <keep-alive>
             <router-view></router-view>
@@ -16,6 +16,11 @@ import swiperContainer from './components/swiperContainer'
 import { mapGetters, mapActions} from 'vuex'
 export default {
     components: { homeHeader, swiperContainer },
+    computed: {
+        ...mapGetters('index',[
+          'indexColumn',
+        ]),
+    },
     methods: {
         ...mapActions('index',[
             'get_indexActive',
@@ -25,9 +30,7 @@ export default {
         ]),
         async init(){
             let res = await this.get_indexColumn_data();
-            await this.get_indexPage(res);
-            await this.get_indexLocation(res);
-            await this.get_indexActive();
+            await Promise.all([this.get_indexPage(res), this.get_indexLocation(res) , this.get_indexActive() ]);
         },
         onBackKeyDown() {
             window.plugins.toast.showShortBottom('再点击一次退出程序');
@@ -54,9 +57,9 @@ export default {
     activated() {
         document.addEventListener("backbutton", this.onBackKeyDown, false);
     },
-    mounted() {
+    created(){
         this.init();
-    }
+    },
 }
 </script>
 <style scoped>

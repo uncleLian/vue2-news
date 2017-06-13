@@ -1,7 +1,7 @@
 <template>
     <div class='news_info'>
         <span class="news_label blue" v-if='infoJson.playonlineurl'>视频</span>
-        <span class="news_label red" v-else-if="infoJson.istop && infoJson.istop >= 8 ">置顶</span>
+        <span class="news_label red" v-else-if="infoJson.istop && infoJson.istop >= 9 ">置顶</span>
         <span class="news_label blue" v-else-if="infoJson.isgood >= 6">荐</span>
         <span class="news_label red" v-else-if="infoJson.firsttitle >= 6">热</span>
         <span class='from' v-if='infoJson.befrom'>{{infoJson.befrom}}</span>
@@ -32,8 +32,9 @@ export default {
     }
     .news_label {
         font-size: 9px;
+        height: 12px;
+        line-height: 13px;
         border-radius: 2px; 
-        /*padding: 1px 1px 0 1px;*/
     }
     .blue {
         color: #3d99d4;

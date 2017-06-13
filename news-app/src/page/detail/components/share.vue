@@ -26,10 +26,6 @@
 export default {
     name: 'share',
     props:{
-        show: {
-            type: Boolean,
-            default: false,
-        },
         detailJson:{
             defalut:'',
         },
@@ -40,15 +36,10 @@ export default {
             shareURL:`http://gg.toutiaojk.com/e/action/ShowInfo.php?classid=${this.$route.query.classid}&id=${this.$route.query.id}`,
         }
     },
-    watch:{
-        show(val){
-            this.contentFrame = val;
-        },
-        contentFrame(val){
-            this.$emit("on-status-change",val);
-        },
-    },
     methods: {
+        toggle(){
+            this.contentFrame = !this.contentFrame;
+        },
         wxShare(Scene){
             const vm = this;
             var wxShareObj = {};

@@ -5,8 +5,7 @@
                 <a class="back" slot='left' @click.stop='$router.go(-1)'></a>
                 <a slot='mid' @click.stop='goTop'>搜索</a>
             </my-header>
-
-            <form class='form'>
+            <form class='form' @submit.prevent="searchAjax">
                 <div class="form_border">
                     <i class="form_icon icon-search"></i>
                     <input class='form_input' type="search" placeholder="请输入搜索关键词" v-model.trim='key'>
@@ -16,11 +15,11 @@
         
         <div class="search_content">
             <div class="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false" v-swiper:swiperRight='true'>
-                <div class="search_info" v-if="!searchJson.length > 0 && !loading && searchStatus == 'info' ">
+                <div class="search_info" v-if="!(searchJson.length > 0) && !loading && searchStatus == 'info' ">
                     <p>空空如也</p>
                     <p>快去搜索吧</p>
                 </div>
-                <div class="search_result-empty" v-if=" !searchJson.length > 0 && !loading && searchStatus == 'empty'">
+                <div class="search_result-empty" v-if=" !(searchJson.length > 0) && !loading && searchStatus == 'empty'">
                     <p>这个宇宙中搜寻不到</p>
                     <p>换个词试试</p>
                 </div>
@@ -71,23 +70,22 @@ export default {
             $('#search .container').animate({scrollTop:0});
         },
         init(type){
-            if(type == 'ajax'){
-                this.searchStatus = '';
-                $('#search .container').scrollTop(0);
-            }else if(type == 'route'){
-                this.key = '';
-                this.searchStatus = 'info';
-                this.bottomLock =  false;
-                this.loading =  false;
-                this.remove_search_current();
-            }
+            this.key = '';
             this.page = 1;
             this.searchJson = [];
+            this.searchStatus = 'info';
+            this.bottomLock =  false;
+            this.loading =  false;
+            this.remove_search_current();   
             this.bottomStatus = 'loading';
         },
         async searchAjax() {
             this.loading = true;
-            this.init('ajax');
+            $('#search .container').scrollTop(0);
+            this.searchStatus = '';
+            this.page = 1;
+            this.searchJson = [];
+            this.bottomStatus = 'loading';
             await this.get_search_data({'key': this.key, 'page': this.page})
                 .then(res => {
                     if(res){
@@ -143,7 +141,7 @@ export default {
     watch: {
         $route(to, from) {
             if (from.path.includes('index')) {
-                this.init('route');
+                this.init();
             }
         },
         searchJson(val){
@@ -166,10 +164,6 @@ export default {
     },
     mounted() {
         this.get_cache();
-        $('.form').on('submit', event => {
-            event.preventDefault();
-            this.searchAjax();
-        });
     }
 }
 </script>
@@ -231,6 +225,7 @@ export default {
                 text-align: center;
                 color: #999;
                 line-height: 1.5em;
+                font-size: 16px;
             }
             .search_result-empty {
                 padding: 70px 0 0;

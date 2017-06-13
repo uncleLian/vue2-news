@@ -124,9 +124,8 @@ export default {
             let res = await fetch('post', 'Class', params)
             return res
         },
-
-        async get_stick_data({ commit, state }, index) {
-            let params = { 'classid': state.indexColumn[index].classid };
+        async get_stick_data({ commit, state },{index,type}) {
+            let params = { 'classid': state.indexColumn[index].classid,'type':type};
             let res = await fetch('post', 'Stick', params)
             return res
         },

@@ -3,14 +3,15 @@
         <template v-for="section in itemJson">
             <!-- 视频 -->
             <li v-if="section.playonlineurl">
-                <router-link :to="section.titleurl | urlFilter" class='video'>
+                <router-link :to="url(section)" class='video'>
                     <div class="video_wrapper">
                         <div class="video_info">
                             <div class="video_title">
                                 <p>{{section.title}}</p>
                             </div>
                             <div class="totalTime">{{section.playtime}}</div>
-                            <img v-lazy.container='section.titlepic'>
+                            <!-- <img v-lazy.container='section.titlepic'> -->
+                            <img v-lazy.container="section.titlepic">
                         </div>
                         <div class="playRound">
                             <div class="playSan"></div>
@@ -21,7 +22,7 @@
             </li>
             <!-- 1张大图 -->
             <li v-else-if="section.ptitlepic">
-                <router-link :to="section.titleurl | urlFilter" class='oneLarge'>
+                <router-link :to="url(section)" class='oneLarge'>
                     <div class="news_title">
                         <h3>{{section.title}}</h3>
                     </div>
@@ -33,7 +34,7 @@
             </li>
             <!-- 3张小图 -->
             <li v-else-if="section.titlepic3">
-                <router-link :to="section.titleurl | urlFilter" class='threeSmall'>
+                <router-link :to="url(section)" class='threeSmall'>
                     <div class="news_title">
                         <h3>{{section.title}}</h3>
                     </div>
@@ -49,7 +50,7 @@
             </li>
             <!-- 1张小图 -->
             <li v-else-if="section.titlepic">
-                <router-link :to="section.titleurl | urlFilter" class='oneSmall clearfix'>
+                <router-link :to="url(section)" class='oneSmall clearfix'>
                     <div class="news_title">
                         <h3>{{section.title}}</h3>
                         <list-info :infoJson='section'></list-info>
@@ -65,7 +66,7 @@
             </li>
             <!-- 文字 -->
             <li v-else-if='section.title'>
-                <router-link :to="section.titleurl | urlFilter" class='text'>
+                <router-link :to="url(section)" class='text'>
                     <p>{{section.title}}</p>
                     <list-info :infoJson='section'></list-info>
                 </router-link>
@@ -80,24 +81,16 @@ export default {
     components: {
         listInfo
     },
-    filters: {
-        urlFilter(val) {
-            if (!val) return ''
-            function GetQueryString(url, name) {
-                var reg = new RegExp("(^|&|\\?)" + name + "=([^&]*)(&|$)");
-                var r = url.substr(0).match(reg);
-                if (r != null) return unescape(r[2]);
-                return null;
-            }
-            const classid = GetQueryString(val, 'classid');
-            const id = GetQueryString(val, 'id');
-            const url = `/detail?classid=${classid}&id=${id}`;
-            return url
-        },
-    },
+    methods:{
+        url(item){
+            return `/detail?classid=${item.classid}&id=${item.id}`
+        }
+    }
 }
 </script>
 <style scoped lang='stylus'>
+small_height = 1.96875rem
+larger_height = 4.6875rem
 #listItem li {
     margin: 0 15px;
     border-bottom: 1px solid hsla(0, 0%, 87%, .6);
@@ -144,11 +137,11 @@ export default {
     }
     .news_img {
         width: 33%;
-        height: 68px;
+        height: small_height;
         overflow: hidden;
         img {
             width: 100%;
-            min-height: 68px;
+            min-height: small_height;
         }
     }
 }
@@ -158,11 +151,11 @@ export default {
         width: 100%;
         margin-top: 6px;
         overflow: hidden;
-        height: 190px;
+        height: larger_height;
     }
     img {
         width: 100%;
-        min-height: 190px;
+        min-height: larger_height;
     }
 }
 
@@ -176,7 +169,7 @@ export default {
         }
         li {
             width: 33%;
-            height: 68px;
+            height: small_height;
             overflow: hidden;
             margin: 0!important;
             flex: 1;
@@ -186,7 +179,7 @@ export default {
         }
         img {
             width: 100%;
-            min-height: 68px;
+            min-height: small_height;
         }
     }
 }
@@ -197,7 +190,7 @@ export default {
     }
     .video_wrapper {
         width: 100%;
-        height: 190px;
+        height: larger_height;
         position: relative;
         overflow: hidden;
         color: #999;
@@ -210,7 +203,7 @@ export default {
             img {
                 position: absolute;
                 width: 100%;
-                min-height: 190px;
+                min-height: larger_height;
                 display: block;
                 left: 0;
                 top: 0;
@@ -294,180 +287,4 @@ export default {
     }
 }
 
-@media screen and (min-width: 414px) and (max-width: 500px){
-    #listItem li {
-        margin: 0 18px;
-    }
-    #listItem li a.oneSmall .news_img{
-        height: 92px;
-    }
-    #listItem li a.oneSmall .news_img img{
-        min-height:92px;
-    }
-    #listItem li a.oneLarge .news_img{
-        height: 160px;
-    }
-    #listItem li a.oneLarge .news_img img{
-        min-height: 160px;
-    }
-    #listItem li a.threeSmall .list_img li {
-        height: 92px;
-        padding:0;
-        margin:0;
-    }
-    #listItem li a.threeSmall .list_img  li img{
-        min-height: 92px;
-    }
-    #listItem .video .video_wrapper{
-        height: 180px;
-    }
-    #listItem .video .video_info img{
-        min-height: 180px;
-    }
-}
-
-@media screen and (min-width: 501px) and (max-width: 620px){
-    #listItem .nav_ul a{
-        padding: 0 10px;
-        margin-left:8px;
-    }
-    #listItem li {
-        margin: 0 20px;
-    }
-    #listItem li a.oneSmall .news_title h3{
-        margin-right: 20px;
-    }
-    #listItem li a.oneSmall .news_title{
-        width: 65%;
-    }
-    #listItem li a.oneSmall .news_img{
-        width: 35%;
-        height: 116px;
-    }
-    #listItem li a.oneSmall .news_img img{
-        min-height:116px;
-    }
-    #listItem li a.oneLarge .news_img{
-        height: 200px;
-    }
-    #listItem li a.oneLarge .news_img img{
-        min-height: 200px;
-    }
-    #listItem li a.threeSmall .list_img li {
-        height: 116px;
-        padding:0;
-        margin:0;
-    }
-    #listItem li a.threeSmall .list_img  li img{
-        min-height: 116px;
-    }
-    #listItem .video .video_wrapper{
-        height: 220px;
-    }
-    #listItem .video .video_info img{
-        min-height: 220px;
-    }
-}
-    
-@media screen and (min-width: 621px) and (max-width: 767px){
-    #listItem .nav_ul a{
-        padding: 0 12px;
-        margin-left:8px;
-    }
-    /*图片*/
-    #listItem li {
-        margin: 0 22px;
-    }
-    #listItem li a.oneSmall .news_title h3{
-        margin-right: 30px;
-    }
-    #listItem li a.oneSmall .news_title{
-        width: 64%;
-    }
-    #listItem li a.oneSmall .news_img{
-        width: 36%;
-        height: 140px;
-    }
-    #listItem li a.oneSmall .news_img img{
-        min-height:140px;
-    }
-    #listItem li a.oneLarge .news_img{
-        height: 240px;
-    }
-    #listItem li a.oneLarge .news_img img{
-        min-height: 240px;
-    }
-    #listItem li a.threeSmall .list_img li {
-        height: 140px;
-        padding:0;
-        margin:0;
-    }
-    #listItem li a.threeSmall .list_img  li img{
-        min-height: 140px;
-    }
-    #listItem .video .video_wrapper{
-        height: 260px;
-    }
-    #listItem .video .video_info img{
-        min-height: 260px;
-    }
-
-}
-    
-@media only screen and (min-width: 768px){
-    #listItem li a .news_info{
-        margin-top: 8px;
-    }
-    /*导航*/
-    #listItem .nav_ul a{
-        padding: 0 12px;
-        margin-left:10px;
-    }
-    /*图片*/
-    #listItem li {
-        margin: 0 24px;
-    }
-    #listItem li a.oneSmall .news_title h3{
-        margin-right: 50px;
-    }
-    #listItem li a.oneSmall .news_title{
-        width: 64%;
-    }
-    #listItem li a.oneSmall .news_img{
-        width: 36%;
-        height: 160px;
-    }
-    #listItem li a.oneSmall .news_img img{
-        min-height:160px;
-    }
-    #listItem li a.oneLarge .news_img{
-        height: 280px;
-        margin-top: 8px;
-    }
-    #listItem li a.oneLarge .news_img img{
-        min-height: 280px;
-    }
-    #listItem li a.threeSmall .list_img{
-        width: 100%;
-        margin-top: 8px;
-    }
-    #listItem li a.threeSmall .news_info{
-        margin-top: 6px;
-    }
-    #listItem li a.threeSmall .list_img li {
-        height: 160px;
-        padding:0;
-        margin:0;
-    }
-    #listItem li a.threeSmall .list_img  li img{
-        min-height: 160px;
-    }
-    /*视频*/
-    #listItem .video .video_wrapper{
-        height: 300px;
-    }
-    #listItem .video .video_info img{
-        min-height: 300px;
-    }
-}
 </style>

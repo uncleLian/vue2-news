@@ -5,14 +5,15 @@
             <a slot="mid" @click.stop='goTop'>{{title}}</a>
             <a slot="right" @click.stop='$refs.share.toggle()'><i class="icon-menu"></i></a>
         </my-header>
+        
         <div class="content">
             <div class="container" v-swiper:swiperRight='true'>
                 <!-- 文章 -->
-                <detail-article class='article' :newsJson='currentArticle'></detail-article>
+                <detail-article class='article' :json='currentArticle'></detail-article>
                 <!-- 标签 -->
-                <detail-tags class='tag' :tagsJson='currentArticle.infotags'></detail-tags>
+                <detail-tags class='tag' :json='currentArticle.infotags'></detail-tags>
                 <!--  推荐 -->
-                <detail-recommend class='recommend' :recommendJson='recommendJson'></detail-recommend>
+                <detail-recommend class='recommend' :json='recommendJson'></detail-recommend>
                 <!-- 下载 -->
                 <a class="downLoad" :href='$store.state.apkURL'>都翻到这儿了，就下载个头条呗~</a>
             </div>
@@ -64,7 +65,7 @@ export default {
             this.currentArticle = {};
             this.recommendJson = [];
             $("#detail .container").scrollTop(0);
-            if (!this.indexColumn.length > 1) {
+            if (!(this.indexColumn.length > 1 )) {
                 await this.get_indexColumn_data();
             }
             let index = this.indexColumn.findIndex(n => n.classid == this.classid);
@@ -126,6 +127,7 @@ export default {
     header {
         background: #f8f8f8;
         color: #333;
+        font-size: 16px;
         i {
             font-size: 20px;
             font-weight: bold;

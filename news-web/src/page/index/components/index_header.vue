@@ -4,14 +4,15 @@
             <a class='title' slot='mid' @click.stop="goTop"></a>
             <a class='search_btn' slot='right' @click.stop="$router.push('/search')"></a>
         </my-header>
+        
         <nav>
             <div class="nav_ul">
                 <a href='javascript:;' v-for="(item,index) in column" :class='{active: indexActive == item.classpath}' @click="navClick(item.classpath)" :key="item">{{item.classname}}</a>
             </div>
-            <div class="nav_menu">
+            <!-- <div class="nav_menu">
                 <div class="shadow"></div>
                 <a href='javascript:;' class="more_btn" @click="$router.push('/index/channel')"></a>
-            </div>
+            </div> -->
         </nav>
     </div>
 </template>
@@ -103,10 +104,9 @@ export default {
         line-height: 36px;
         background-color: #f4f5f6;
         border-bottom: 1px solid #ddd;
-        padding-right: 40px;
+        /*padding-right: 40px;*/
         .nav_ul {
-            overflow: hidden;
-            overflow-x: scroll;
+            overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             white-space: nowrap;
             &::-webkit-scrollbar {
