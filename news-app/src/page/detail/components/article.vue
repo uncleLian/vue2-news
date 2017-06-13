@@ -1,7 +1,7 @@
 <template>
     <article id="article">
-        <h1 class="article_title">{{json.title}}</h1>
 
+        <h1 class="article_title">{{json.title}}</h1>
         <div class="article_info clearfix">
             <span class="author"><i class="icon-author"></i> 文 / {{json.befrom}}</span>
             <span class="time">{{json.newstime}}</span>
@@ -10,17 +10,29 @@
         <template v-if="json.playonlineurl">
             <div class="article_video">
                 <div class="video" :class="{'video-fixed': video_fixed}">
-                    <div class="video_info" v-if='video_poster'>
-                        <img :src="json.titlepic">
-                    </div>
-                    <div class="playRound" v-if='!video_playing'  @click.stop="videoPlay">
-                        <div class="playSan"></div>
-                    </div>
+                    <template v-if="video_poster">
+                        <div class="video_info">
+                            <img :src="json.titlepic">
+                        </div>
+                        <div class="playRound" @click.stop="videoPlay">
+                            <div class="playSan"></div>
+                        </div>
+                    </template>
+                    <template v-if="video_ended">
+                        <div class="video_info">
+                            <img :src="json.titlepic">
+                        </div>
+                        <div class="repeat">
+                            <div class="repeat_round" @click.stop="videoPlay"></div>
+                            <p class="repeat_text">重播</p>
+                        </div>
+                        <div class="black"></div>
+                    </template>
                     <div class="loading" v-show='video_loading'>
                         <mt-spinner :type="0" :size='50'></mt-spinner>
                     </div>
-                    <video ref='video' @click.stop='videoPause'>
-                        <source :src="json.playonlineurl" type="video/mp4">
+                    <video ref='video' :controls='!video_poster' v-if='json.playonlineurl' :key='json.playonlineurl'>
+                        <source :src="json.playonlineurl" type="video/mp4" >
                     </video>
                 </div>
             </div>
@@ -39,16 +51,13 @@ export default {
     props:['json'],
     data() {
         return {
+            video:'',
             video_poster: true,
             video_playing: false,
+            video_ended: false,
             video_loading: false,
             video_fixed: false,
             content_more: false,
-        }
-    },
-    computed:{
-        video(){
-            return this.$refs.video
         }
     },
     methods: {
@@ -60,27 +69,35 @@ export default {
             }
         },
         videoPlay(){
+            this.video = document.querySelector('video');
             this.video.play();
-            this.video.setAttribute('controls','controls');
             this.video_playing = true;
             this.video_poster = false;
+            this.video_ended = false;
             this.videoEvent();
             this.videoFixed();
         },
-        videoPause(){
-            if(this.video_playing && !this.video_loading){
-                this.video.pause();
-            }
-        },
         videoEvent(){
+            this.video.onplay = () => {
+                // console.log('播放');
+                this.video_playing = true;
+            }
             this.video.onpause = () => {
+                // console.log('暂停');
+                this.video_playing = false;
                 this.video_loading = false;
             }
             this.video.onwaiting = () => {
+                // console.log('缓冲...');
                 this.video_loading = true;
             }
             this.video.oncanplay = () => {
+                // console.log('可以播放了...');
                 this.video_loading = false;
+            }
+            this.video.onended = () => {
+                console.log('播放结束');
+                this.video_ended = true;
             }
         },
         videoFixed(){
@@ -98,15 +115,16 @@ export default {
             });
         },
     },
-    watch: {
-        json(val) {
+    watch:{
+        json(val){
+            this.shrinkArticle();
+            this.video = document.querySelector('video');
             this.video_poster = true;
             this.video_playing = false;
-            this.video_fixed = false;
+            this.video_ended = false;
             this.video_loading = false;
             this.video_fixed = false;
-            this.shrinkArticle();
-        },
+        }
     },
 }
 </script>
@@ -140,6 +158,7 @@ export default {
         .video {
             position: relative;
             width: 100%;
+            overflow: hidden;
         }
         .video-fixed{
             position: fixed;
@@ -163,12 +182,12 @@ export default {
         }
         .playRound {
             position: absolute;
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             left: 50%;
             top: 50%;
-            margin-left: -25px;
-            margin-top: -25px;
+            margin-left: -24px;
+            margin-top: -24px;
             border-radius: 50%;
             background: rgba(0, 0, 0, .3);
             z-index: 333;
@@ -196,6 +215,39 @@ export default {
             margin-left: -25px;
             margin-top: -25px;
             z-index: 222;
+        }
+        .repeat{
+            position: absolute;
+            width: 44px;
+            height: 44px;
+            left: 50%;
+            top: 50%;
+            margin-left: -22px;
+            margin-top: -22px;
+            border-radius: 50%;
+            z-index: 444;
+            background: #f8f8f8;
+            .repeat_round{
+                width: 44px;
+                height: 44px;
+                background: url(../../../assets/img/repeat.png)no-repeat center center;
+                background-size: 28px;
+            }
+            .repeat_text{
+                font-size: 12px;
+                color: #fff;
+                text-align: center;
+                margin-top: 4px;
+            }
+        }
+        .black{
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            z-index: 333;
+            height: 200px;
+            background: rgba(0,0,0,.3);
         }
     }
     .article_content{

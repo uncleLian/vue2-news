@@ -1,3 +1,4 @@
+<detail-share ref="share" :detailJson='currentArticle'></detail-share>
 <template>
     <div id="detail">
         <my-header fixed>
@@ -5,7 +6,7 @@
             <a slot="mid" @click.stop='goTop'>{{title}}</a>
             <a slot="right" @click.stop='$refs.share.toggle()'><i class="icon-menu"></i></a>
         </my-header>
-
+        
         <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
             <div class="container" v-swiper:swiperRight='true'>
                 <!-- 文章 -->
@@ -19,7 +20,7 @@
             </div>
         </div>
         <!-- 分享 -->
-        <detail-share ref="share" :detailJson='currentArticle'></detail-share>
+        <detail-share ref="share"></detail-share>
         <!-- 加载 -->
         <loading :show='loading'></loading>
     </div>
@@ -31,6 +32,7 @@ import detailRecommend from './components/recommend'
 import detailShare from './components/share'
 import { mapGetters, mapActions } from 'vuex'
 export default {
+    name:'detail',
     components: { detailArticle, detailTags, detailRecommend, detailShare },
     data() {
         return {
@@ -58,12 +60,9 @@ export default {
         goTop() {
             $("#detail .container").animate({scrollTop: 0});
         },
-        async init() {
-            this.loading = true;
+        async init(){
             this.classid = this.$route.query.classid;
             this.id = this.$route.query.id;
-            this.currentArticle = {};
-            this.recommendJson = [];
             $("#detail .container").scrollTop(0);
             if (!(this.indexColumn.length > 1 )) {
                 await this.get_indexColumn_data();
@@ -77,6 +76,7 @@ export default {
             this.visitCollect(); // 浏览数据统计
         },
         get_Article() {
+            this.loading = true;
             this.get_Article_data(this.id)
             .then(res => {
                 if (res) {
@@ -170,3 +170,4 @@ export default {
     }
 }
 </style>
+
