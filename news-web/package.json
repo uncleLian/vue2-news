@@ -2,7 +2,7 @@
   "name": "news-web",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "lian",
+  "author": "Lian",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
@@ -16,7 +16,6 @@
     "jquery": "^3.2.1",
     "mint-ui": "^2.2.5",
     "qs": "^6.4.0",
-    "video.js": "^5.19.2",
     "vue": "^2.2.6",
     "vue-awesome-swiper": "^2.4.0",
     "vue-lazyload": "^1.0.4",

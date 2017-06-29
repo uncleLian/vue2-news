@@ -234,6 +234,7 @@ export default {
                 text-align: center;
                 margin-top: 100px;
                 color: #cacaca;
+                font-size: 16px;
             }
         }
     }

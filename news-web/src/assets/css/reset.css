@@ -31,7 +31,7 @@ a:focus{outline: none;}
 
 /*back图标*/
 .back {
-    background: url(http://s3.pstatp.com/image/toutiao_mobile/header_back.png) no-repeat center center;
+    background: url(../img/header_back.png) no-repeat center center;
     background-size: 20px;
 }
 

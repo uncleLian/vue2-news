@@ -11,7 +11,7 @@
 import '@/assets/css/reset.css'
 import '@/assets/css/icon.css'
 import fastClick from 'fastclick'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapActions } from 'vuex'
 export default {
     data() {
         return {
@@ -32,6 +32,11 @@ export default {
         ...mapMutations([
             'set_device',
             'set_apkURL',
+            'set_uuid',
+            'set_wx',
+        ]),
+        ...mapActions('login',[
+            'get_user',
         ]),
         init(){
             $(function() {
@@ -39,6 +44,9 @@ export default {
             })
             this.checkOS();
             this.dataCollection();
+            this.getUUID();
+            this.get_user();
+            this.upGrade();
         },
         checkOS() {
             var ua = navigator.userAgent.toLowerCase();
@@ -55,7 +63,41 @@ export default {
                 var s = document.getElementsByTagName("script")[0];
                 s.parentNode.insertBefore(hm, s);
             })();
+        },
+        onBackKeyDown() {
+            window.plugins.toast.showShortBottom('再点击一次退出程序');
+            document.removeEventListener("backbutton", this.onBackKeyDown, false);
+            document.addEventListener("backbutton", this.exitApp, false);
+            var timer = setTimeout(function() {
+                document.removeEventListener("backbutton", this.exitApp, false);
+                document.addEventListener("backbutton", this.onBackKeyDown, false);
+                clearTimeout(timer);
+            }, 2000);
+        },
+        exitApp() {
+            navigator.app.exitApp();
+        },
+        upGrade(){
+            document.addEventListener('chcp_updateInstalled', (eventData) => {
+                console.log('安装完成index');
+            }, false);
+        },
+        getUUID(){
+            document.addEventListener("deviceready", () => {
+                this.set_uuid(device.uuid);
+            }, false);
+        },
+    },
+    watch: {
+        $route(val) {
+            if (this.$route.name != 'index') {
+                document.removeEventListener("backbutton", this.onBackKeyDown, false);
+                document.removeEventListener("backbutton", this.exitApp, false);
+            }
         }
+    },
+    activated() {
+        document.addEventListener("backbutton", this.onBackKeyDown, false);
     },
     mounted() {
         this.init();

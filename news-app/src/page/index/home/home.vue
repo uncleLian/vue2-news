@@ -32,30 +32,6 @@ export default {
             let res = await this.get_indexColumn_data();
             await Promise.all([this.get_indexPage(res), this.get_indexLocation(res) , this.get_indexActive() ]);
         },
-        onBackKeyDown() {
-            window.plugins.toast.showShortBottom('再点击一次退出程序');
-            document.removeEventListener("backbutton", this.onBackKeyDown, false);
-            document.addEventListener("backbutton", this.exitApp, false);
-            var timer = setTimeout(function() {
-                document.removeEventListener("backbutton", this.exitApp, false);
-                document.addEventListener("backbutton", this.onBackKeyDown, false);
-                clearTimeout(timer);
-            }, 2000);
-        },
-        exitApp() {
-            navigator.app.exitApp();
-        },
-    },
-    watch: {
-        $route(val) {
-            if (this.$route.name != 'index') {
-                document.removeEventListener("backbutton", this.onBackKeyDown, false);
-                document.removeEventListener("backbutton", this.exitApp, false);
-            }
-        }
-    },
-    activated() {
-        document.addEventListener("backbutton", this.onBackKeyDown, false);
     },
     created(){
         this.init();

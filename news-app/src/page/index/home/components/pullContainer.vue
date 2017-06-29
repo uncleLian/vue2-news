@@ -30,7 +30,6 @@
     </div>
 </template>
 <script>
-import { Indicator } from 'mint-ui'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
     props:['type'],
@@ -59,7 +58,7 @@ export default {
     },
     watch: {
         indexActive(val){
-            Indicator.close();
+        
             this.init(); 
         },
         classPage(val) {
@@ -126,7 +125,6 @@ export default {
             })
         },
         loadTopAjax() {
-            Indicator.open();
             this.get_listItem_data({index:this.activeIndex,page:this.classPage})
             .then(json =>{
                 if(json){
@@ -139,11 +137,11 @@ export default {
                     $(`.container.${this.type} .pull_down .noNewData`).slideDown(200).delay(1000).slideUp(200);
                 }
                 this.$refs.loadmore.onTopLoaded();
-                Indicator.close();
+            
             })
             .catch(err =>{
                 console.log(err);
-                Indicator.close();
+            
                 $(`.container.${this.type} .pull_down .requestFail`).show();
             })
         },

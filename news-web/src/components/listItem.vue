@@ -287,4 +287,17 @@ larger_height = 4.6875rem
     }
 }
 
+.text{
+    p{
+        font-size: 17px;
+        line-height: 21px;
+        color: #222;
+        font-weight: 400;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        text-overflow: ellipsis;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
 </style>

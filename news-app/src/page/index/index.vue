@@ -5,7 +5,7 @@
                 <router-view></router-view>
             </keep-alive>
         </transition>
-        <!-- <nav-bar></nav-bar> -->
+        <nav-bar></nav-bar>
     </div>
 </template>
 <script>
@@ -14,6 +14,12 @@ export default {
     components: {
         navBar
     },
+    mounted(){
+         document.addEventListener('chcp_updateInstalled', function(eventData){
+          console.log('chcp_updateInstalled');
+          console.log('安装完成index');
+        }, false);
+    }
 }
 </script>
 <style scoped>
