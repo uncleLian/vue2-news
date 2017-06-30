@@ -10,7 +10,6 @@
                                 <p>{{section.title}}</p>
                             </div>
                             <div class="totalTime">{{section.playtime}}</div>
-                            <!-- <img v-lazy.container='section.titlepic'> -->
                             <img v-lazy.container="section.titlepic">
                         </div>
                         <div class="playRound">
@@ -61,7 +60,7 @@
                 </router-link>
             </li>
             <!-- 上次观看到这里 -->
-            <li v-else-if='section.type' id="lookHere" @click.stop='saveData(section)'>
+            <li v-else-if='section.type' id="lookHere">
                 <p>上次看到这里，点击刷新 <i class="icon-refresh"></i></p>
             </li>
             <!-- 文字 -->

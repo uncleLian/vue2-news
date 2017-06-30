@@ -56,6 +56,7 @@ header {
             color: inherit;
             font-size: inherit;
             font-weight: inherit;
+            text-decoration: none;
         }
         .abs_l,.abs_m,.abs_r {
             position: absolute;

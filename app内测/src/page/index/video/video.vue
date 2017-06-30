@@ -4,11 +4,11 @@
 		<div class="content" :class="{isIOS: $store.state.device == 'ios'}">
 			<div class="container">
 				<video-list :videoJson='videoJson'></video-list>
+				<div id='a1'></div>
 			</div>
 		</div>
 	</div>
 </template>
-
 <script>
 import videoList from './videoList'
 export default{
@@ -16,15 +16,12 @@ export default{
 	components:{ videoList },
 	data(){
 		return {
-			videoJson: [
-				{playonlineurl:'123'},
-				{playonlineurl:'123'},
-				{playonlineurl:'123'},
-				{playonlineurl:'123'},
-				{playonlineurl:'123'},
-			],
+			videoJson: [],
 		}
-	}
+	},
+	mounted(){
+
+	},
 }
 </script>
 <style scoped lang='stylus'>

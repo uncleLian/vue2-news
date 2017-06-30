@@ -11,7 +11,7 @@
 import '@/assets/css/reset.css'
 import '@/assets/css/icon.css'
 import fastClick from 'fastclick'
-import { mapMutations, mapActions } from 'vuex'
+import { mapGetters,mapMutations, mapActions } from 'vuex'
 import { Indicator } from 'mint-ui';
 export default {
     data() {
@@ -27,7 +27,7 @@ export default {
     //     }, false);
     // },
     beforeRouteUpdate(to, from, next) {
-        let isBack = this.$router.isBack
+        let isBack = this.$router.isBack;
         if (isBack) {
             this.transitionName = 'slide-right'
         } else {
@@ -35,6 +35,13 @@ export default {
         }
         this.$router.isBack = false
         next()
+    },
+    computed:{
+        ...mapGetters('login',[
+            'login',
+            'wx',
+            'qq',
+        ])
     },
     methods: {
         ...mapMutations([
@@ -46,11 +53,8 @@ export default {
             'get_user',
         ]),
         init(){
-            this.getUUID();
             this.firstEnterTime();
             this.checkOS();
-            this.get_user();
-            this.upGrade();
             this.baiduCollect();
             $(function() {
                 fastClick.attach(document.body);
@@ -84,16 +88,6 @@ export default {
         exitApp() {
             navigator.app.exitApp();
         },
-        upGrade(){
-            document.addEventListener('chcp_updateInstalled', (eventData) => {
-                console.log('安装完成index');
-            }, false);
-        },
-        getUUID(){
-            document.addEventListener("deviceready", () => {
-                this.set_userid(device.uuid);
-            }, false);
-        },
         firstEnterTime(){ 
             let time = new Date().getTime();
             this.set_firstTime(time);
@@ -111,6 +105,12 @@ export default {
     //     document.addEventListener("backbutton", this.onBackKeyDown, false);
     // },
     created(){
+        this.get_user();
+        document.addEventListener("deviceready", () => {
+            if(!this.login){
+                this.set_userid(device.uuid);
+            }
+        }, false);
         this.init();
     },
 }

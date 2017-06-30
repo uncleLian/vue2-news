@@ -7,7 +7,7 @@
         <span class='from' v-if='infoJson.befrom'>{{infoJson.befrom}}</span>
         <span class='news_click' v-if='infoJson.onclick'>{{infoJson.onclick | watchFilter }}阅</span>
         <span class='news_time' v-if='infoJson.time'>{{infoJson.time}}</span>
-        <span class='news_tag' v-if='infoJson.time'>{{infoJson.nlist}}</span>
+        <span class='news_tag' v-if='infoJson.nlist'>{{infoJson.nlist}}</span>
     </div>
 </template>
 <script>

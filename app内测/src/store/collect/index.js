@@ -16,8 +16,10 @@ export default {
     },
     mutations: {
         set_collectArticle(state,val){
-            state.collectArticle = val;
-            set_local_cache('collect_Article', val);
+            if(val){
+                state.collectArticle = val;
+                set_local_cache('collect_Article', val);
+            }
         },
         set_checkedArr(state,val){
             state.checkedArr = val;
@@ -38,7 +40,6 @@ export default {
                 }
                 res = await fetch('post', 'collectList', params);
             }
-            commit('set_collectArticle',res);
             return res
         },
 

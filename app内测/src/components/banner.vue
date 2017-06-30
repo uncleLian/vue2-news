@@ -9,7 +9,6 @@
 		            </div>
 	        	</router-link>
 	        </swiper-slide>
-	        
 	    </swiper>
 	    <div class="swiper-pagination" slot="pagination"></div>
     </div>

@@ -230,7 +230,10 @@ export default {
             overflow: auto;
             -webkit-overflow-scrolling: touch;
             .search_info{
-                padding-top: 100px;
+                position: absolute;
+                top: 30%;
+                left: 0;
+                right: 0;
                 text-align: center;
                 color: #999;
                 line-height: 1.5em;

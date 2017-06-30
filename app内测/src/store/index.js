@@ -35,7 +35,7 @@ const mutations = {
         state.userid = val;
     },
     set_firstTime(state,val){
-         state.firstTime = val;
+        state.firstTime = val;
     },
 }
 

@@ -5,7 +5,7 @@
                 <router-view></router-view>
             </keep-alive>
         </transition>
-        <nav-bar></nav-bar>
+        <!-- <nav-bar></nav-bar> -->
     </div>
 </template>
 <script>

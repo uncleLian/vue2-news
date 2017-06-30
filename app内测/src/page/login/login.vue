@@ -47,6 +47,9 @@
           'set_wx',
           'set_qq',
         ]),
+        ...mapMutations([
+          'set_userid',
+        ]),
         //      toUserInfo(val){
         //        this.GET_USERINFO(val);
         //      },
@@ -60,33 +63,19 @@
                 alert("授权成功")
                 var code = response.code;
                 $.ajax({
-                  url: `https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx13b05ceac5e7a654&secret=9c96f15b353dc26658def855f9b04ce0&code=${code}&grant_type=authorization_code`,
-                  type: 'GET'
-                })
-                  .then(res => {
-                    alert("获取数据");
-                    var refresh_token = JSON.parse(res).refresh_token;
-                    $.ajax({
-                      url: `https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=wx13b05ceac5e7a654&grant_type=refresh_token&refresh_token=${refresh_token}`,
-                      type: 'GET'
-                    })
-                      .then(ress => {
-                        var ress = JSON.parse(ress);
-                        var access_token = ress.access_token;
-                        var openid = ress.openid;
-                        $.ajax({
-                          url: `https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}`,
-                          type: 'GET'
-                        })
-                          .then(data => {
-                            var resss = JSON.parse(data);
-                            console.log(resss);
-                            that.set_login('wx');
-                            that.set_wx(resss);
-                            that.$router.go(-1);
-                          })
-                      })
-                  })
+                  type: 'GET',
+                  url: `http://data.toutiaojk.com/e/extend/list/appuser.php?code=${code}`,
+                }).then(res => {
+                   var ress =  JSON.parse(res);
+                   if(ress.err != 1){
+                     that.set_login('wx');
+                     that.set_wx(ress.data);
+                     that.set_userid(ress.data.unionid);
+                     that.$router.go(-1);
+                   }else {
+                       alert(ress.errMsg);
+                   }
+                });
               }
               function errorCallback() {
                 alert("授权失败！");
@@ -99,7 +88,8 @@
             //          this.goBack();
           }
           // that.set_login('wx');
-          // that.set_wx({nickname:'小鑫'});
+          // that.set_userid('lian123456');
+          // that.set_wx({nickname:'小鑫',unionid:'lian123456'});
           // that.$router.go(-1);
         },
       },

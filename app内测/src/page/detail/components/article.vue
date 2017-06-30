@@ -9,7 +9,7 @@
 
         <template v-if="json.playonlineurl">
             <div class="article_video">
-                <div class="video" :class="{'video-fixed': video_fixed}">
+                <div class="video" :class="{'video-fixed': video_fixed}" id='ckVideo'>
                     <template v-if="video_poster">
                         <div class="video_info">
                             <img :src="json.titlepic">
@@ -31,7 +31,7 @@
                     <div class="loading" v-show='video_loading'>
                         <mt-spinner :type="0" :size='50'></mt-spinner>
                     </div>
-                    <video ref='video' :controls='!video_poster' v-if='json.playonlineurl' :key='json.playonlineurl'>
+                    <video ref='video' :controls='!video_poster' v-if='json.playonlineurl' :key='json.playonlineurl' >
                         <source :src="json.playonlineurl" type="video/mp4" >
                     </video>
                 </div>
@@ -118,7 +118,7 @@ export default {
             document.addEventListener("pause", () => {
                 this.video.pause();
             }, false);
-        }
+        },
     },
     watch:{
         json(val){

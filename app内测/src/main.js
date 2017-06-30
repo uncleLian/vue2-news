@@ -18,7 +18,6 @@ import listItem from '@/components/listItem'     // 列表
 import banner from '@/components/banner'     // banner
 import popupMenu from '@/components/popupMenu'     // 弹框
 import { swiperDirective } from '@/components/swiperDirective.js' //手势指令
-
 Vue.config.productionTip = false;
 
 Vue.use(MintUI) // 饿了么移动端UI组件
