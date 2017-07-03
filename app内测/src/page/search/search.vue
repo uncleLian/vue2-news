@@ -16,11 +16,11 @@
         
         <div class="search_content" :class="{isIOS: $store.state.device == 'ios'}">
             <div class="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false" v-swiper:swiperRight='true'>
-                <div class="search_info" v-if="!searchJson.length > 0 && !loading && searchStatus == 'info' ">
+                <div class="search_info" v-if="!(searchJson.length > 0) && !loading && searchStatus == 'info' ">
                     <p>空空如也</p>
                     <p>快去搜索吧</p>
                 </div>
-                <div class="search_result-empty" v-if=" !searchJson.length > 0 && !loading && searchStatus == 'empty'">
+                <div class="search_result-empty" v-if=" !(searchJson.length > 0) && !loading && searchStatus == 'empty'">
                     <p>这个宇宙中搜寻不到</p>
                     <p>换个词试试</p>
                 </div>
@@ -153,6 +153,13 @@ export default {
             }
         },
     },
+    mounted() {
+        this.get_cache();
+        $('.form').on('submit', event => {
+            event.preventDefault();
+            this.searchAjax();
+        });
+    },
     activated() {
         this.getLocation();
         let routeKey = this.$route.query.key;
@@ -164,13 +171,7 @@ export default {
     deactivated() {
         this.setLocation();
     },
-    mounted() {
-        this.get_cache();
-        $('.form').on('submit', event => {
-            event.preventDefault();
-            this.searchAjax();
-        });
-    }
+    
 }
 </script>
 <style scoped lang='stylus'>

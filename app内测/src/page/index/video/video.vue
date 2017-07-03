@@ -4,7 +4,6 @@
 		<div class="content" :class="{isIOS: $store.state.device == 'ios'}">
 			<div class="container">
 				<video-list :videoJson='videoJson'></video-list>
-				<div id='a1'></div>
 			</div>
 		</div>
 	</div>
@@ -20,7 +19,6 @@ export default{
 		}
 	},
 	mounted(){
-
 	},
 }
 </script>

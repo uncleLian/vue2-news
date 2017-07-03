@@ -27,7 +27,6 @@
         </div>
         <!-- 分享 -->
         <detail-share ref="share"></detail-share>
-        
     </div>
 </template>
 <script>
@@ -164,7 +163,6 @@ export default {
         border-bottom:1px solid #ddd;
         i {
             font-size: 20px;
-            font-weight: bold;
             vertical-align: middle;
         }
     }

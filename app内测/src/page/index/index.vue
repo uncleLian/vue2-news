@@ -1,4 +1,5 @@
 <template>
+ <transition name='slideIn' mode='in-out'>
   <div id="index">
     <transition name='fade'>
       <keep-alive>
@@ -7,6 +8,7 @@
     </transition>
     <nav-bar></nav-bar>
   </div>
+  </transition>
 </template>
 <script>
   import navBar from './navBar'

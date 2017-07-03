@@ -75,6 +75,7 @@ export default {
     },
 }
 </script>
+
 <style scoped lang='stylus'>
 #indexHeader {
     position: fixed;
@@ -85,11 +86,9 @@ export default {
     overflow: hidden;
     .header {
         .title {
-            background: url(../../../../assets/img/news_logo.png)no-repeat center center;
             background-size: 145px;
         }
         .search_btn {
-            background: url(../../../../assets/img/search.png)no-repeat center center;
             background-size: 24px;
         }
     }
@@ -139,13 +138,11 @@ export default {
                 width: 10px;
                 height: 100%;
                 left: -10px;
-                background: url(../../../../assets/img/shadow.png) no-repeat 100%;
                 background-size: contain;
                 background-color: rgba(244, 245, 246, .3);
             }
             .more_btn {
                 display: block;
-                background: url(../../../../assets/img/menu_more.png) no-repeat 50%;
                 width: 40px;
                 height: 100%; 
                 background-size: 20px;
@@ -154,4 +151,18 @@ export default {
         }
     }
 }
+</style>
+<style scoped>
+    .title {
+        background: url(~@/assets/img/news_logo.png)no-repeat center center;
+    }
+    .search_btn {
+        background: url(~@/assets/img/search.png)no-repeat center center;
+    }
+    .shadow {
+        background: url(~@/assets/img/shadow.png) no-repeat 100%;
+    }
+    .more_btn {
+        background: url(~@/assets/img/menu_more.png) no-repeat 50%;
+    }
 </style>

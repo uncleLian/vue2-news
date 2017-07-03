@@ -6,7 +6,7 @@
     <div class="login">
       <template v-if='!login'>
         <div class="mylogin_1" @click="$router.push('/login')">
-          <img src="../../../../assets/icon/login.png"/>
+          <img src="~@/assets/icon/login.png"/>
           <mt-button type="danger">点击登录</mt-button>
         </div>
       </template>
@@ -25,33 +25,33 @@
     <!--<div class="subhead"></div>-->
     <router-link tag='div' class="myList" to='user/userguide'>
       <span>版本介绍</span>
-      <img src="../../../../assets/icon/assist.png"/>
+      <img src="~@/assets/icon/assist.png"/>
     </router-link>
     <!-- <div class="myList" @click="$router.push('userguide')">
   <span>用户指南</span>
-  <img src="../../../../assets/icon/assist.png"/>
+  <img src="~@/assets/icon/assist.png"/>
 </div> -->
     <div class="subhead"></div>
     <router-link tag='div' class="myList" to='user/QRcode'>
       <span>扫码分享</span>
-      <img src="../../../../assets/icon/erweima.png"/>
+      <img src="~@/assets/icon/erweima.png"/>
     </router-link>
 
     <!--<div class="subhead"></div>-->
     <!--<div class="myList">-->
       <!--<span>评价</span>-->
-      <!--<img src="../../../../assets/icon/pingjia.png"/>-->
+      <!--<img src="~@/assets/icon/pingjia.png"/>-->
     <!--</div>-->
     <div class="subhead"></div>
     <router-link tag='div' class="myList" to='user/feedBack'>
       <span>意见反馈</span>
-      <img src="../../../../assets/icon/yijian.png"/>
+      <img src="~@/assets/icon/yijian.png"/>
     </router-link>
 
     <div class="subhead"></div>
     <div class="myList" @click="outLogin">
       <span>退出登录</span>
-      <img src="../../../../assets/icon/assist.png"/>
+      <img src="~@/assets/icon/assist.png"/>
     </div>
   </div>
 </template>

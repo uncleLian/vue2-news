@@ -1,7 +1,6 @@
 <template>
-    <transition name='fadeIn' >
+    <transition name='fadeIn'>
         <div id="channel">
-        
             <my-header fixed title='频道管理'>
                 <a class="back" slot='left' @click='$router.go(-1)'></a>
             </my-header>
@@ -56,6 +55,10 @@ export default {
         ...mapActions('index',[
             'get_channel_data',
         ]),
+        add(index){
+            let addEle = this.channel.splice(index,1);
+            this.indexColumn.push(...addEle);
+        },
         remove(item,index){
             if( item.classpath == 'news_recommend' ){
                 return
@@ -63,10 +66,6 @@ export default {
                 let removeEle = this.indexColumn.splice(index,1);
                 this.channel.push(...removeEle);
             }
-        },
-        add(index){
-            let addEle = this.channel.splice(index,1);
-            this.indexColumn.push(...addEle);
         },
         sync(){
             let pageObj = {};
@@ -102,12 +101,13 @@ export default {
             this.set_indexActive('news_recommend');
         }
     },
-    deactivated(){
-        this.sync();
-    },
     mounted(){
         this.get_channel_ajax();
     },
+    deactivated(){
+        this.sync();
+    },
+    
 }
 </script>
 <style scoped lang='stylus'>

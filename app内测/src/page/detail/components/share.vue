@@ -3,19 +3,19 @@
         <popup-menu v-model="contentFrame">
             <div class="share_container">
                 <span class="wx_friend shareItem" @click="wxShare(0)">
-                    <img src="../../../assets/img/wx_friend.png">
+                    <img src="~@/assets/img/wx_friend.png">
                     <label>微信好友</label>
                 </span>
                 <span class="wx_pyq shareItem" @click="wxShare(1)">
-                    <img src="../../../assets/img/wx_pyq.png">
+                    <img src="~@/assets/img/wx_pyq.png">
                     <label>微信朋友圈</label>
                 </span>
                 <span class="shareItem" @click="qqShare(0)">
-                    <img src="../../../assets/img/qq.png">
+                    <img src="~@/assets/img/qq.png">
                     <label>QQ好友</label>
                 </span>
                 <span class="shareItem" @click="qqShare(1)">
-                    <img src="../../../assets/img/qzone.png">
+                    <img src="~@/assets/img/qzone.png">
                     <label>QQ空间</label>
                 </span>
             </div>

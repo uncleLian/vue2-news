@@ -65,6 +65,7 @@ export default new Router({
 			    			component: collect	
 			    		},
 			    		{
+			    			name:'user',
 			    			path:'user',
 			    			component: user,
 			    			children:[

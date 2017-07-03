@@ -39,8 +39,6 @@ export default {
     computed:{
         ...mapGetters('login',[
             'login',
-            'wx',
-            'qq',
         ])
     },
     methods: {
@@ -59,6 +57,10 @@ export default {
             $(function() {
                 fastClick.attach(document.body);
             })
+        },
+        firstEnterTime(){ 
+            let time = new Date().getTime();
+            this.set_firstTime(time);
         },
         checkOS() {
             var ua = navigator.userAgent.toLowerCase();
@@ -88,22 +90,16 @@ export default {
         exitApp() {
             navigator.app.exitApp();
         },
-        firstEnterTime(){ 
-            let time = new Date().getTime();
-            this.set_firstTime(time);
-        },
+        
     },
     watch: {
-        // $route(val) {
-        //     if (this.$route.name != 'index') {
-        //         document.removeEventListener("backbutton", this.onBackKeyDown, false);
-        //         document.removeEventListener("backbutton", this.exitApp, false);
-        //     }
-        // }
+        $route(val) {
+            if (this.$route.name == 'home' || this.$route.name == 'video' || this.$route.name == 'collect' || this.$route.name == 'user' ) {
+                document.removeEventListener("backbutton", this.onBackKeyDown, false);
+                document.removeEventListener("backbutton", this.exitApp, false);
+            }
+        }
     },
-    // activated() {
-    //     document.addEventListener("backbutton", this.onBackKeyDown, false);
-    // },
     created(){
         this.get_user();
         document.addEventListener("deviceready", () => {
@@ -112,6 +108,9 @@ export default {
             }
         }, false);
         this.init();
+    },
+    activated() {
+        document.addEventListener("backbutton", this.onBackKeyDown, false);
     },
 }
 </script>
