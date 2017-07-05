@@ -30,7 +30,12 @@ export default {
             if (historyData && historyData[id]) {
                 res = historyData[id]
             } else {
-                await fetch('post', 'Artilce', { 'id': id, 'userid': rootState.userid })
+                let params = {
+                    'id': id,
+                    'userid': rootState.userid,
+                    'datafrom': state.datafrom
+                }
+                await fetch('post', 'Artilce', params)
                 .then(json => {
                     res = json[0]
                     historyData = {...state.historyArticle, ...{ [id]: res }}

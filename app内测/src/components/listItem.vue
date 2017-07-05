@@ -114,7 +114,7 @@ export default {
     },
     methods: {
         url(item) {
-            return `/detail?classid=${item.classid}&id=${item.id}`
+            return `/detail?classid=${item.classid}&id=${item.id}&datafrom=${item.datafrom}`
         }
     }
 }

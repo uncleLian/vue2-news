@@ -84,6 +84,7 @@ export default {
         async init() {
             this.classid = this.$route.query.classid
             this.id = this.$route.query.id
+            this.set_datafrom(this.$route.query.datafrom)
             $('#detail .container').scrollTop(0)
             if (!(this.indexColumn.length > 1)) {
                 await this.get_indexColumn_data()
@@ -103,9 +104,6 @@ export default {
                 if (res) {
                     this.currentArticle = res
                     this.loading = false
-                    if (res.datafrom) {
-                        this.set_datafrom(res.datafrom)
-                    }
                 }
                 this.error = false
             })

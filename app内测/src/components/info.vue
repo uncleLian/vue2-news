@@ -34,17 +34,16 @@ export default {
     }
     .news_label {
         font-size: 9px;
-        height: 12px;
-        line-height: 13px;
         border-radius: 2px;
+        padding: 0 2px;
     }
     .blue {
-        color: #3d99d4;
-        border: 1px solid #3d99d4;
+        color: #fff;
+        background: #3d99d4;
     }
     .red {
-        color: #f85959;
-        border: 1px solid rgba(248, 89, 89, .5);
+        color: #fff;
+        background: #f85959;
     }
 }
 </style>
