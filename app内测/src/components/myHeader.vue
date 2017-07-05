@@ -2,23 +2,29 @@
     <header :class="{ 'fixed': fixed }">
         <div class="iosStatus" v-if="ios()"></div>
         <div class="top_bar">
-            <div class="abs_l"><slot name="left"></slot></div>
-            <div class="abs_m">{{title}}<slot name="mid"></slot></div>
-            <div class="abs_r"><slot name="right"></slot></div>
+            <div class="abs_l">
+                <slot name="left"></slot>
+            </div>
+            <div class="abs_m">{{title}}
+                <slot name="mid"></slot>
+            </div>
+            <div class="abs_r">
+                <slot name="right"></slot>
+            </div>
         </div>
     </header>
 </template>
 <script>
 export default {
     props: {
-        fixed:Boolean,
-        title:String
+        fixed: Boolean,
+        title: String
     },
     methods: {
-        ios(){
-            if(this.$store.state.device == 'ios'){
+        ios() {
+            if (this.$store.state.device === 'ios') {
                 return true
-            }else{
+            } else {
                 return false
             }
         }
@@ -30,6 +36,7 @@ export default {
     width: 100%;
     height: 20px;
 }
+
 header {
     display: block;
     position: relative;
@@ -37,7 +44,7 @@ header {
     background-color: #d43d3d;
     color: #fff;
     font-size: 16px;
-    &.fixed{
+    &.fixed {
         position: fixed;
         top: 0;
         left: 0;
@@ -48,8 +55,8 @@ header {
         position: relative;
         height: 44px;
         line-height: 44px;
-        user-select:none;
-        a{
+        user-select: none;
+        a {
             display: block;
             width: 100%;
             height: 100%;
@@ -58,7 +65,9 @@ header {
             font-weight: inherit;
             text-decoration: none;
         }
-        .abs_l,.abs_m,.abs_r {
+        .abs_l,
+        .abs_m,
+        .abs_r {
             position: absolute;
             top: 0;
             width: 44px;

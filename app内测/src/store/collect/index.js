@@ -1,10 +1,9 @@
-import { getCache, setCache , get_local_cache , set_local_cache} from '@/config/cache'
 import { fetch } from '@/config/fetch'
 export default {
     namespaced: true,
     state: {
-       	collectArticle: [],
-       	checkedArr: [],
+        collectArticle: [],
+        checkedArr: []
     },
     getters: {
         collectArticle: state => {
@@ -12,45 +11,36 @@ export default {
         },
         checkedArr: state => {
             return state.checkedArr
-        },
+        }
     },
     mutations: {
-        set_collectArticle(state,val){
-            if(val){
-                state.collectArticle = val;
-                set_local_cache('collect_Article', val);
+        set_collectArticle(state, val) {
+            if (val && val.length > 0) {
+                state.collectArticle = val
             }
         },
-        set_checkedArr(state,val){
-            state.checkedArr = val;
-        },
-
+        set_checkedArr(state, val) {
+            state.checkedArr = val
+        }
     },
     actions: {
-    	async get_collect_data({ commit, rootState,state }, page) {
-            let res, cache;
-            cache = JSON.parse(get_local_cache('collect_Article'));
-            if(cache){
-                res = cache;
-            }else if(rootState.login.login){
-                let params = {
-                    rdata: 'collect',
-                    userid: rootState.userid,
-                    page: page,
-                }
-                res = await fetch('post', 'collectList', params);
+        async get_collect_data({rootState}, page) {
+            let params = {
+                rdata: 'collect',
+                userid: rootState.userid
             }
+            let res = await fetch('post', 'collectList', params)
             return res
         },
 
-        del_collect_data({ commit, state , rootState }, query) {
-        	let params = {
-        		del: 'collect',
-        		userid: rootState.userid,
-        		data: query
-        	};
-            let res = fetch('post', 'userData', params);
+        del_collect_data({state, rootState}) {
+            let params = {
+                del: 'collect',
+                userid: rootState.userid,
+                data: state.checkedArr
+            }
+            let res = fetch('post', 'userData', params)
             return res
-        },
+        }
     }
 }

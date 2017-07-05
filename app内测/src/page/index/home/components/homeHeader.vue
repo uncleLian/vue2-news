@@ -4,7 +4,6 @@
             <a class='title' slot='mid' @click.stop="goTop"></a>
             <a class='search_btn' slot='right' @click.stop="$router.push('/search')"></a>
         </my-header>
-
         <nav>
             <div class="nav_ul">
                 <a href='javascript:;' v-for="(item,index) in column" :class='{active: indexActive == item.classpath}' @click="navClick(item.classpath)" :key="item">{{item.classname}}</a>
@@ -17,65 +16,64 @@
     </div>
 </template>
 <script>
-import { mapGetters , mapMutations } from 'vuex'
+import {mapGetters, mapMutations} from 'vuex'
 export default {
     props: ['column'],
-    data(){
+    data () {
         return {
-            move: 0,
+            move: 0
         }
     },
     computed: {
         ...mapGetters('index', [
             'indexActive',
-            'activeIndex',
-        ]),
+            'activeIndex'
+        ])
     },
     watch: {
-        indexActive() {
-            this.slideTo(this.activeIndex);
-        },
+        indexActive () {
+            this.slideTo(this.activeIndex)
+        }
     },
     methods: {
         ...mapMutations('index', [
-            'set_indexActive',
+            'set_indexActive'
         ]),
-        goTop() {
-            $(`.container.${this.indexActive}`).animate({scrollTop: 0});
+        goTop () {
+            $(`.container.${this.indexActive}`).animate({scrollTop: 0})
         },
-        navClick(type) {
-            this.set_indexActive(type);
+        navClick (type) {
+            this.set_indexActive(type)
         },
-        slideTo(index) {
+        slideTo (index) {
             this.$nextTick(() => {
-                let $ul = $(".nav_ul");
-                let $activeEle = $('.nav_ul a').eq(index);
-                if ($activeEle.length == 0) {
+                let $ul = $('.nav_ul')
+                let $activeEle = $('.nav_ul a').eq(index)
+                if ($activeEle.length === 0) {
                     return
                 } else {
-                    let ulWitch = $ul.width();
-                    let aWidth = $activeEle.width();
-                    let midWidth = (ulWitch - aWidth) / 2; // 屏幕中心线的宽度
-                    let ullLeft = $ul.scrollLeft(); // ul 滚动条的值
-                    let aLeft = $activeEle.position().left; // $activeEle 距离屏幕左边的距离
+                    let ulWitch = $ul.width()
+                    let aWidth = $activeEle.width()
+                    let midWidth = (ulWitch - aWidth) / 2 // 屏幕中心线的宽度
+                    let ullLeft = $ul.scrollLeft() // ul 滚动条的值
+                    let aLeft = $activeEle.position().left // $activeEle 距离屏幕左边的距离
                     if (ullLeft === 0 && aLeft <= midWidth) {
-                        this.move = 0;
+                        this.move = 0
                     } else {
-                        this.move = ullLeft + (aLeft - midWidth);
+                        this.move = ullLeft + (aLeft - midWidth)
                     }
-                    $ul.animate({'scrollLeft': this.move}, 300);
+                    $ul.animate({'scrollLeft': this.move}, 300)
                 }
             })
-        },
+        }
     },
-    activated() {
-        this.$nextTick(()=>{
-            $('.nav_ul').scrollLeft(this.move);
+    activated () {
+        this.$nextTick(() => {
+            $('.nav_ul').scrollLeft(this.move)
         })
-    },
+    }
 }
 </script>
-
 <style scoped lang='stylus'>
 #indexHeader {
     position: fixed;
@@ -144,7 +142,7 @@ export default {
             .more_btn {
                 display: block;
                 width: 40px;
-                height: 100%; 
+                height: 100%;
                 background-size: 20px;
                 background-color: #f4f5f6;
             }
@@ -153,16 +151,19 @@ export default {
 }
 </style>
 <style scoped>
-    .title {
-        background: url(~@/assets/img/news_logo.png)no-repeat center center;
-    }
-    .search_btn {
-        background: url(~@/assets/img/search.png)no-repeat center center;
-    }
-    .shadow {
-        background: url(~@/assets/img/shadow.png) no-repeat 100%;
-    }
-    .more_btn {
-        background: url(~@/assets/img/menu_more.png) no-repeat 50%;
-    }
+.title {
+    background: url(~@/assets/img/news_logo.png)no-repeat center center;
+}
+
+.search_btn {
+    background: url(~@/assets/img/search.png)no-repeat center center;
+}
+
+.shadow {
+    background: url(~@/assets/img/shadow.png) no-repeat 100%;
+}
+
+.more_btn {
+    background: url(~@/assets/img/menu_more.png) no-repeat 50%;
+}
 </style>

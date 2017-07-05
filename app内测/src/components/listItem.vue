@@ -2,7 +2,7 @@
     <ul id="listItem" :class="{'checkBox' : visible}">
         <template v-for="section in itemJson">
             <!-- 视频 -->
-            <li v-if="section.playonlineurl" @click.stop='saveData(section)'>
+            <li v-if="section.playonlineurl">
                 <div class="checkBox" v-if='visible'>
                     <input type="checkbox" :id="section.id" v-if='visible'>
                     <label :for="section.id"></label>
@@ -25,9 +25,9 @@
                 </router-link>
             </li>
             <!-- 1张大图 -->
-            <li v-else-if="section.ptitlepic"  @click.stop='saveData(section)'>
+            <li v-else-if="section.ptitlepic">
                 <div class="checkBox" v-if='visible'>
-                    <input type="checkbox" :id="section.id"  v-if='visible'>
+                    <input type="checkbox" :id="section.id" v-if='visible'>
                     <label :for="section.id"></label>
                     <div class="checked_btn" @click='checkBoxMethod(section)'></div>
                 </div>
@@ -42,9 +42,9 @@
                 </router-link>
             </li>
             <!-- 3张小图 -->
-            <li v-else-if="section.titlepic3" @click.stop='saveData(section)'>
+            <li v-else-if="section.titlepic3">
                 <div class="checkBox" v-if='visible'>
-                    <input type="checkbox" :id="section.id"  v-if='visible'>
+                    <input type="checkbox" :id="section.id" v-if='visible'>
                     <label :for="section.id"></label>
                     <div class="checked_btn" @click='checkBoxMethod(section)'></div>
                 </div>
@@ -63,9 +63,9 @@
                 </router-link>
             </li>
             <!-- 1张小图 -->
-            <li v-else-if="section.titlepic" @click.stop='saveData(section)'>
+            <li v-else-if="section.titlepic">
                 <div class="checkBox" v-if='visible'>
-                    <input type="checkbox" :id="section.id"  v-if='visible'>
+                    <input type="checkbox" :id="section.id" v-if='visible'>
                     <label :for="section.id"></label>
                     <div class="checked_btn" @click='checkBoxMethod(section)'></div>
                 </div>
@@ -84,9 +84,9 @@
                 <p>上次看到这里，点击刷新 <i class="icon-refresh"></i></p>
             </li>
             <!-- 文字 -->
-            <li v-else-if='section.title' @click.stop='saveData(section)'>
+            <li v-else-if='section.title'>
                 <div class="checkBox" v-if='visible'>
-                    <input type="checkbox" :id="section.id"  v-if='visible'>
+                    <input type="checkbox" :id="section.id" v-if='visible'>
                     <label :for="section.id"></label>
                     <div class="checked_btn" @click='checkBoxMethod(section)'></div>
                 </div>
@@ -99,36 +99,29 @@
     </ul>
 </template>
 <script>
-import { mapMutations } from 'vuex'
 export default {
     props: {
         itemJson: {
-            default: '',
+            default: ''
         },
         visible: {
             type: Boolean,
-            default: false,
+            default: false
         },
-        checkBoxMethod:{
-            type: Function,
+        checkBoxMethod: {
+            type: Function
         }
     },
-    methods:{
-        ...mapMutations('detail',[
-            'set_listArticle',
-        ]),
-        url(item){
+    methods: {
+        url(item) {
             return `/detail?classid=${item.classid}&id=${item.id}`
-        },
-        saveData(json){
-            this.set_listArticle(json);
-        },
+        }
     }
 }
 </script>
 <style scoped lang='stylus'>
-small_height = 1.96875rem
-larger_height = 4.6875rem
+small_height=1.96875rem 
+larger_height=4.6875rem 
 #listItem li {
     margin: 0 15px;
     border-bottom: 1px solid hsla(0, 0%, 87%, .6);
@@ -325,8 +318,8 @@ larger_height = 4.6875rem
     }
 }
 
-.text{
-    p{
+.text {
+    p {
         font-size: 17px;
         line-height: 21px;
         color: #222;
@@ -374,7 +367,7 @@ larger_height = 4.6875rem
         input[type="checkbox"]:checked + label:after {
             content: "\2714";
         }
-        .checked_btn{
+        .checked_btn {
             position: absolute;
             width: 120%;
             height: 100%;

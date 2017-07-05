@@ -17,7 +17,7 @@ export default {
         watchFilter(val) {
             if (!val) return ''
             return 107 + parseInt(val)
-        },
+        }
     }
 }
 </script>
@@ -36,7 +36,7 @@ export default {
         font-size: 9px;
         height: 12px;
         line-height: 13px;
-        border-radius: 2px; 
+        border-radius: 2px;
     }
     .blue {
         color: #3d99d4;

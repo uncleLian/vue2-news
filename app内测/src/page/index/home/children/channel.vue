@@ -4,13 +4,12 @@
             <my-header fixed title='频道管理'>
                 <a class="back" slot='left' @click='$router.go(-1)'></a>
             </my-header>
-            
-            <div class="content"  :class="{isIOS: $store.state.device == 'ios'}">
+            <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
                 <div class="container" v-swiper:swiperRight='true'>
                     <section class="column">
                         <p class="title">点击删除以下频道</p>
                         <ul>
-                            <li v-for='(item,index) in indexColumn' @click='remove(item,index)' :key='item' >
+                            <li v-for='(item,index) in indexColumn' @click='remove(item,index)' :key='item'>
                                 <a href='javascript:;' :class='item.classpath'>{{item.classname}}</a>
                             </li>
                         </ul>
@@ -32,82 +31,82 @@
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
     data() {
-        return {
-            channel: '',
+            return {
+            channel: ''
         }
     },
-    computed:{
-        ...mapGetters('index',[
-          'indexActive',
-          'indexPage',
-          'indexLocation',
-          'indexColumn',
-          'channelData',
-        ]),
+    computed: {
+        ...mapGetters('index', [
+            'indexActive',
+            'indexPage',
+            'indexLocation',
+            'indexColumn',
+            'channelData'
+        ])
     },
     methods: {
-        ...mapMutations('index',[
+        ...mapMutations('index', [
             'set_indexActive',
             'set_indexPage',
             'set_indexLocation',
-            'set_indexColumn',
+            'set_indexColumn'
         ]),
-        ...mapActions('index',[
-            'get_channel_data',
+        ...mapActions('index', [
+            'get_channel_data'
         ]),
-        add(index){
-            let addEle = this.channel.splice(index,1);
-            this.indexColumn.push(...addEle);
+        add(index) {
+            let addEle = this.channel.splice(index, 1)
+            this.indexColumn.push(...addEle)
         },
-        remove(item,index){
-            if( item.classpath == 'news_recommend' ){
+        remove(item, index) {
+            if (item.classpath === 'news_recommend') {
                 return
-            }else{
-                let removeEle = this.indexColumn.splice(index,1);
-                this.channel.push(...removeEle);
+            } else {
+                let removeEle = this.indexColumn.splice(index, 1)
+                this.channel.push(...removeEle)
             }
         },
-        sync(){
-            let pageObj = {};
-            let locationObj = {};
-            for (let i = 0; i < this.indexColumn.length; i++){
-                var className = this.indexColumn[i].classpath;
-                if(this.indexPage[className] > 1 ){
-                    pageObj[className] = this.indexPage[className];
-                }else{
-                    pageObj[className] = 1;
+        sync() {
+            let pageObj = {}
+            let locationObj = {}
+            for (let i = 0; i < this.indexColumn.length; i++) {
+                var className = this.indexColumn[i].classpath
+                if (this.indexPage[className] > 1) {
+                    pageObj[className] = this.indexPage[className]
+                } else {
+                    pageObj[className] = 1
                 }
-                if(this.indexLocation[className] > 0){
-                    locationObj[className] = this.indexLocation[className];
-                }else{
-                    locationObj[className] = 0;
+                if (this.indexLocation[className] > 0) {
+                    locationObj[className] = this.indexLocation[className]
+                } else {
+                    locationObj[className] = 0
                 }
             }
-            this.set_indexPage(pageObj);
-            this.set_indexLocation(locationObj);
+            this.set_indexPage(pageObj)
+            this.set_indexLocation(locationObj)
         },
-        get_channel_ajax(){
+        get_channel_ajax() {
             this.get_channel_data()
-            .then(res=>{
-                if(res){
-                    this.channel = res;
-                }
-            })
+                .then(res => {
+                    if (res) {
+                        this.channel = res
+                    }
+                })
         }
     },
-    watch:{
-        indexColumn(){
-            this.set_indexColumn(this.indexColumn);
-            this.set_indexActive('news_recommend');
+    watch: {
+        indexColumn() {
+            this.set_indexColumn(this.indexColumn)
+            this.set_indexActive('news_recommend')
         }
     },
-    mounted(){
-        this.get_channel_ajax();
+    mounted() {
+        this.get_channel_ajax()
     },
-    deactivated(){
-        this.sync();
-    },
-    
+    deactivated() {
+        this.sync()
+    }
+
 }
 </script>
 <style scoped lang='stylus'>
@@ -123,10 +122,10 @@ export default {
         height: 100%;
         padding-top: 44px;
         background-color: #f8f8f8;
-        &.isIOS{
+        &.isIOS {
             padding-top: 64px;
         }
-        .container{
+        .container {
             height: 100%;
             overflow: auto;
             position: relative;
@@ -158,7 +157,7 @@ export default {
                         color: #131313;
                         text-align: center;
                         text-decoration: none;
-                        &.news_recommend{
+                        &.news_recommend {
                             background-color: #f0f0f0;
                         }
                     }
@@ -167,5 +166,4 @@ export default {
         }
     }
 }
-
 </style>

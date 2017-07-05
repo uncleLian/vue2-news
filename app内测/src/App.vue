@@ -11,10 +11,10 @@
 import '@/assets/css/reset.css'
 import '@/assets/css/icon.css'
 import fastClick from 'fastclick'
-import { mapGetters,mapMutations, mapActions } from 'vuex'
-import { Indicator } from 'mint-ui';
+import { mapGetters, mapMutations, mapActions } from 'vuex'
+// import { Indicator } from 'mint-ui'
 export default {
-    data() {
+    data () {
         return {
             transitionName: ''
         }
@@ -26,8 +26,8 @@ export default {
     //         next();
     //     }, false);
     // },
-    beforeRouteUpdate(to, from, next) {
-        let isBack = this.$router.isBack;
+    beforeRouteUpdate (to, from, next) {
+        let isBack = this.$router.isBack
         if (isBack) {
             this.transitionName = 'slide-right'
         } else {
@@ -36,82 +36,81 @@ export default {
         this.$router.isBack = false
         next()
     },
-    computed:{
-        ...mapGetters('login',[
-            'login',
+    computed: {
+        ...mapGetters('login', [
+            'login'
         ])
     },
     methods: {
         ...mapMutations([
             'set_device',
             'set_userid',
-            'set_firstTime',
+            'set_firstTime'
         ]),
-        ...mapActions('login',[
-            'get_user',
+        ...mapActions('login', [
+            'get_user'
         ]),
-        init(){
-            this.firstEnterTime();
-            this.checkOS();
-            this.baiduCollect();
-            $(function() {
-                fastClick.attach(document.body);
+        init () {
+            this.firstEnterTime()
+            this.checkOS()
+            this.baiduCollect()
+            $(function () {
+                fastClick.attach(document.body)
             })
         },
-        firstEnterTime(){ 
-            let time = new Date().getTime();
-            this.set_firstTime(time);
+        firstEnterTime () {
+            let time = new Date().getTime()
+            this.set_firstTime(time)
         },
-        checkOS() {
-            var ua = navigator.userAgent.toLowerCase();
+        checkOS () {
+            var ua = navigator.userAgent.toLowerCase()
             if (/iphone|ipad|ipod/.test(ua)) {
-                this.set_device('ios');
+                this.set_device('ios')
             }
         },
-        baiduCollect() {
-            var _hmt = _hmt || [];
-            (function() {
-                var hm = document.createElement("script");
-                hm.src = "https://hm.baidu.com/hm.js?87e080ee32b19db3f8adcacfb178347a";
-                var s = document.getElementsByTagName("script")[0];
-                s.parentNode.insertBefore(hm, s);
-            })();
+        baiduCollect () {
+            var _hmt = _hmt || []
+            ;(function () {
+                var hm = document.createElement('script')
+                hm.src = 'https://hm.baidu.com/hm.js?87e080ee32b19db3f8adcacfb178347a'
+                var s = document.getElementsByTagName('script')[0]
+                s.parentNode.insertBefore(hm, s)
+            })()
         },
-        onBackKeyDown() {
-            window.plugins.toast.showShortBottom('再点击一次退出程序');
-            document.removeEventListener("backbutton", this.onBackKeyDown, false);
-            document.addEventListener("backbutton", this.exitApp, false);
-            var timer = setTimeout(function() {
-                document.removeEventListener("backbutton", this.exitApp, false);
-                document.addEventListener("backbutton", this.onBackKeyDown, false);
-                clearTimeout(timer);
-            }, 2000);
+        onBackKeyDown () {
+            window.plugins.toast.showShortBottom('再点击一次退出程序')
+            document.removeEventListener('backbutton', this.onBackKeyDown, false)
+            document.addEventListener('backbutton', this.exitApp, false)
+            var timer = setTimeout(function () {
+                document.removeEventListener('backbutton', this.exitApp, false)
+                document.addEventListener('backbutton', this.onBackKeyDown, false)
+                clearTimeout(timer)
+            }, 2000)
         },
-        exitApp() {
-            navigator.app.exitApp();
-        },
-        
+        exitApp () {
+            navigator.app.exitApp()
+        }
     },
     watch: {
-        $route(val) {
-            if (this.$route.name == 'home' || this.$route.name == 'video' || this.$route.name == 'collect' || this.$route.name == 'user' ) {
-                document.removeEventListener("backbutton", this.onBackKeyDown, false);
-                document.removeEventListener("backbutton", this.exitApp, false);
+        $route (val) {
+            if (this.$route.name === 'home' || this.$route.name === 'video' || this.$route.name === 'collect' || this.$route.name === 'user') {
+                document.removeEventListener('backbutton', this.onBackKeyDown, false)
+                document.removeEventListener('backbutton', this.exitApp, false)
             }
         }
     },
-    created(){
-        this.get_user();
-        document.addEventListener("deviceready", () => {
-            if(!this.login){
-                this.set_userid(device.uuid);
+    created () {
+        this.get_user()
+        document.addEventListener('deviceready', () => {
+            if (!this.login) {
+                this.set_userid(device.uuid)
             }
-        }, false);
-        this.init();
+        }, false)
+        this.init()
     },
-    activated() {
-        document.addEventListener("backbutton", this.onBackKeyDown, false);
-    },
+    activated () {
+        document.addEventListener('backbutton', this.onBackKeyDown, false)
+    }
 }
 </script>
 <style>
@@ -136,5 +135,4 @@ export default {
 .slide-right-enter {
     transform: translate3d(-100%, 0, 0);
 }
-
 </style>

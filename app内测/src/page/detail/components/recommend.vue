@@ -6,7 +6,7 @@
 </template>
 <script>
 export default {
-    props: ['json'],
+    props: ['json']
 }
 </script>
 <style scoped lang='stylus'>

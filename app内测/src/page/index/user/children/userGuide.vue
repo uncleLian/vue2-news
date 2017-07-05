@@ -3,9 +3,9 @@
         <div id="userguide">
             <div class="myheader">
                 <!--<div class="iosHeader"></div>-->
-              <my-header fixed title='版本介绍'>
-                <a class="back" slot='left' @click='$router.go(-1)'></a>
-              </my-header>
+                <my-header fixed title='版本介绍'>
+                    <a class="back" slot='left' @click='$router.go(-1)'></a>
+                </my-header>
             </div>
             <div id="content">
                 1111111
@@ -16,13 +16,9 @@
 <script>
 export default {
     data() {
-            return {}
-        },
-        methods: {},
-        computed: {},
-        mounted() {
-
-        },
+        return {
+        }
+    }
 }
 </script>
 <style scope lang='stylus'>

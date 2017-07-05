@@ -36,11 +36,10 @@
     </div>
 </template>
 <script>
-import { Indicator } from 'mint-ui'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
-    props:['type'],
-    data() {
+    props: ['type'],
+    data () {
         return {
             classPage: 1,
             contentJson: '', // 整个列表数据arr
@@ -51,11 +50,11 @@ export default {
             dataCount: 0,   // 推荐数量
             bottomLock: false, // 上滑开关
             loading: false,
-            error: false,
+            error: false
         }
     },
     computed: {
-        ...mapGetters('index',[
+        ...mapGetters('index', [
           'indexActive',
           'indexPage',
           'indexLocation',
@@ -65,143 +64,141 @@ export default {
           'activeLocation',
           'indexSwiper',
           'stickJson',
-          'bannerJson',
-        ]),
+          'bannerJson'
+        ])
     },
     methods: {
-        ...mapMutations('index',[
+        ...mapMutations('index', [
             'set_currentContent',
             'set_indexPage',
-            'set_indexLocation',
+            'set_indexLocation'
         ]),
-        ...mapActions('index',[
+        ...mapActions('index', [
             'get_listItem_cache',
             'get_listItem_data',
             'get_stick_data',
-            'get_banner_data',
+            'get_banner_data'
         ]),
-        handleTopChange(status){
-            this.topStatus = status;
+        handleTopChange (status) {
+            this.topStatus = status
         },
-        init(){
-            if(this.indexActive == this.type && !this.contentJson){
-                this.classPage = this.activePage;
-                this.loading = true;
-                this.get_banner_data();
-                this.get_stick_data();
-                this.loadTopAjax();
+        init () {
+            if (this.indexActive === this.type && !this.contentJson) {
+                this.classPage = this.activePage
+                this.loading = true
+                this.get_banner_data()
+                this.get_stick_data()
+                this.loadTopAjax()
             }
         },
-        loadTopAjax() {
+        loadTopAjax () {
             this.get_listItem_data(this.classPage)
-            .then(res =>{
-                this.loading = false;
-                if(res && typeof res == 'object'){
-                    this.contentJson = [...res,...this.contentJson];
-                    this.dataCount = res.length;
-                    this.classPage++;
-                    this.globalTip = 'dataCount';
-                    $(`.container.${this.type} .dataCount`).slideDown(200).delay(1000).slideUp(200);
-                    this.newLookHere();
-                }else {
-                    $(`.container.${this.type} .noNewData`).slideDown(200).delay(1000).slideUp(200);
+            .then(res => {
+                this.loading = false
+                if (res && typeof res === 'object') {
+                    this.contentJson = [...res, ...this.contentJson]
+                    this.dataCount = res.length
+                    this.classPage++
+                    this.globalTip = 'dataCount'
+                    $(`.container.${this.type} .dataCount`).slideDown(200).delay(1000).slideUp(200)
+                    this.newLookHere()
+                } else {
+                    $(`.container.${this.type} .noNewData`).slideDown(200).delay(1000).slideUp(200)
                 }
-                this.$refs.loadmore.onTopLoaded();
-                this.error = false;
-                $(`.container.${this.type} .requestFail`).hide();
+                this.$refs.loadmore.onTopLoaded()
+                this.error = false
+                $(`.container.${this.type} .requestFail`).hide()
             })
-            .catch(err =>{
-                if(this.contentJson){
-                    $(`.container.${this.type} .requestFail`).show();
-                }else{
+            .catch(err => {
+                if (this.contentJson) {
+                    $(`.container.${this.type} .requestFail`).show()
+                } else {
                     this.get_listItem_cache()
-                    .then(cache =>{
-                        if(cache){
-                            this.contentJson = cache;
-                        }else {
-                           this.error = true;
+                    .then(cache => {
+                        if (cache) {
+                            this.contentJson = cache
+                        } else {
+                           this.error = true
                         }
                     })
                 }
-                this.loading = false;
-                console.log(err);
+                this.loading = false
+                console.log(err)
             })
-            
         },
-        loadBottomAjax() {
-            this.bottomLock = true;
+        loadBottomAjax () {
+            this.bottomLock = true
             this.get_listItem_data(this.classPage)
             .then(res => {
-                if (res  && typeof res == 'object') {
-                    this.contentJson = [...this.contentJson,...res];
+                if (res && typeof res === 'object') {
+                    this.contentJson = [...this.contentJson, ...res]
                     this.classPage++
-                }else {
-                    this.bottomLoading = false;
-                    this.bottomNoData = true;
+                } else {
+                    this.bottomLoading = false
+                    this.bottomNoData = true
                 }
-                this.bottomLock = false;
+                this.bottomLock = false
             })
         },
-        getLocation() {
-            if(this.indexActive == this.type){
-                this.$nextTick( ()=> {
-                    $(`.container.${this.type}`).scrollTop(this.activeLocation);
+        getLocation () {
+            if (this.indexActive === this.type) {
+                this.$nextTick(() => {
+                    $(`.container.${this.type}`).scrollTop(this.activeLocation)
                })
             }
         },
-        setLocation() {
-            if(this.indexActive == this.type){
-                let scrollTop = $(`.container.${this.type}`).scrollTop();
-                if(scrollTop >= 0){
-                    this.indexLocation[this.indexActive] = scrollTop;
-                    this.set_indexLocation(this.indexLocation);
+        setLocation () {
+            if (this.indexActive === this.type) {
+                let scrollTop = $(`.container.${this.type}`).scrollTop()
+                if (scrollTop >= 0) {
+                    this.indexLocation[this.indexActive] = scrollTop
+                    this.set_indexLocation(this.indexLocation)
                 }
             }
         },
-        newLookHere() {
-            if(this.dataCount >= 10){
-                let lookIndex = this.contentJson.findIndex((n) => n.type == 'lookHere');
-                this.contentJson.splice(lookIndex, 1);
-                this.contentJson.splice(10, 0, {type: 'lookHere'});
+        newLookHere () {
+            if (this.dataCount >= 10) {
+                let lookIndex = this.contentJson.findIndex((n) => n.type === 'lookHere')
+                this.contentJson.splice(lookIndex, 1)
+                this.contentJson.splice(10, 0, {type: 'lookHere'})
             }
-            this.$nextTick(()=>{
-                $(`.${this.indexActive} #lookHere`).prev().css('border', 'none');
+            this.$nextTick(() => {
+                $(`.${this.indexActive} #lookHere`).prev().css('border', 'none')
             })
         },
-        lookHereClick(){
-            $(`.container.${this.type}`).on('click', '#lookHere', () => { 
+        lookHereClick () {
+            $(`.container.${this.type}`).on('click', '#lookHere', () => {
                 $(`.container.${this.indexActive}`).animate({scrollTop: 0}, () => {
-                    this.loadTopAjax();
-                });
-            });
-        },
+                    this.loadTopAjax()
+                })
+            })
+        }
     },
     watch: {
-        indexActive(val){
-            this.init(); 
+        indexActive (val) {
+            this.init()
         },
-        classPage(val) {
-            this.indexPage[this.indexActive] = val;
-            this.set_indexPage(this.indexPage);
+        classPage (val) {
+            this.indexPage[this.indexActive] = val
+            this.set_indexPage(this.indexPage)
         },
-        contentJson(val){
-            this.set_currentContent(val);
+        contentJson (val) {
+            this.set_currentContent(val)
         },
-        indexSwiper(val) {
-            this.distance = val;
-        },
+        indexSwiper (val) {
+            this.distance = val
+        }
     },
-    mounted(){
-        this.init();
-        this.lookHereClick();
+    mounted () {
+        this.init()
+        this.lookHereClick()
     },
-    activated() {
-        this.getLocation();
+    activated () {
+        this.getLocation()
     },
-    deactivated() {
-        this.setLocation();
-    },
-    
+    deactivated () {
+        this.setLocation()
+    }
 }
 </script>
 <style scoped lang='stylus'>

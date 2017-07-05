@@ -8,15 +8,15 @@ export default {
     props: {
         visible: {
             type: Boolean,
-            default: false,
+            default: false
         }
     },
     data() {
         return {
             size: 36,
-            color: 'rgb(240, 61, 61)',
+            color: 'rgb(240, 61, 61)'
         }
-    },
+    }
 }
 </script>
 <style>
@@ -36,5 +36,4 @@ export default {
     left: 50%;
     margin-left: -18px;
 }
-
 </style>

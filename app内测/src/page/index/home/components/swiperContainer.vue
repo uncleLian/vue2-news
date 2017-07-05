@@ -7,53 +7,56 @@
 </template>
 <script>
 import pullContainer from './pullContainer'
-import { mapGetters , mapMutations } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
-    components: {  pullContainer },
+    components: {
+        pullContainer
+    },
     props: ['column'],
-    data() {
+    data () {
         return {
             swiperOption: {
                 notNextTick: true,
                 onSlideChangeStart: this.slideChangeCallBack,
                 onSliderMove: this.slideMoveCallBack,
-                onTouchEnd: this.touchEndCallBack,
+                onTouchEnd: this.touchEndCallBack
             }
         }
     },
     computed: {
         ...mapGetters('index', [
             'indexActive',
-            'activeIndex',
-        ]),
+            'activeIndex'
+        ])
     },
     watch: {
-        indexActive() {
-            this.$refs.mySwiper.swiper.slideTo(this.activeIndex, 300, true);
-        },
+        indexActive () {
+            this.$refs.mySwiper.swiper.slideTo(this.activeIndex, 300, true)
+        }
     },
     methods: {
         ...mapMutations('index', [
             'set_indexActive',
-            'set_indexSwiper',
+            'set_indexSwiper'
         ]),
-        slideChangeCallBack(swiper) {
-            let index = swiper.activeIndex;
-            this.set_indexActive(this.column[index].classpath);
+        slideChangeCallBack (swiper) {
+            let index = swiper.activeIndex
+            this.set_indexActive(this.column[index].classpath)
         },
-        slideMoveCallBack() {
-            this.set_indexSwiper(true);
+        slideMoveCallBack () {
+            this.set_indexSwiper(true)
         },
-        touchEndCallBack() {
-            this.set_indexSwiper(false);
-        },
-    },
+        touchEndCallBack () {
+            this.set_indexSwiper(false)
+        }
+    }
 }
 </script>
 <style scoped lang='stylus'>
-.swiper-box.isIOS{
+.swiper-box.isIOS {
     padding-top: 100px;
 }
+
 .swiper-box {
     width: 100%;
     height: 100%;
@@ -62,4 +65,3 @@ export default {
     padding-top: 80px;
 }
 </style>
-

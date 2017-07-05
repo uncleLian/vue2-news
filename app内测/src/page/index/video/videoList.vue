@@ -1,6 +1,6 @@
 <template>
     <ul id='listItem'>
-    	<template v-for='section in videoJson'>
+        <template v-for='section in videoJson'>
             <li v-if="section.playonlineurl">
                 <router-link :to="url(section)" class='video'>
                     <div class="video_wrapper">
@@ -21,23 +21,18 @@
         </template>
     </ul>
 </template>
-
 <script>
-
 export default {
-	props:['videoJson'],
+    props: ['videoJson'],
     data() {
         return {
-            
+
         }
     },
     methods: {
-    	url(item){
+        url(item) {
             return `/detail?classid=${item.classid}&id=${item.id}`
-        },
-    },
-    mounted(){
-       
+        }
     }
 }
 </script>

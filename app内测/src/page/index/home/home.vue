@@ -4,7 +4,6 @@
         <home-header :column='indexColumn'></home-header>
         <!-- content -->
         <swiper-container :column='indexColumn'></swiper-container>
-        
         <keep-alive>
             <router-view></router-view>
         </keep-alive>
@@ -13,22 +12,22 @@
 <script>
 import homeHeader from './components/homeHeader'
 import swiperContainer from './components/swiperContainer'
-import { mapGetters, mapActions} from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
     components: { homeHeader, swiperContainer },
     computed: {
-        ...mapGetters('index',[
-          'indexColumn',
-        ]),
+        ...mapGetters('index', [
+            'indexColumn'
+        ])
     },
     methods: {
-        ...mapActions('index',[
-            'get_indexColumn_data',
-        ]),
+        ...mapActions('index', [
+            'get_indexColumn_data'
+        ])
     },
-    created(){
-        this.get_indexColumn_data();
-    },
+    created() {
+        this.get_indexColumn_data()
+    }
 }
 </script>
 <style scoped>
