@@ -1,4 +1,4 @@
-# news-app
+# apptest
 
 > A Vue.js project
 
