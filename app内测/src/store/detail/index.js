@@ -3,28 +3,45 @@ import { fetch } from '@/config/fetch'
 export default {
     namespaced: true,
     state: {
+        listArticle: '',
         historyArticle: '',
         datafrom: ''
     },
     getters: {
+        listArticle: state => {
+            return state.listArticle
+        },
         historyArticle: state => {
             return state.historyArticle
+        },
+        get_historyArticle: state => {
+            if (state.historyArticle) {
+                return state.historyArticle
+            } else {
+                return JSON.parse(get_local_cache('history_Article'))
+            }
         },
         datafrom: state => {
             return state.datafrom
         }
     },
     mutations: {
+        set_listArticle(state, val) {
+            state.listArticle = val
+        },
+
         set_historyArticle(state, val) {
             state.historyArticle = val
             set_local_cache('history_Article', val)
         },
+
         set_datafrom(state, val) {
             state.datafrom = val
         }
     },
     actions: {
-        async get_Article_data({commit, state, rootState}, id) {
+
+        async get_Article_data({ commit, state, rootState }, { id, datafrom }) {
             let res, historyData
             historyData = JSON.parse(get_local_cache('history_Article'))
             if (historyData && historyData[id]) {
@@ -33,13 +50,13 @@ export default {
                 let params = {
                     'id': id,
                     'userid': rootState.userid,
-                    'datafrom': state.datafrom
+                    'datafrom': datafrom
                 }
                 await fetch('post', 'Artilce', params)
-                .then(json => {
-                    res = json[0]
-                    historyData = {...state.historyArticle, ...{ [id]: res }}
-                })
+                    .then(json => {
+                        res = json[0]
+                        historyData = [res, ...state.historyArticle]
+                    })
             }
             commit('set_historyArticle', historyData)
             return res

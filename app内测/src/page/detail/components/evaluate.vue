@@ -6,7 +6,7 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { Toast, MessageBox } from 'mint-ui'
+import { Toast } from 'mint-ui'
 export default {
     props: {
         num: {
@@ -34,7 +34,11 @@ export default {
         ...mapGetters('login', [
             'login'
         ]),
+        ...mapGetters('collect', [
+            'collectArticle'
+        ]),
         ...mapGetters('detail', [
+            'listArticle',
             'historyArticle',
             'datafrom'
         ])
@@ -45,6 +49,9 @@ export default {
         ]),
         ...mapActions('detail', [
             'send_user_data'
+        ]),
+        ...mapMutations('collect', [
+            'set_collectArticle'
         ]),
         send_data (type) {
             let params = {
@@ -59,8 +66,9 @@ export default {
             if (!this.likeBtn) {
                 this.likeNum += 1
                 this.likeBtn = true
-                this.historyArticle[this.id].giveup = this.id
-                this.historyArticle[this.id].diggtop++
+                let index = this.historyArticle.findIndex((n) => n.id === this.id)
+                this.historyArticle[index].giveup = this.id
+                this.historyArticle[index].diggtop++
                 this.set_historyArticle(this.historyArticle)
                 Toast({ message: '点赞成功', duration: 1000 })
                 this.send_data('giveup')
@@ -70,21 +78,14 @@ export default {
         },
         collectClick () {
             if (!this.collectBtn) {
-                if (this.login) {
                     this.collectBtn = true
-                    this.historyArticle[this.id].collect = this.id
+                    let index = this.historyArticle.findIndex((n) => n.id === this.id)
+                    this.historyArticle[index].collect = this.id
                     this.set_historyArticle(this.historyArticle)
+                    this.collectArticle.unshift(this.listArticle)
+                    this.set_collectArticle(this.collectArticle)
                     Toast({message: '已收藏', duration: 1000})
                     this.send_data('collect')
-                } else {
-                    MessageBox.confirm('你还未登陆')
-                    .then(action => {
-                        this.$router.push('/login')
-                    })
-                    .catch(err => {
-                        console.log('收藏', err)
-                    })
-                }
             } else {
                 Toast({message: '你已经收藏', duration: 1000})
             }

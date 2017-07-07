@@ -28,10 +28,12 @@ export default {
         }
     },
     actions: {
+
         get_current_cache({ commit, state }) {
             let data = JSON.parse(getCache('search_current'))
             return data
         },
+
         async get_search_data({ commit, state }, { key, page }) {
             let res
             let historyData

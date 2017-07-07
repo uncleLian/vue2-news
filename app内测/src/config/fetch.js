@@ -13,7 +13,8 @@ const ajaxURL = {
     Recommend: 'apptuijian.php',
     Search: 'search.php',
     userData: 'appuserdata.php',
-    collectList: 'appreaduserdata.php'
+    collectList: 'appreaduserdata.php',
+    videoList: 'appvideo.php'
 }
 
 export var fetch = async(type = 'POST', url = '', data = {}) => {

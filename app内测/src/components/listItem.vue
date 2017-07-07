@@ -2,7 +2,7 @@
     <ul id="listItem" :class="{'checkBox' : visible}">
         <template v-for="section in itemJson">
             <!-- 视频 -->
-            <li v-if="section.playonlineurl">
+            <li v-if="section.playonlineurl" @click.stop='saveData(section)'>
                 <div class="checkBox" v-if='visible'>
                     <input type="checkbox" :id="section.id" v-if='visible'>
                     <label :for="section.id"></label>
@@ -25,7 +25,7 @@
                 </router-link>
             </li>
             <!-- 1张大图 -->
-            <li v-else-if="section.ptitlepic">
+            <li v-else-if="section.ptitlepic" @click.stop='saveData(section)'>
                 <div class="checkBox" v-if='visible'>
                     <input type="checkbox" :id="section.id" v-if='visible'>
                     <label :for="section.id"></label>
@@ -42,7 +42,7 @@
                 </router-link>
             </li>
             <!-- 3张小图 -->
-            <li v-else-if="section.titlepic3">
+            <li v-else-if="section.titlepic3" @click.stop='saveData(section)'>
                 <div class="checkBox" v-if='visible'>
                     <input type="checkbox" :id="section.id" v-if='visible'>
                     <label :for="section.id"></label>
@@ -63,7 +63,7 @@
                 </router-link>
             </li>
             <!-- 1张小图 -->
-            <li v-else-if="section.titlepic">
+            <li v-else-if="section.titlepic" @click.stop='saveData(section)'>
                 <div class="checkBox" v-if='visible'>
                     <input type="checkbox" :id="section.id" v-if='visible'>
                     <label :for="section.id"></label>
@@ -84,7 +84,7 @@
                 <p>上次看到这里，点击刷新 <i class="icon-refresh"></i></p>
             </li>
             <!-- 文字 -->
-            <li v-else-if='section.title'>
+            <li v-else-if='section.title' @click.stop='saveData(section)'>
                 <div class="checkBox" v-if='visible'>
                     <input type="checkbox" :id="section.id" v-if='visible'>
                     <label :for="section.id"></label>
@@ -99,6 +99,7 @@
     </ul>
 </template>
 <script>
+import { mapMutations } from 'vuex'
 export default {
     props: {
         itemJson: {
@@ -113,8 +114,14 @@ export default {
         }
     },
     methods: {
+        ...mapMutations('detail', [
+            'set_listArticle'
+        ]),
         url(item) {
             return `/detail?classid=${item.classid}&id=${item.id}&datafrom=${item.datafrom}`
+        },
+        saveData(json) {
+            this.set_listArticle(json)
         }
     }
 }

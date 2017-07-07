@@ -5,6 +5,7 @@ import detail_module from './detail/index'
 import search_module from './search/index'
 import login_module from './login/index'
 import collect_module from './collect/index'
+import video_module from './video/index'
 
 Vue.use(Vuex)
 
@@ -50,6 +51,7 @@ export default new Vuex.Store({
         detail: detail_module,
         search: search_module,
         login: login_module,
-        collect: collect_module
+        collect: collect_module,
+        video: video_module
     }
 })

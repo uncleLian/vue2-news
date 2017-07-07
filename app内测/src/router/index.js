@@ -22,6 +22,7 @@ const profile = () => import('@/page/index/user/children/profile')
 const userGuide = () => import('@/page/index/user/children/userGuide')
 const QRcode = () => import('@/page/index/user/children/QRcode')
 const feedBack = () => import('@/page/index/user/children/feedBack')
+const readHistory = () => import('@/page/index/user/children/readHistory')
 const detail = () => import('@/page/detail/detail')
 const search = () => import('@/page/search/search')
 const login = () => import('@/page/login/login')
@@ -81,7 +82,11 @@ export default new Router({
                 {
                     path: 'feedBack',
                     component: feedBack
-                }
+                },
+                  {
+                    path: 'readHistory',
+                    component: readHistory
+                  }
                 ]
             }
             ]

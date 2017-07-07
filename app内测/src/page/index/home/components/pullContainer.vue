@@ -99,7 +99,6 @@ export default {
                     this.contentJson = [...res, ...this.contentJson]
                     this.dataCount = res.length
                     this.classPage++
-                    this.globalTip = 'dataCount'
                     $(`.container.${this.type} .dataCount`).slideDown(200).delay(1000).slideUp(200)
                     this.newLookHere()
                 } else {

@@ -56,6 +56,7 @@ export default {
             'set_checkedArr'
         ]),
         ...mapActions('collect', [
+            'get_collect_cache',
             'get_collect_data',
             'del_collect_data'
         ]),
@@ -108,6 +109,7 @@ export default {
                         }
                     }
                 }
+                console.log(this.checkedArr)
                 this.set_collectArticle(this.collectArticle)
                 this.editBtn = false
                 this.set_checkedArr([])
@@ -122,12 +124,13 @@ export default {
             if (vm.login) {
                 vm.getCollectAjax()
             } else {
-                MessageBox.confirm('你还未登陆')
+                MessageBox.confirm('登录可以同步云端数据')
                 .then(action => {
                     vm.$router.push('/login')
                 })
                 .catch(err => {
                     console.log(err)
+                    vm.get_collect_cache()
                 })
             }
         })
@@ -141,7 +144,6 @@ export default {
 #collect.edit {
     padding-bottom: 88px;
 }
-
 #collect {
     width: 100%;
     height: 100%;
@@ -209,5 +211,9 @@ export default {
             text-align: center;
         }
     }
+}
+
+#listItem li a:visited h3 {
+    color: #131313!important;
 }
 </style>

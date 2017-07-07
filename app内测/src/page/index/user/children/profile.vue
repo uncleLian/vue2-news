@@ -19,25 +19,24 @@
                 </div>
             </template>
         </div>
-        <!--<div class="subhead"></div>-->
+
+        <router-link tag='div' class="myList" to='user/readHistory'>
+          <span>历史记录</span>
+          <img src="~@/assets/icon/history.png" />
+        </router-link>
+
+        <div class="subhead"></div>
         <router-link tag='div' class="myList" to='user/userguide'>
             <span>版本介绍</span>
             <img src="~@/assets/icon/assist.png" />
         </router-link>
-        <!-- <div class="myList" @click="$router.push('userguide')">
-  <span>用户指南</span>
-  <img src="~@/assets/icon/assist.png"/>
-</div> -->
+
         <div class="subhead"></div>
         <router-link tag='div' class="myList" to='user/QRcode'>
             <span>扫码分享</span>
             <img src="~@/assets/icon/erweima.png" />
         </router-link>
-        <!--<div class="subhead"></div>-->
-        <!--<div class="myList">-->
-        <!--<span>评价</span>-->
-        <!--<img src="~@/assets/icon/pingjia.png"/>-->
-        <!--</div>-->
+
         <div class="subhead"></div>
         <router-link tag='div' class="myList" to='user/feedBack'>
             <span>意见反馈</span>

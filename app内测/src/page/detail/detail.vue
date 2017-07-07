@@ -23,7 +23,7 @@
             </div>
         </div>
         <!-- 分享 -->
-        <detail-share ref="share"></detail-share>
+        <detail-share :detailJson='currentArticle' ref="share"></detail-share>
     </div>
 </template>
 <script>
@@ -46,6 +46,7 @@ export default {
         return {
             id: null,
             classid: null,
+            from: '',
             title: '健康头条',
             currentArticle: {}, // 文章数据
             recommendJson: [], // 推荐数据
@@ -84,6 +85,7 @@ export default {
         async init() {
             this.classid = this.$route.query.classid
             this.id = this.$route.query.id
+            this.from = this.$route.query.datafrom
             this.set_datafrom(this.$route.query.datafrom)
             $('#detail .container').scrollTop(0)
             if (!(this.indexColumn.length > 1)) {
@@ -99,7 +101,7 @@ export default {
         get_Article() {
             this.loading = true
             this.enterTime = new Date().getTime()
-            this.get_Article_data(this.id)
+            this.get_Article_data({'id': this.id, 'datafrom': this.from})
             .then(res => {
                 if (res) {
                     this.currentArticle = res
@@ -134,6 +136,11 @@ export default {
     },
     mounted() {
         this.init()
+    },
+    beforeRouteEnter(to, from, next) {
+        $(function() {
+            next()
+        })
     },
     beforeRouteLeave(to, from, next) {
         let params = {

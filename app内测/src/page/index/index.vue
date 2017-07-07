@@ -18,7 +18,6 @@ export default {
         document.addEventListener('chcp_updateLoadFailed', function(eventData) {
             console.log('检查更新')
             var error = eventData.detail.error
-            // alert(error.code)
             if (error.code === -2) {
                 MessageBox.confirm('有新的版本，点击确认前往更新').then(action => {
                     document.addEventListener('deviceready', function() {

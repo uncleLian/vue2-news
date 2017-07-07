@@ -56,9 +56,7 @@ export default {
                 var scope = 'snsapi_userinfo'
                 document.addEventListener('deviceready', function() {
                     cordova.exec(successCallback, errorCallback, 'Wechat', 'sendAuthRequest', [scope])
-
                     function successCallback(response) {
-                        alert('授权成功')
                         var code = response.code
                         $.ajax({
                             type: 'GET',

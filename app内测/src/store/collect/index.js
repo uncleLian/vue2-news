@@ -1,3 +1,4 @@
+import { get_local_cache, set_local_cache } from '@/config/cache'
 import { fetch } from '@/config/fetch'
 export default {
     namespaced: true,
@@ -17,6 +18,7 @@ export default {
         set_collectArticle(state, val) {
             if (val && val.length > 0) {
                 state.collectArticle = val
+                set_local_cache('collect_Article', val)
             }
         },
         set_checkedArr(state, val) {
@@ -24,6 +26,14 @@ export default {
         }
     },
     actions: {
+        get_collect_cache({commit}) {
+            let res = JSON.parse(get_local_cache('collect_Article'))
+            if (res) {
+                commit('set_collectArticle', res)
+            }
+            return res
+        },
+
         async get_collect_data({rootState}, page) {
             let params = {
                 rdata: 'collect',

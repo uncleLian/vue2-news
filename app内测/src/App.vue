@@ -19,13 +19,13 @@ export default {
             transitionName: ''
         }
     },
-    // beforeRouteEnter(to, from, next){
-    //     Indicator.open();
-    //     document.addEventListener("deviceready", () => {
-    //         Indicator.close();
-    //         next();
-    //     }, false);
-    // },
+//    beforeRouteEnter(to, from, next) {
+//        Indicator.open()
+//        document.addEventListener('deviceready', () => {
+//            Indicator.close()
+//            next()
+//        }, false)
+//    },
     beforeRouteUpdate (to, from, next) {
         let isBack = this.$router.isBack
         if (isBack) {
@@ -92,12 +92,12 @@ export default {
         }
     },
     watch: {
-        $route (val) {
-            if (this.$route.name === 'home' || this.$route.name === 'video' || this.$route.name === 'collect' || this.$route.name === 'user') {
-                document.removeEventListener('backbutton', this.onBackKeyDown, false)
-                document.removeEventListener('backbutton', this.exitApp, false)
-            }
-        }
+        // $route (val) {
+        //     if (this.$route.name === 'home' || this.$route.name === 'video' || this.$route.name === 'collect' || this.$route.name === 'user') {
+        //         document.removeEventListener('backbutton', this.onBackKeyDown, false)
+        //         document.removeEventListener('backbutton', this.exitApp, false)
+        //     }
+        // }
     },
     created () {
         this.get_user()
@@ -109,7 +109,7 @@ export default {
         this.init()
     },
     activated () {
-        document.addEventListener('backbutton', this.onBackKeyDown, false)
+        // document.addEventListener('backbutton', this.onBackKeyDown, false)
     }
 }
 </script>
