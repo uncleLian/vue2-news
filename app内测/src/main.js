@@ -19,6 +19,7 @@ import loading from '@/components/loading' // loading
 import error from '@/components/error' // error
 import listInfo from '@/components/info' // 底部信息
 import listItem from '@/components/listItem' // 列表
+import commentItem from '@/components/commentItem' // 评论列表
 import banner from '@/components/banner' // banner
 import popupMenu from '@/components/popupMenu' // 弹框
 
@@ -28,6 +29,7 @@ Vue.component('loading', loading) // 加载动画
 Vue.component('error', error) // 加载动画
 Vue.component('list-info', listInfo) // 列表组件
 Vue.component('list-item', listItem) // 列表组件
+Vue.component('comment-item', commentItem) // 列表组件
 Vue.component('banner', banner) // 列表组件
 Vue.component('popup-menu', popupMenu) // 弹框组件
 
@@ -36,7 +38,7 @@ import { swiperDirective } from '@/components/swiperDirective.js' // 手势指�
 Vue.directive('swiper', {
     inserted: function(el, binding, vnode) {
         if (binding.value) {
-            swiperDirective(el, binding.arg, vnode.context)
+            swiperDirective(el, binding.arg, binding.value, vnode.context)
         } else {
             return
         }

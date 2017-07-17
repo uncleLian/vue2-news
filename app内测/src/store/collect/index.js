@@ -16,10 +16,8 @@ export default {
     },
     mutations: {
         set_collectArticle(state, val) {
-            if (val && val.length > 0) {
-                state.collectArticle = val
-                set_local_cache('collect_Article', val)
-            }
+            state.collectArticle = val
+            set_local_cache('collect_Article', val)
         },
         set_checkedArr(state, val) {
             state.checkedArr = val

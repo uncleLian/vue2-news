@@ -1,7 +1,5 @@
 <template>
     <div id='evaluate'>
-        <span class="like_btn icon-zan" @click.stop='likeClick' :class="{active: likeBtn}"> {{likeNum}}</span>
-        <span class="collect_btn icon-collect" @click.stop='collectClick' :class="{active: collectBtn}"> 收藏</span>
     </div>
 </template>
 <script>
@@ -22,17 +20,12 @@ export default {
     data () {
         return {
             id: this.$route.query.id,
-            likeNum: 0,
-            likeBtn: false,
             collectBtn: false
         }
     },
     computed: {
         ...mapGetters([
             'userid'
-        ]),
-        ...mapGetters('login', [
-            'login'
         ]),
         ...mapGetters('collect', [
             'collectArticle'
@@ -62,20 +55,6 @@ export default {
             }
             this.send_user_data(params)
         },
-        likeClick () {
-            if (!this.likeBtn) {
-                this.likeNum += 1
-                this.likeBtn = true
-                let index = this.historyArticle.findIndex((n) => n.id === this.id)
-                this.historyArticle[index].giveup = this.id
-                this.historyArticle[index].diggtop++
-                this.set_historyArticle(this.historyArticle)
-                Toast({ message: '点赞成功', duration: 1000 })
-                this.send_data('giveup')
-            } else {
-                Toast({ message: '你已经赞过', duration: 1000 })
-            }
-        },
         collectClick () {
             if (!this.collectBtn) {
                     this.collectBtn = true
@@ -92,14 +71,6 @@ export default {
         }
     },
     watch: {
-        num (val) {
-            this.likeNum = Number(val)
-        },
-        like (val) {
-            if (val) {
-                this.likeBtn = true
-            }
-        },
         collect (val) {
             if (val) {
                 this.collectBtn = true
@@ -111,6 +82,7 @@ export default {
 <style scoped lang='stylus'>
 #evaluate {
     text-align: center;
+    margin: 30px 0;
     span {
         display: inline-block;
         width: 80px;

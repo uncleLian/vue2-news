@@ -26,6 +26,7 @@ export default {
 .tags {
     width: 100%;
     position: relative;
+    margin: 20px 0;
     a {
         display: inline-block;
         text-align: center;

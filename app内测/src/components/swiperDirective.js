@@ -2,7 +2,7 @@ function GetSlideDirection(startX, startY, endX, endY, move) {
     let dy = startY - endY
     let dx = endX - startX
     let result
-    // 如果滑动距离太短
+        // 如果滑动距离太短
     if (Math.abs(dx) < move && Math.abs(dy) < move) {
         return
     }
@@ -19,7 +19,7 @@ function GetSlideDirection(startX, startY, endX, endY, move) {
     return result
 }
 
-export function swiperDirective(el, direction, vm) {
+export function swiperDirective(el, direction, type, vm) {
     if (!el || !direction) {
         return
     }
@@ -36,6 +36,12 @@ export function swiperDirective(el, direction, vm) {
         endX = ev.changedTouches[0].pageX
         endY = ev.changedTouches[0].pageY
         res = GetSlideDirection(startX, startY, endX, endY, 50)
+        if (type === 'blur') {
+            let input = $(vm.$el.querySelector('#input'))
+            if (input.is(':focus')) {
+                input.blur()
+            }
+        }
     }, false)
 
     el.addEventListener('touchend', function(ev) {

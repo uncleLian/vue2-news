@@ -1,5 +1,5 @@
 <template>
-    <div class='error' v-if='visible'>
+    <div class='error' v-if='visible' :class="{ 'fixed': fixed }">
         <div class="container">
             <p class="error_text">网络出现错误</p>
             <mt-button type='primary' class="error_btn" @click.stop='method'>重试</mt-button>
@@ -15,7 +15,8 @@ export default {
         },
         method: {
             type: Function
-        }
+        },
+        fixed: Boolean
     },
     data() {
         return {
@@ -34,6 +35,9 @@ export default {
     background: #fff;
     overflow: hidden;
     font-size: 18px;
+    &.fixed{
+        position: fixed;
+    }
     .container {
         position: absolute;
         left: 0;

@@ -14,7 +14,9 @@ const ajaxURL = {
     Search: 'search.php',
     userData: 'appuserdata.php',
     collectList: 'appreaduserdata.php',
-    videoList: 'appvideo.php'
+    videoList: 'appvideo.php',
+    sendComment: 'appcomment.php',
+    getComment: 'appreadcomment.php'
 }
 
 export var fetch = async(type = 'POST', url = '', data = {}) => {

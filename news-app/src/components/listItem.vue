@@ -10,7 +10,6 @@
                                 <p>{{section.title}}</p>
                             </div>
                             <div class="totalTime">{{section.playtime}}</div>
-                            <!-- <img v-lazy.container='section.titlepic'> -->
                             <img v-lazy.container="section.titlepic">
                         </div>
                         <div class="playRound">

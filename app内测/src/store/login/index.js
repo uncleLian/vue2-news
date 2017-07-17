@@ -2,7 +2,7 @@ import { get_local_cache, set_local_cache } from '@/config/cache'
 export default {
     namespaced: true,
     state: {
-        login: '',
+        login: 'wx',
         wx: '',
         qq: ''
     },

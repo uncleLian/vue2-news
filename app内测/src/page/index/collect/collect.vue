@@ -35,6 +35,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters('detail', [
+            'historyArticle'
+        ]),
         ...mapGetters('collect', [
             'collectArticle',
             'checkedArr'
@@ -51,6 +54,9 @@ export default {
         }
     },
     methods: {
+        ...mapMutations('detail', [
+            'set_historyArticle'
+        ]),
         ...mapMutations('collect', [
             'set_collectArticle',
             'set_checkedArr'
@@ -108,9 +114,14 @@ export default {
                             this.collectArticle.splice(j, 1)
                         }
                     }
+                    for (let e = 0; e < this.historyArticle.length; e++) {
+                        if (this.historyArticle[e].id === this.checkedArr[i].id) {
+                            this.historyArticle[e].collect = ''
+                        }
+                    }
                 }
-                console.log(this.checkedArr)
                 this.set_collectArticle(this.collectArticle)
+                this.set_historyArticle(this.historyArticle)
                 this.editBtn = false
                 this.set_checkedArr([])
             })
@@ -122,7 +133,11 @@ export default {
     beforeRouteEnter(to, from, next) {
         next(vm => {
             if (vm.login) {
-                vm.getCollectAjax()
+                if (vm.request) {
+                    vm.get_collect_cache()
+                } else {
+                    vm.getCollectAjax()
+                }
             } else {
                 MessageBox.confirm('登录可以同步云端数据')
                 .then(action => {

@@ -24,6 +24,8 @@ const QRcode = () => import('@/page/index/user/children/QRcode')
 const feedBack = () => import('@/page/index/user/children/feedBack')
 const readHistory = () => import('@/page/index/user/children/readHistory')
 const detail = () => import('@/page/detail/detail')
+// const comment = () => import('@/page/detail/children/comment')
+// const reply = () => import('@/page/detail/children/reply')
 const search = () => import('@/page/search/search')
 const login = () => import('@/page/login/login')
 const theme = () => import('@/page/theme/theme')
@@ -83,10 +85,10 @@ export default new Router({
                     path: 'feedBack',
                     component: feedBack
                 },
-                  {
+                {
                     path: 'readHistory',
                     component: readHistory
-                  }
+                }
                 ]
             }
             ]
@@ -94,6 +96,16 @@ export default new Router({
         {
             path: '/detail',
             component: detail
+            // children: [
+            // {
+            //     path: 'comment',
+            //     component: comment
+            // },
+            // {
+            //     path: 'reply',
+            //     component: reply
+            // }
+            // ]
         },
         {
             path: '/search',
