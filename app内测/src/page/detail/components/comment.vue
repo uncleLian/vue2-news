@@ -6,7 +6,7 @@
             </my-header>
 
             <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
-                <div class="container" v-swiper:swiperRight='true'>
+                <div class="container" v-swiper:swiperRight="'close'">
 
                     <!-- 文章摘要 -->
                     <div class="abstract">
@@ -20,21 +20,21 @@
                     <!-- 我的评论 -->
                     <div class="comment-self" v-if=" myComment.length > 0">
                         <h2 class="comment_title">我的评论</h2>
-                        <comment-item v-for='item in myComment' type='userself' :itemJson='item' :key='item' @click.stop.native="$refs.reply.open(item)"></comment-item>
+                        <comment-item comment='remark' type='userself' v-for='item in myComment'  :itemJson='item' :key='item' @click.stop.native="$refs.reply.open(item)" @delSuccess='delCallBack'></comment-item>
                     </div>
 
                     <!-- 全部评论 -->
                     <div class="comment-all" v-if="comment.length > 0">
                         <h2 class="comment_title">全部评论({{comment.length}})</h2>
-                        <comment-item v-for='item in comment' :itemJson='item' :key='item' @click.stop.native="$refs.reply.open(item)"></comment-item>
+                        <comment-item comment='remark' type='all' v-for='item in comment' :itemJson='item' :key='item' @click.stop.native="$refs.reply.open(item)"></comment-item>
                     </div>
 
                     <!-- 没有评论 -->
-                    <div class="comment-nothing" v-if="comment.length === 0 && myComment.length === 0">
+                    <div class="comment-nothing" v-if="!(comment.length > 0) && !(myComment.length > 0)">
                         <h2 class="comment_title">抢先评论！</h2>
                     </div>
 
-                    <tool type='remark' @publishStatus='commentCallBack'></tool>
+                    <tool comment='remark' @publishStatus='publishCallBack'></tool>
                 </div>
             </div>
 
@@ -57,9 +57,9 @@ export default {
     },
     computed: {
         ...mapGetters('detail', [
+            'currentArticle',
             'myComment',
-            'comment',
-            'currentArticle'
+            'comment'
         ])
     },
     methods: {
@@ -67,17 +67,21 @@ export default {
             'set_myComment'
         ]),
         ...mapActions('detail', [
-            'get_MyComment_data',
             'get_Comment_data'
         ]),
         open() {
             this.visible = true
-            this.get_MyComment_data()
-            this.get_Comment_data(this.page)
+            this.get_Comment_data({'type': 'userself', 'page': 1})
+            this.get_Comment_data({'type': 'all', 'page': 1})
         },
-        commentCallBack(data) {
+        publishCallBack(data) {
             this.myComment.unshift(data)
             this.set_myComment(this.myComment)
+            $('#comment .container').scrollTop(0)
+            this.currentArticle.plnum = this.myComment.length + this.comment.length
+        },
+        delCallBack() {
+            this.currentArticle.plnum = this.myComment.length + this.comment.length
         }
     }
 }
@@ -139,5 +143,20 @@ export default {
             }
         }
     }
+}
+.flicker-enter-active {
+    animation: flickerEnter 1.5s linear;
+}
+
+@keyframes flickerEnter {
+  0% {
+    background: #fff;
+  }
+  50% {
+    background: #ffff8f;
+  }
+  100% {
+    background: #fff;
+  }
 }
 </style>

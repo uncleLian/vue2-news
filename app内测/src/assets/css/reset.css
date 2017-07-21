@@ -28,6 +28,19 @@ a:focus{outline: none;}
 .clearfix:after {visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0;}
 .clearfix {zoom:1; }
 
+.bottomLoad{
+    width: 100%;
+    position: relative;
+}
+
+.bottomLoad div{
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 16px;
+    color: #999;
+}
 
 /*back图标*/
 .back {
@@ -75,18 +88,3 @@ a:focus{outline: none;}
         opacity: 1;
     }
 }
-
-.bottomLoad{
-    width: 100%;
-    position: relative;
-}
-
-.bottomLoad div{
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    font-size: 16px;
-    color: #999;
-}
-

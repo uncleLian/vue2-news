@@ -19,7 +19,7 @@ function GetSlideDirection(startX, startY, endX, endY, move) {
     return result
 }
 
-export function swiperDirective(el, direction, type, vm) {
+export function swiper(el, direction, type, vm) {
     if (!el || !direction) {
         return
     }
@@ -45,8 +45,18 @@ export function swiperDirective(el, direction, type, vm) {
     }, false)
 
     el.addEventListener('touchend', function(ev) {
-        if (direction === res) {
+        if (direction === res && type === 'close') {
+            vm.visible = false
+        } else if (direction === res) {
             vm.$router.go(-1)
         }
     }, false)
+}
+
+export function goTop(el, eventType, vm) {
+    if (eventType === 'click') {
+        $(el).on('click', () => {
+            $(vm.$el.querySelector('.container')).animate({scrollTop: 0})
+        })
+    }
 }

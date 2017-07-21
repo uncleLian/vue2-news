@@ -72,7 +72,7 @@ export default {
             }
         }
         .nav_name {
-            font-size: 12px;
+            font-size: 10px;
             color: #222;
             text-align: center;
             line-height: 1;

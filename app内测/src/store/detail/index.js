@@ -11,7 +11,9 @@ export default {
         recommend: [],
         myComment: [],
         comment: [],
+        myReply: [],
         reply: [],
+        talkReply: '',
         localtion: {}
     },
     getters: {
@@ -39,8 +41,14 @@ export default {
         comment: state => {
             return state.comment
         },
+        myReply: state => {
+            return state.myReply
+        },
         reply: state => {
             return state.reply
+        },
+        talkReply: state => {
+            return state.talkReply
         },
         localtion: state => {
             return state.localtion
@@ -79,8 +87,14 @@ export default {
         set_comment(state, val) {
             state.comment = val
         },
+        set_myReply(state, val) {
+            state.myReply = val
+        },
         set_reply(state, val) {
             state.reply = val
+        },
+        set_talkReply(state, val) {
+            state.talkReply = val
         },
         set_localtion(state, val) {
             state.localtion = val
@@ -93,7 +107,7 @@ export default {
             let historyData
             historyData = JSON.parse(get_local_cache('history_Article'))
             if (historyData) {
-                if (!state.historyArticle.length > 0) {
+                if (!(state.historyArticle.length > 0)) {
                     commit('set_historyArticle', historyData)
                 }
                 for (let i = 0; i < historyData.length; i++) {
@@ -141,57 +155,59 @@ export default {
             })
         },
 
-        // 获取我的评论数据
-        async get_MyComment_data({ commit, state, rootState }) {
+        // 获取评论数据： 用户/全部
+        async get_Comment_data({ commit, state, rootState }, { page, type }) {
             let params = {
-                'comment': 'userself',
-                'id': state.id,
-                'datafrom': state.datafrom,
-                'userid': rootState.userid
-            }
-            await fetch('post', 'getComment', params)
-            .then(res => {
-                if (res && typeof res === 'object') {
-                    commit('set_myComment', res)
-                } else {
-                    commit('set_myComment', [])
-                }
-            })
-        },
-
-        // 获取全部评论数据
-        async get_Comment_data({ commit, state, rootState }, page) {
-            let params = {
-                'comment': 'remark',
-                'id': state.id,
-                'datafrom': state.datafrom,
                 'userid': rootState.userid,
+                'id': state.id,
+                'datafrom': state.datafrom,
+                'comment': 'remark',
+                'type': type,
                 'page': page
             }
             await fetch('post', 'getComment', params)
             .then(res => {
-                if (res && typeof res === 'object') {
-                    commit('set_comment', res)
-                } else {
-                    commit('set_comment', [])
+                if (type === 'userself') {
+                    if (res && typeof res === 'object') {
+                        commit('set_myComment', res)
+                    } else {
+                        commit('set_myComment', [])
+                    }
+                } else if (type === 'all') {
+                    if (res && typeof res === 'object') {
+                        commit('set_comment', res)
+                    } else {
+                        commit('set_comment', [])
+                    }
                 }
             })
         },
 
-        // 获取回复数据
-        async get_Reply_data({ commit, state, rootState }, { remarkid, page }) {
+        // 获取回复数据： 用户/全部
+        async get_Reply_data({ commit, state, rootState }, { page, type, remarkid }) {
             let params = {
-                'comment': 'reply',
                 'userid': rootState.userid,
+                'id': state.id,
+                'datafrom': state.datafrom,
+                'comment': 'reply',
+                'type': type,
                 'remarkid': remarkid,
                 'page': page
             }
             fetch('post', 'getComment', params)
             .then(res => {
-                if (res && typeof res === 'object') {
-                    commit('set_reply', res)
-                } else {
-                    commit('set_reply', [])
+                if (type === 'userself') {
+                    if (res && typeof res === 'object') {
+                        commit('set_myReply', res)
+                    } else {
+                        commit('set_myReply', [])
+                    }
+                } else if (type === 'all') {
+                    if (res && typeof res === 'object') {
+                        commit('set_reply', res)
+                    } else {
+                        commit('set_reply', [])
+                    }
                 }
             })
         },
@@ -210,7 +226,7 @@ export default {
             return res
         },
 
-        // 发送喜好数据 ： 喜欢/收藏
+        // 发送喜好数据 喜欢/收藏
         send_favorite_data({ commit, state, rootState }, type) {
             let params = {
                 'wdata': type,
@@ -223,59 +239,73 @@ export default {
         },
 
         // 发送评论数据
-        send_comment_data({ commit, state, rootState }, { content }) {
+        post_Comment_data({ commit, state, rootState }, { content }) {
             let params = {
-                'comment': 'remark',
+                'userid': rootState.userid,
                 'id': state.id,
                 'datafrom': state.datafrom,
-                'userid': rootState.userid,
+                'comment': 'remark',
+                'type': 'user',
                 'content': content
             }
-            let res = fetch('post', 'sendComment', params)
+            let res = fetch('post', 'postComment', params)
             return res
         },
 
         // 发送回复数据
-        send_reply_data({ commit, state, rootState }, { remarkid, content }) {
+        post_Reply_data({ commit, state, rootState }, { remarkid, content, altUserId }) {
             let params = {
-                'comment': 'reply',
-                'remarkid': remarkid,
                 'userid': rootState.userid,
+                'id': state.id,
+                'datafrom': state.datafrom,
+                'comment': 'reply',
+                'type': 'user',
+                'remarkid': remarkid,
                 'content': content
             }
-            let res = fetch('post', 'sendComment', params)
+            if (altUserId) {
+                params.replyid = altUserId
+            }
+            let res = fetch('post', 'postComment', params)
             return res
         },
 
         // 发送点赞数据
-        send_zan_data({ commit, state, rootState }, { type, id }) {
+        post_zan_data({ commit, state, rootState }, { comment, remarkid, replyid }) {
             let params = {
-                'comment': 'dz',
-                'dz': type,
-                'userid': rootState.userid
+                'userid': rootState.userid,
+                'id': state.id,
+                'datafrom': state.datafrom,
+                'comment': 'dz'
             }
-            if (type === 'remark') {
-                params.remarkid = id
-            } else if (type === 'reply') {
-                params.replyid = id
+            if (comment === 'remark') {
+                params.type = 'remark'
+                params.remarkid = remarkid
+            } else if (comment === 'reply') {
+                params.type = 'reply'
+                params.remarkid = remarkid
+                params.replyid = replyid
             }
-            let res = fetch('post', 'sendComment', params)
+            let res = fetch('post', 'postComment', params)
             return res
         },
 
         // 发送删除评论数据
-        send_delete_data({ commit, state, rootState }, { type, id }) {
+        post_delete_data({ commit, state, rootState }, { type, remarkid, replyid }) {
             let params = {
-                'comment': 'delcomment',
-                'del': type,
-                'userid': rootState.userid
+                'userid': rootState.userid,
+                'id': state.id,
+                'datafrom': state.datafrom,
+                'comment': 'del',
+                'type': type
             }
             if (type === 'remark') {
-                params.remarkid = id
+                params.remarkid = remarkid
             } else if (type === 'reply') {
-                params.replyid = id
+                params.remarkid = remarkid
+                params.replyid = replyid
             }
-            let res = fetch('post', 'sendComment', params)
+            let res = fetch('post', 'postComment', params)
             return res
         }
     }

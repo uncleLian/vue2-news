@@ -6,25 +6,31 @@
             </my-header>
 
             <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
-                <div class="container" v-swiper:swiperRight='true'>
+                <div class="container" v-swiper:swiperRight="'close'">
 
                     <!-- 评论摘要 -->
                     <div class="reply-full">
                         <comment-item :itemJson='json'></comment-item>
                     </div>
-                    
+
+                    <!-- 我的回复 -->
+                    <div class="reply-self" v-if='myReply.length > 0'>
+                        <h2>我的回复</h2>
+                        <comment-item comment='reply' type='userself' v-for='item in myReply' :itemJson='item' :key='item' @delSuccess='delCallBack'></comment-item>
+                    </div>
+
                     <!-- 全部回复 -->
                     <div class="reply-all" v-if='reply.length > 0'>
-                        <h2>全部回复</h2>
-                        <comment-item v-for='item in reply' :itemJson='item' @click.native.stop="" :key='item'></comment-item>
+                        <h2>全部回复({{reply.length}})</h2>
+                        <comment-item comment='reply' type='all'  v-for='item in reply' :itemJson='item' @click.native.stop="" :key='item'></comment-item>
                     </div>
                     
                     <!-- 没有回复 -->
-                    <div class="reply-nothing" v-if='!(reply.length > 0)'>
+                    <div class="reply-nothing" v-if='!(myReply.length > 0) && !(reply.length > 0)'>
                         <h2>抢先回复!</h2>
                     </div>
 
-                    <tool type='reply' @publishStatus='replyCallBack' :remarkid='json.remarkid'></tool>
+                    <tool comment='reply' @publishStatus='publishCallBack' :remarkid='json.remarkid'></tool>
                 </div>
             </div>
         </div>
@@ -38,17 +44,18 @@ export default {
     data() {
         return {
             visible: false,
-            json: '',
-            remarkid: ''
+            json: ''
         }
     },
     computed: {
         ...mapGetters('detail', [
+            'myReply',
             'reply'
         ])
     },
     methods: {
         ...mapMutations('detail', [
+            'set_myReply',
             'set_reply'
         ]),
         ...mapActions('detail', [
@@ -61,11 +68,17 @@ export default {
         },
         get_Reply() {
             this.set_reply([])
-            this.get_Reply_data({'remarkid': this.json.remarkid, 'page': 1})
+            this.get_Reply_data({'remarkid': this.json.remarkid, 'type': 'userself', 'page': 1})
+            this.get_Reply_data({'remarkid': this.json.remarkid, 'type': 'all', 'page': 1})
         },
-        replyCallBack(data) {
-            this.reply.unshift(data)
-            this.set_reply(this.reply)
+        publishCallBack(data) {
+            this.myReply.unshift(data)
+            this.set_myReply(this.myReply)
+            $('#reply .container').scrollTop(0)
+            this.json.plnum = this.myReply.length
+        },
+        delCallBack(data) {
+            this.json.plnum = this.myReply.length
         }
     }
 }
@@ -92,6 +105,7 @@ export default {
     .content {
         height: 100%;
         padding-top: 44px;
+        padding-bottom: 48px;
         background-color: #f8f8f8;
         &.isIOS {
             padding-top: 64px;

@@ -1,7 +1,7 @@
 <template>
     <div id="indexHeader">
         <my-header class='header'>
-            <a class='title' slot='mid' @click.stop="goTop"></a>
+            <a class='title' slot='mid' @click.stop='goTop'></a>
             <a class='search_btn' slot='right' @click.stop="$router.push('/search')"></a>
         </my-header>
         <nav>
@@ -39,7 +39,7 @@ export default {
         ...mapMutations('index', [
             'set_indexActive'
         ]),
-        goTop () {
+        goTop() {
             $(`.container.${this.indexActive}`).animate({scrollTop: 0})
         },
         navClick (type) {

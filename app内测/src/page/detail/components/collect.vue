@@ -1,6 +1,6 @@
 <template>
-    <span class="collect_btn icon-collect" v-if="btn" @click.stop='collectClick' :class="{active: collectBtn}"> 收藏</span>
-    <a class="collect_icon" v-else-if="icon" @click.stop="collectClick" :class="{active: collectBtn}"><i class="icon-collect"></i></a>
+    <span class="collect_btn icon-collect" v-if="btn" @click.stop='collectClick' :class="{active: json.collect? true : false}"> 收藏</span>
+    <a class="collect_icon" v-else-if="icon" @click.stop="collectClick" :class="{active: json.collect? true : false}"><i class="icon-collect"></i></a>
 </template>
 <script>
 import {
@@ -13,16 +13,15 @@ import {
 } from 'mint-ui'
 export default {
     props: {
-        collect: {
-            default: false
+        json: {
+            default: ''
         },
         btn: Boolean,
         icon: Boolean
     },
     data() {
         return {
-            id: this.$route.query.id,
-            collectBtn: false
+            id: this.$route.query.id
         }
     },
     computed: {
@@ -33,15 +32,6 @@ export default {
             'listArticle',
             'historyArticle'
         ])
-    },
-    watch: {
-        collect(val) {
-            if (val) {
-                this.collectBtn = true
-            } else {
-                this.collectBtn = false
-            }
-        }
     },
     methods: {
         ...mapMutations('detail', [
@@ -54,23 +44,16 @@ export default {
             'set_collectArticle'
         ]),
         collectClick() {
-            if (!this.collectBtn) {
-                this.collectBtn = true
-                let index = this.historyArticle.findIndex((n) => n.id === this.id)
-                this.historyArticle[index].collect = this.id
-                this.set_historyArticle(this.historyArticle)
-                this.collectArticle.unshift(this.listArticle)
-                this.set_collectArticle(this.collectArticle)
-                Toast({
-                    message: '已收藏',
-                    duration: 1000
-                })
-                this.send_favorite_data('collect')
+            if (this.json.collect) {
+                Toast({message: '你已经收藏', duration: 1000})
             } else {
-                Toast({
-                    message: '你已经收藏',
-                    duration: 1000
-                })
+                this.json.collect = this.id
+                this.json.collectnum++
+                this.collectArticle.unshift(this.listArticle)
+                this.set_historyArticle(this.historyArticle)
+                this.set_collectArticle(this.collectArticle)
+                this.send_favorite_data('collect')
+                Toast({message: '已收藏', duration: 1000})
             }
         }
     }
@@ -101,9 +84,6 @@ export default {
         font-size: 20px;
         padding-left: 16px;
         text-decoration: none;
-    }
-    i{
-        font-size: 20px;
     }
     &.active {
         color: #bbb20d;

@@ -1,5 +1,5 @@
 <template>
-    <span class="like_btn icon-zan" @click.stop='likeClick' :class="{active: likeBtn}"> {{likeNum}}</span>
+    <span class="like_btn icon-zan" @click.stop='likeClick' :class="{active: json.giveup? true : false }"> {{json.giveupnum}}</span>
 </template>
 <script>
 import {
@@ -12,36 +12,19 @@ import {
 } from 'mint-ui'
 export default {
     props: {
-        num: {
-            default: 0
-        },
-        like: {
-            default: false
+        json: {
+            default: ''
         }
     },
     data() {
         return {
-            id: this.$route.query.id,
-            likeNum: 0,
-            likeBtn: false
+            id: this.$route.query.id
         }
     },
     computed: {
         ...mapGetters('detail', [
             'historyArticle'
         ])
-    },
-    watch: {
-        num(val) {
-            this.likeNum = Number(val)
-        },
-        like(val) {
-            if (val) {
-                this.likeBtn = true
-            } else {
-                this.likeBtn = false
-            }
-        }
     },
     methods: {
         ...mapMutations('detail', [
@@ -51,23 +34,14 @@ export default {
             'send_favorite_data'
         ]),
         likeClick() {
-            if (!this.likeBtn) {
-                this.likeNum++
-                this.likeBtn = true
-                let index = this.historyArticle.findIndex((n) => n.id === this.id)
-                this.historyArticle[index].giveup = this.id
-                this.historyArticle[index].diggtop++
-                this.set_historyArticle(this.historyArticle)
-                Toast({
-                    message: '点赞成功',
-                    duration: 1000
-                })
-                this.send_favorite_data('giveup')
+            if (this.json.giveup) {
+                Toast({message: '你已经赞过', duration: 1000})
             } else {
-                Toast({
-                    message: '你已经赞过',
-                    duration: 1000
-                })
+                this.json.giveup = this.id
+                this.json.giveupnum++
+                this.set_historyArticle(this.historyArticle)
+                Toast({message: '点赞成功', duration: 1000})
+                this.send_favorite_data('giveup')
             }
         }
     }

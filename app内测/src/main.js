@@ -33,12 +33,24 @@ Vue.component('comment-item', commentItem) // 列表组件
 Vue.component('banner', banner) // 列表组件
 Vue.component('popup-menu', popupMenu) // 弹框组件
 
-import { swiperDirective } from '@/components/swiperDirective.js' // 手势指令
-// 注册全局 指令 ** 右滑返回上一页 **
+import { swiper, goTop } from '@/components/directive.js' // 手势指令
+// 注册全局指令
+// 右滑返回上一页 & 滑动input失去焦点
 Vue.directive('swiper', {
     inserted: function(el, binding, vnode) {
         if (binding.value) {
-            swiperDirective(el, binding.arg, binding.value, vnode.context)
+            swiper(el, binding.arg, binding.value, vnode.context)
+        } else {
+            return
+        }
+    }
+})
+
+// 点击回到页面顶部
+Vue.directive('goTop', {
+    inserted: function(el, binding, vnode) {
+        if (binding.value) {
+            goTop(el, binding.arg, vnode.context)
         } else {
             return
         }

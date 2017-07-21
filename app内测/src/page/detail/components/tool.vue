@@ -1,29 +1,32 @@
 <template>
-    <form class='tool' :class="{'focus': focus}" @keyup.enter.prevent="sendComment">
+    <div class='tool' :class="{'focus': focus}" @keyup.enter.prevent="sendComment">
         <div class="left">
-            <span v-show='!focus' @click.stop="inputFocus" class="text">
+            <a v-show='!focus' class="text" @click.stop="inputFocus">
                 <i class="icon-write"></i>
-                <span v-if="type === 'reply'">写回复...</span>
+                <span v-if="comment === 'reply'">写回复...</span>
                 <span v-else>写评论...</span>
-            </span>
-            <input id='input' type="text" v-model.trim='inputVal' @focus.stop="focus = true" @blur.stop="focus = false">
+            </a>
+            <!-- 回复页 -->
+            <input id='input' name='input' type="text" v-model.trim='inputVal' @focus.stop="replyFocus" @blur.stop="focus = false" :placeholder="placeholderVal" v-if="comment === 'reply'">
+            <!-- 评论页 -->
+            <input id='input' name='input' type="text" v-model.trim='inputVal' @focus.stop="focus = true" @blur.stop="focus = false"  v-else>
         </div>
-        <div class="right" v-show='!focus' v-if='right'>
+        <div class="right" v-show='!focus' v-if='icon'>
             <slot name='tool_btn'></slot>
         </div>
-        <span v-show='focus' class="publish_btn" @click.stop='sendComment'>发送</span>
-    </form>
+        <span v-show='focus' class="publish_btn">发送</span>
+    </div>
 </template>
 <script>
-import {mapActions} from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 import {Toast} from 'mint-ui'
 export default {
     props: {
         ele: {
             default: ''
         },
-        type: String,
-        right: Boolean,
+        comment: String,
+        icon: Boolean,
         remarkid: {
             default: ''
         }
@@ -32,7 +35,8 @@ export default {
         return {
             focus: false,
             inputVal: '',
-            keepInputVal: ''
+            keepInputVal: '',
+            placeholderVal: ''
         }
     },
     watch: {
@@ -42,6 +46,8 @@ export default {
                     this.inputVal = this.keepInputVal
                 }
             } else {
+                this.placeholderVal = ''
+                this.set_talkReply('')
                 if (this.inputVal) {
                     this.keepInputVal = this.inputVal
                     this.inputVal = ''
@@ -51,56 +57,72 @@ export default {
             }
         }
     },
+    computed: {
+        ...mapGetters('detail', [
+            'talkReply'
+        ])
+    },
     methods: {
+        ...mapMutations('detail', [
+            'set_talkReply'
+        ]),
         ...mapActions('detail', [
-            'send_comment_data',
-            'send_reply_data'
+            'post_Comment_data',
+            'post_Reply_data'
         ]),
         inputFocus() {
-            $('#input').focus()
+            $('.tool #input').focus()
         },
-        inputBlur() {
-            this.focus = false
+        replyFocus() {
+            this.focus = true
+            if (this.talkReply) {
+                this.placeholderVal = `回复 ${this.talkReply.nickname}`
+            }
         },
         sendComment() {
             if (this.inputVal) {
-                if (this.type === 'remark') {
-                    this.send_comment_data({'content': this.inputVal})
+                if (this.comment === 'remark') {
+                    // 评论页
+                    this.post_Comment_data({'content': this.inputVal})
                     .then(res => {
                         if (this.ele) {
                             this.ele.open()
                         }
-                        if (res.data) {
+                        if (res.err) {
                             this.inputVal = ''
                             this.keepInputVal = ''
                             this.focus = false
                             this.$emit('publishStatus', res.data)
-                            Toast({
-                                message: '发送成功',
-                                duration: 1500
-                            })
+                            Toast({message: '发送成功', duration: 1500})
+                            $('.tool #input').blur()
                         }
                     })
-                } else if (this.type === 'reply') {
-                    this.send_reply_data({'remarkid': this.remarkid, 'content': this.inputVal})
+                } else if (this.comment === 'reply') {
+                    // 回复页
+                    let params = {
+                        'content': this.inputVal,
+                        'remarkid': this.remarkid,
+                        'altUserId': this.talkReply.replyid
+                    }
+                    this.post_Reply_data(params)
                     .then(res => {
-                        if (this.ele) {
-                            this.ele.open()
-                        }
-                        if (res.data) {
+                        if (res.err) {
                             this.inputVal = ''
                             this.keepInputVal = ''
                             this.focus = false
                             this.$emit('publishStatus', res.data)
-                            Toast({
-                                message: '发送成功',
-                                duration: 1500
-                            })
+                            Toast({message: '发送成功', duration: 1500})
+                            $('.tool #input').blur()
                         }
                     })
                 }
             }
         }
+    },
+    mounted() {
+        $(this.$el.querySelector('.tool .publish_btn')).on('touchend', () => {
+            this.sendComment()
+        })
     }
 }
 </script>
@@ -112,7 +134,7 @@ export default {
     bottom: 0;
     z-index: 666;
     height: 48px;
-    line-height: 48px;
+    line-height: 47px;
     display: flex;
     background: #fdfdfd;
     border-top: 1px solid #ddd;
@@ -120,11 +142,13 @@ export default {
     .left {
         flex: 1;
         position: relative;
+        font-size: 0;
         .text {
             position: absolute;
             left: 16px;
-            top: 2px;
+            top: 0;
             z-index: 111;
+            font-size: 12px;
         }
         #input {
             width: 100%;
@@ -134,7 +158,6 @@ export default {
             border-radius: 30px;
             border: 1px solid #ddd;
             background: #eee;
-            position: relative;
             font-size: 14px;
             padding: 0 16px;
         }
@@ -142,27 +165,14 @@ export default {
     .right {
         flex: 1;
         text-align: right;
+        font-size: 0;
         a {
             display: inline-block;
             text-align: center;
-            width: 33%;
+            width: 33.3%;
             font-size: 20px;
             padding-left: 16px;
             text-decoration: none;
-        }
-        .comment_btn i{
-    		position: relative;
-        	.comment_num{
-        		position: absolute;
-        		right: -15px;
-        		top: -5px;
-        		padding: 0 5px;
-        		text-align: center;
-        		border-radius: 15px;
-        		font-size: 12px;
-        		color: #fff;
-        		background: #d43d3d;
-        	}
         }
     }
     .publish_btn {

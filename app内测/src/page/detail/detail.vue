@@ -3,7 +3,7 @@
 
         <my-header fixed>
             <a slot="left" @click.stop='$router.go(-1)'><i class="icon-back"></i></a>
-            <a slot="mid" @click.stop='goTop'>{{title}}</a>
+            <a slot="mid" v-goTop:click='true'>{{title}}</a>
             <a slot="right" @click.stop='$refs.share.toggle()'><i class="icon-more"></i></a>
         </my-header>
 
@@ -17,12 +17,9 @@
 
                 <!-- 喜欢 -->
                 <div class="article_favorite">
-                    <like :num="currentArticle.diggtop" :like="currentArticle.giveup"></like>
-                    <collect btn :collect='currentArticle.collect'></collect>
+                    <like :json="currentArticle"></like>
+                    <collect btn :json="currentArticle"></collect>
                 </div>
-
-                <!--  推荐 -->
-                <recommend :json='recommend'></recommend>
 
                 <!-- 热点评论 -->
                 <div class="comment-hot" v-if='currentArticle.comment'>
@@ -32,15 +29,24 @@
                             <div class="subtitle">comments</div>
                         </div>
                     </div>
-                    <comment-item v-for='item in currentArticle.comment' :itemJson='item' :key='item' @click.native.stop="$refs.reply.open(item)"></comment-item>
+                    <comment-item comment='remark' type='all' v-for='item in currentArticle.comment' :itemJson='item' :key='item' @click.native.stop="$refs.reply.open(item)" ></comment-item>
 
                     <div class="comment_more" v-if='currentArticle.plnum > 2 '@click.stop="$refs.comment.open()">共{{currentArticle.plnum}}条评论<i>></i></div>
                 </div>
 
+                <!--  推荐 -->
+                <recommend :json='recommend'></recommend>
+
                 <!-- 底部工具条 -->
-                <tool :ele='$refs.comment' type='remark' right>
+                <tool :ele='$refs.comment' comment='remark' icon @publishStatus='publishCallBack'>
                     <template slot='tool_btn'>
-                        <a class="comment_btn" @click.stop="$refs.comment.open()"><i class="icon-comment"><span class="comment_num" v-if="currentArticle.plnum !== 0">{{currentArticle.plnum}}</span></i></a><collect icon :collect='currentArticle.collect'></collect><a class="share_btn" @click.stop='$refs.share.toggle()'><i class="icon-share"></i></a>
+                        <a class="comment_btn" @click.stop="$refs.comment.open()">
+                            <i class="icon-comment"><span class="comment_num" v-if="currentArticle.plnum > 0">{{currentArticle.plnum}}</span></i>
+                        </a>
+                        <collect icon :json='currentArticle'></collect>
+                        <a class="share_btn" @click.stop='$refs.share.toggle()'>
+                            <i class="icon-share"></i>
+                        </a>
                     </template>
                 </tool>
 
@@ -129,9 +135,6 @@ export default {
             'get_Recommend_data',
             'send_user_data'
         ]),
-        goTop() {
-            $('#detail .container').animate({scrollTop: 0})
-        },
         async init() {
             this.classid = this.$route.query.classid
             this.id = this.$route.query.id
@@ -179,6 +182,9 @@ export default {
                 this.localtion[this.id] = scrollTop
                 this.set_localtion(this.localtion)
             }
+        },
+        publishCallBack() {
+            this.currentArticle.plnum++
         }
     },
     watch: {
@@ -285,57 +291,18 @@ export default {
                 }
             }
         }
-        .review {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 666;
-            height: 48px;
-            line-height: 48px;
-            display: flex;
-            background: #fdfdfd;
-            border-top: 1px solid #ddd;
-            padding-left: 16px;
-            .left {
-                flex: 1;
-                position: relative;
-                span {
-                    position: absolute;
-                    left: 16px;
-                    top: 2px;
-                    z-index: 111;
-                }
-                #input {
-                    width: 100%;
-                    height: 32px;
-                    line-height: 32px;
-                    margin: 6px 0 8px;
-                    border-radius: 30px;
-                    border: 1px solid #ddd;
-                    background: #eee;
-                    position: relative;
-                    font-size: 14px;
-                    padding: 0 16px;
-                }
-            }
-            .right {
-                flex: 1;
-                text-align: right;
-                a {
-                    display: inline-block;
-                    text-align: center;
-                    width: 33%;
-                    font-size: 20px;
-                    padding: 0 16px;
-                    text-decoration: none;
-                }
-            }
-            .publish_btn {
-                display: inline-block;
-                padding: 0 15px;
-                font-size: 16px;
-                color: #aaa;
+        .comment_btn i{
+            position: relative;
+            .comment_num{
+                position: absolute;
+                right: -15px;
+                top: -5px;
+                padding: 0 5px;
+                text-align: center;
+                border-radius: 15px;
+                font-size: 12px;
+                color: #fff;
+                background: #d43d3d;
             }
         }
     }

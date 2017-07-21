@@ -4,8 +4,9 @@
         <span class="news_label red" v-else-if="infoJson.istop && infoJson.istop >= 9 ">置顶</span>
         <span class="news_label blue" v-else-if="infoJson.isgood >= 6">荐</span>
         <span class="news_label red" v-else-if="infoJson.firsttitle >= 6">热</span>
-        <span class='from' v-if='infoJson.befrom'>{{infoJson.befrom}}</span>
+        <span class='news_from' v-if='infoJson.befrom'>{{infoJson.befrom}}</span>
         <span class='news_click' v-if='infoJson.onclick'>{{infoJson.onclick | watchFilter }}阅</span>
+        <span class='news_plnum' v-if='infoJson.plnum'>{{infoJson.plnum}}评论</span>
         <span class='news_time' v-if='infoJson.time'>{{infoJson.time}}</span>
         <span class='news_tag' v-if='infoJson.nlist'>{{infoJson.nlist}}</span>
     </div>

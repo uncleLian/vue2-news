@@ -2,13 +2,13 @@
     <div id="video">
         <my-header fixed title='视频'></my-header>
         <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
-            <div class="container" v-infinite-scroll="loadBottomAjax" infinite-scroll-disabled="bottomStatus" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
+            <div class="container" v-infinite-scroll="loadBottomAjax" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
                 <div class="globalTip">
                     <div class="dataCount">已为你推荐{{dataCount}}条新内容</div>
                     <div class="noNewData">没有最新的内容了</div>
                     <div class="requestFail">网络请求失败,请检查网络</div>
                 </div>
-                <mt-loadmore :top-method="loadTopAjax" @top-status-change="loadTopAjax" ref="loadmore" :auto-fill='false'>
+                <mt-loadmore :top-method="loadTopAjax" @top-status-change="handleTopChange" ref="loadmore" :auto-fill='false'>
                     <div slot="top" class="mint-loadmore-top">
                         <span v-show="topStatus == 'pull'">下拉刷新↓</span>
                         <span v-show="topStatus == 'drop'">释放更新↑</span>
@@ -97,7 +97,8 @@ export default {
             this.get_videoItem_data(this.classPage)
                 .then(res => {
                     if (res && typeof res === 'object') {
-                        this.videoJson = [...this.videoJson, ...res]
+                        // this.videoJson = [...this.videoJson, ...res]
+                        this.videoJson.push(...res)
                         this.classPage++
                     } else {
                         this.bottomLoading = false

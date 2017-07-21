@@ -53,7 +53,7 @@
                         <h3>{{section.title}}</h3>
                     </div>
                     <div class='list_img'>
-                        <ul class='clearfix'>
+                        <ul>
                             <li><img v-lazy.container='section.titlepic'></li>
                             <li><img v-lazy.container='section.titlepic2'></li>
                             <li><img v-lazy.container='section.titlepic3'></li>
@@ -204,9 +204,11 @@ larger_height=4.6875rem
         ul {
             width: 100%;
             display: flex;
+            font-size: 0;
         }
         li {
-            width: 33%;
+            display: inline-block;
+            width: 33.3%;
             height: small_height;
             overflow: hidden;
             margin: 0!important;
@@ -362,7 +364,7 @@ larger_height=4.6875rem
             line-height: 20px;
             margin-top: -10px;
             background: #fff;
-            border: 1px solid #ddd;
+            border: 1px solid #aaa;
             border-radius: 100%;
             text-align: center;
         }

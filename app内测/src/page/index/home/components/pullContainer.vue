@@ -1,5 +1,5 @@
 <template>
-    <div class="container" :class="type" v-infinite-scroll="loadBottomAjax" infinite-scroll-disabled="bottomStatus" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
+    <div class="container" :class="type" v-infinite-scroll="loadBottomAjax" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
 
         <loading :visible="loading"></loading>
         
@@ -26,7 +26,7 @@
             <list-item :itemJson="stickJson" v-if='stickJson'></list-item> 
             
             <!-- listItem --> 
-            <list-item :itemJson="contentJson" v-if='contentJson'></list-item>
+            <list-item :itemJson="contentJson" v-if='contentJson.length > 0'></list-item>
 
             <div class="bottomLoad" v-if="contentJson.length > 0">
                 <div class="loading" v-show='bottomLoading'>加载中...</div>
@@ -42,7 +42,7 @@ export default {
     data () {
         return {
             classPage: 1,
-            contentJson: '', // 整个列表数据arr
+            contentJson: [], // 整个列表数据arr
             topStatus: '', // 下拉状态
             bottomLoading: true,
             bottomNoData: false,
@@ -83,7 +83,7 @@ export default {
             this.topStatus = status
         },
         init () {
-            if (this.indexActive === this.type && !this.contentJson) {
+            if (this.indexActive === this.type && !(this.contentJson.length > 0)) {
                 this.classPage = this.activePage
                 this.loading = true
                 this.get_banner_data()
@@ -96,7 +96,7 @@ export default {
             .then(res => {
                 this.loading = false
                 if (res && typeof res === 'object') {
-                    this.contentJson = [...res, ...this.contentJson]
+                    this.contentJson.unshift(...res)
                     this.dataCount = res.length
                     this.classPage++
                     $(`.container.${this.type} .dataCount`).slideDown(200).delay(1000).slideUp(200)
@@ -109,7 +109,7 @@ export default {
                 $(`.container.${this.type} .requestFail`).hide()
             })
             .catch(err => {
-                if (this.contentJson) {
+                if (this.contentJson.length > 0) {
                     $(`.container.${this.type} .requestFail`).show()
                 } else {
                     this.get_listItem_cache()
@@ -130,7 +130,7 @@ export default {
             this.get_listItem_data(this.classPage)
             .then(res => {
                 if (res && typeof res === 'object') {
-                    this.contentJson = [...this.contentJson, ...res]
+                    this.contentJson.push(...res)
                     this.classPage++
                 } else {
                     this.bottomLoading = false
@@ -138,22 +138,6 @@ export default {
                 }
                 this.bottomLock = false
             })
-        },
-        getLocation () {
-            if (this.indexActive === this.type) {
-                this.$nextTick(() => {
-                    $(`.container.${this.type}`).scrollTop(this.activeLocation)
-               })
-            }
-        },
-        setLocation () {
-            if (this.indexActive === this.type) {
-                let scrollTop = $(`.container.${this.type}`).scrollTop()
-                if (scrollTop >= 0) {
-                    this.indexLocation[this.indexActive] = scrollTop
-                    this.set_indexLocation(this.indexLocation)
-                }
-            }
         },
         newLookHere () {
             if (this.dataCount >= 10) {
@@ -171,6 +155,21 @@ export default {
                     this.loadTopAjax()
                 })
             })
+        },
+        handleLocaltion(type) {
+            if (this.indexActive === this.type) {
+                if (type === 'get') {
+                    this.$nextTick(() => {
+                        $(`.container.${this.type}`).scrollTop(this.activeLocation)
+                   })
+                } else if (type === 'set') {
+                    let scrollTop = $(`.container.${this.type}`).scrollTop()
+                    if (scrollTop >= 0) {
+                        this.indexLocation[this.indexActive] = scrollTop
+                        this.set_indexLocation(this.indexLocation)
+                    }
+                }
+            }
         }
     },
     watch: {
@@ -193,10 +192,10 @@ export default {
         this.lookHereClick()
     },
     activated () {
-        this.getLocation()
+        this.handleLocaltion('get')
     },
     deactivated () {
-        this.setLocation()
+        this.handleLocaltion('set')
     }
 }
 </script>

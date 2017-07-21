@@ -3,7 +3,7 @@
         <div class="search_top">
             <my-header class='header'>
                 <a class="back" slot='left' @click.stop='$router.go(-1)'></a>
-                <a slot='mid' @click.stop='goTop'>搜索</a>
+                <a slot='mid' v-goTop:click='true'>搜索</a>
             </my-header>
             <form class='form'>
                 <div class="form_border">
@@ -14,19 +14,25 @@
         </div>
         <div class="search_content" :class="{isIOS: $store.state.device == 'ios'}">
             <div class="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false" v-swiper:swiperRight='true'>
-                <div class="search_info" v-if="!(searchJson.length > 0) && !loading && searchStatus == 'info' ">
-                    <p>空空如也</p>
-                    <p>快去搜索吧</p>
-                </div>
-                <div class="search_result-empty" v-if=" !(searchJson.length > 0) && !loading && searchStatus == 'empty'">
-                    <p>这个宇宙中搜寻不到</p>
-                    <p>换个词试试</p>
-                </div>
+                
                 <list-item :itemJson="searchJson"></list-item>
+
                 <div v-if="searchJson.length > 0" class="bottomLoad">
                     <div class="loading" v-show="bottomStatus == 'loading'">加载中...</div>
                     <div class="noData" v-if="bottomStatus =='noData'">没有更多的内容了</div>
                 </div>
+
+                <!-- 没有搜索记录 -->
+                <div class="search_info" v-if="!(searchJson.length > 0) && !loading && searchStatus == 'info' ">
+                    <p>空空如也</p>
+                    <p>快去搜索吧</p>
+                </div>
+                <!-- 没有搜索结果 -->
+                <div class="search_result-empty" v-if=" !(searchJson.length > 0) && !loading && searchStatus == 'empty'">
+                    <p>这个宇宙中搜寻不到</p>
+                    <p>换个词试试</p>
+                </div>
+
                 <loading :visible='loading'></loading>
             </div>
         </div>
@@ -62,9 +68,6 @@ export default {
             'get_current_cache',
             'get_search_data'
         ]),
-        goTop() {
-            $('#search .container').animate({scrollTop: 0})
-        },
         init(type) {
             if (type === 'ajax') {
                 this.searchStatus = ''
@@ -229,6 +232,7 @@ export default {
             -webkit-overflow-scrolling: touch;
             .search_info {
                 position: absolute;
+                width: 100%;
                 top: 30%;
                 left: 0;
                 right: 0;

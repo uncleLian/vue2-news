@@ -1,30 +1,39 @@
 <template>
     <section class='comment_item'>
-        <!-- 头像 -->
+
         <div class="item_portrait">
             <img :src="itemJson.headimgurl">
         </div>
 
         <div class="item_content">
             <div class="content_top">
-                <!-- 名字 -->
                 <span class="name">{{itemJson.nickname}}</span>
-                <!-- 点赞 -->
-                <span class="zan icon-zan" @click.stop='addZan' :class="{'active': itemJson.isdz}">
+                <span class="zan icon-zan" :class="{'active': itemJson.isdz}" @click.stop='addZan'>
                    <span v-if='itemJson.dznum'> {{itemJson.dznum}}</span>
                 </span>
             </div>
             <!-- 内容 -->
-            <div class="content_text">{{itemJson.content}}</div>
+            <div class="content_text">
+                {{itemJson.content}}
+                <span class="altUser" v-if="itemJson.altuser">//
+                    <a class="altUser_name">@{{itemJson.altuser.nickname}}</a>
+                    <span class="altUser_content">：{{itemJson.altuser.content}}</span>
+                </span>
+            </div>
             <div class="content_footer">
-                <!-- 时间 -->
-                <span class="time">{{itemJson.time}}</span>
-                <!-- 回复数量 -->
-                <span class="reply">· <span v-if='itemJson.plnum'> {{itemJson.plnum}}条</span>回复</span>
-                <!-- 删除 -->
-                <span class="delete" @click.stop="deleteComment" v-if="type === 'userself'">· 删除</span >
+                <span class="time" v-if='itemJson.time'>{{itemJson.time}} · </span>
+                <span class="reply" v-if="comment === 'reply'" @click.stop="replyComment">
+                    <span class="reply-hava" v-if="itemJson.plnum > 0" >{{itemJson.plnum}}条回复</span>
+                    <span v-else>回复</span>
+                </span>
+                <span class="reply" v-else>
+                    <span class="reply-hava" v-if="itemJson.plnum > 0" >{{itemJson.plnum}}条回复</span>
+                    <span v-else>回复</span>
+                </span>
+                <span class="delete" v-if="type === 'userself'" @click.stop="deleteComment">删除</span >
             </div>
         </div>
+
     </section>
 </template>
 <script>
@@ -35,62 +44,50 @@ export default {
         itemJson: {
             default: ''
         },
+        comment: String,
         type: String
-    },
-    data() {
-        return {
-        }
+
     },
     computed: {
         ...mapGetters('detail', [
             'myComment',
-            'reply'
+            'myReply'
         ])
     },
     methods: {
         ...mapMutations('detail', [
             'set_myComment',
-            'set_reply'
+            'set_myReply',
+            'set_talkReply'
         ]),
         ...mapActions('detail', [
-            'send_zan_data',
-            'send_delete_data'
+            'post_zan_data',
+            'post_delete_data'
         ]),
         addZan() {
-            if (!this.isdz) {
-                let type
-                let id
+            if (!this.itemJson.isdz) {
                 this.itemJson.dznum++
                 this.itemJson.isdz = 1
-                if (this.itemJson.replyid) {
-                    type = 'reply'
-                    id = this.itemJson.replyid
-                } else if (this.itemJson.remarkid) {
-                    type = 'remark'
-                    id = this.itemJson.remarkid
-                }
-                this.send_zan_data({'type': type, 'id': id})
+                this.post_zan_data({'comment': this.comment, 'remarkid': this.itemJson.remarkid, 'replyid': this.itemJson.replyid})
             }
         },
         deleteComment() {
-            MessageBox.confirm('确定执行删除?')
+            MessageBox.confirm('确定删除此评论?')
             .then(action => {
                 let type
-                let id
-                if (this.itemJson.replyid) {
+                if (this.comment === 'reply') {
                     type = 'reply'
-                    id = this.itemJson.replyid
-                    let index = this.reply.findIndex(n => n.replyid === this.itemJson.replyid)
-                    this.reply.splice(index, 1)
-                    this.set_reply(this.reply)
-                } else if (this.itemJson.remarkid) {
+                    let index = this.myReply.findIndex(n => n.replyid === this.itemJson.replyid)
+                    this.myReply.splice(index, 1)
+                    this.set_myReply(this.myReply)
+                } else if (this.comment === 'remark') {
                     type = 'remark'
-                    id = this.itemJson.remarkid
                     let index = this.myComment.findIndex(n => n.remarkid === this.itemJson.remarkid)
                     this.myComment.splice(index, 1)
                     this.set_myComment(this.myComment)
                 }
-                this.send_delete_data({'type': type, 'id': id})
+                this.$emit('delSuccess', this.itemJson)
+                this.post_delete_data({'type': type, 'remarkid': this.itemJson.remarkid, 'replyid': this.itemJson.replyid})
                 .then(res => {
                     Toast({message: '删除成功', duration: 1500})
                 })
@@ -98,6 +95,10 @@ export default {
             .catch(err => {
                 console.log(err)
             })
+        },
+        replyComment() {
+            this.set_talkReply(this.itemJson)
+            $('#reply #input').focus()
         }
     }
 }
@@ -139,6 +140,7 @@ export default {
                 color: #888;
                 text-align: right;
                 vertical-align: middle;
+                padding:0 5px;
                 &.active {
                     color: #d81e06;
                 }
@@ -146,10 +148,25 @@ export default {
         }
         .content_text {
             margin-bottom: 6px;
+            word-wrap: break-word;
+            padding-right: 10px;
+            .altUser_name{
+                color: #007aff;
+                text-decoration: none;
+            }
         }
         .content_footer {
             margin-bottom: 6px;
             font-size: 12px;
+            .reply-hava{
+                padding: 2px 6px;
+                border-radius: 30px;
+                background: #ddd;
+            }
+            .delete{
+                float: right;
+                padding: 0 5px;
+            }
         }
     }
 }

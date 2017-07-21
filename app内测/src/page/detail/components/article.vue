@@ -267,19 +267,15 @@ export default {
         .content_html {
             overflow: hidden;
             text-indent: none !important;
+            font-size: inherit;
             img {
                 width: 100% !important;
                 height: auto !important;
             }
-            p,
-            span,
-            a,
-            h1,
-            h2,
-            h3,
-            h4,
-            h5,
-            h6 {
+            img[type="icon"]{
+                width: initial!important;
+            }
+            *{
                 text-indent: inherit !important;
                 font-size: inherit !important;
                 font-family: inherit !important;
