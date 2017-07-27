@@ -22,25 +22,27 @@ header {
     overflow: hidden;
     background-color: #d43d3d;
     color: #fff;
-    &.fixed{
+    font-size: 16px;
+    &.fixed {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        z-index: 1000;
+        z-index: 666;
     }
     .top_bar {
         position: relative;
         height: 44px;
         line-height: 44px;
-        user-select:none;
-        a{
+        user-select: none;
+        a {
             display: block;
             width: 100%;
             height: 100%;
             color: inherit;
             font-size: inherit;
             font-weight: inherit;
+            text-decoration: none;
         }
         .abs_l,.abs_m,.abs_r {
             position: absolute;

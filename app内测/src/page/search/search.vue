@@ -1,9 +1,8 @@
 <template>
     <div id="search">
         <div class="search_top">
-            <my-header class='header'>
-                <a class="back" slot='left' @click.stop='$router.go(-1)'></a>
-                <a slot='mid' v-goTop:click='true'>搜索</a>
+            <my-header class='header' title='搜索' v-goTop:click='true'>
+                <a class="back-white" slot='left' @click.stop='$router.go(-1)'></a>
             </my-header>
             <form class='form'>
                 <div class="form_border">
@@ -15,7 +14,7 @@
         <div class="search_content" :class="{isIOS: $store.state.device == 'ios'}">
             <div class="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false" v-swiper:swiperRight='true'>
                 
-                <list-item :itemJson="searchJson"></list-item>
+                <list-item :itemJson="searchJson" v-if='searchJson.length > 0'></list-item>
 
                 <div v-if="searchJson.length > 0" class="bottomLoad">
                     <div class="loading" v-show="bottomStatus == 'loading'">加载中...</div>
@@ -248,6 +247,7 @@ export default {
                 text-align: center;
                 margin-top: 100px;
                 color: #cacaca;
+                font-size: 16px;
             }
         }
     }

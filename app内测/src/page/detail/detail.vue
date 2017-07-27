@@ -1,10 +1,9 @@
 <template>
     <div id="detail">
 
-        <my-header fixed>
-            <a slot="left" @click.stop='$router.go(-1)'><i class="icon-back"></i></a>
-            <a slot="mid" v-goTop:click='true'>{{title}}</a>
-            <a slot="right" @click.stop='$refs.share.toggle()'><i class="icon-more"></i></a>
+        <my-header fixed :title='title' v-goTop:click='true'>
+            <a slot="left" class="back-black" @click.stop='$router.go(-1)'></a>
+            <a slot="right" class="menu" @click.stop='$refs.share.toggle()'></a>
         </my-header>
 
         <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
@@ -13,7 +12,7 @@
                 <my-article :json='currentArticle'></my-article>
 
                 <!-- 标签 -->
-                <tags :json='currentArticle.infotags'></tags>
+                <tags v-if='currentArticle.infotags' :json='currentArticle.infotags'></tags>
 
                 <!-- 喜欢 -->
                 <div class="article_favorite">
@@ -37,25 +36,23 @@
                 <!--  推荐 -->
                 <recommend :json='recommend'></recommend>
 
-                <!-- 底部工具条 -->
-                <tool :ele='$refs.comment' comment='remark' icon @publishStatus='publishCallBack'>
-                    <template slot='tool_btn'>
-                        <a class="comment_btn" @click.stop="$refs.comment.open()">
-                            <i class="icon-comment"><span class="comment_num" v-if="currentArticle.plnum > 0">{{currentArticle.plnum}}</span></i>
-                        </a>
-                        <collect icon :json='currentArticle'></collect>
-                        <a class="share_btn" @click.stop='$refs.share.toggle()'>
-                            <i class="icon-share"></i>
-                        </a>
-                    </template>
-                </tool>
-
                 <loading :visible='loading'></loading>
 
                 <error fixed :visible='error' :method='init'></error>
             </div>
         </div>
         
+        <!-- 底部工具条 -->
+            <tool :ele='$refs.comment' comment='remark' icon @publishStatus='publishCallBack'>
+                <template slot='tool_btn'>
+                    <a class="comment_btn" @click.stop="$refs.comment.open()">
+                        <span class="comment_num" v-if="currentArticle.plnum > 0">{{currentArticle.plnum}}</span>
+                    </a>
+                    <collect icon :json='currentArticle'></collect>
+                    <a class="share_btn" @click.stop='$refs.share.toggle()'></a>
+                </template>
+            </tool>
+                
         <!-- 评论页 -->
         <comment ref='comment'></comment>
         
@@ -114,21 +111,25 @@ export default {
             'indexColumn'
         ]),
         ...mapGetters('detail', [
-            'datafrom',
+            'listArticle',
             'currentArticle',
+            'historyArticle',
+            'datafrom',
             'recommend',
             'localtion'
         ])
     },
     methods: {
-        ...mapActions('index', [
-            'get_indexColumn_data'
-        ]),
         ...mapMutations('detail', [
             'set_id',
             'set_datafrom',
+            'set_listArticle',
             'set_currentArticle',
+            'set_historyArticle',
             'set_localtion'
+        ]),
+        ...mapActions('index', [
+            'get_indexColumn_data'
         ]),
         ...mapActions('detail', [
             'get_Article_data',
@@ -185,6 +186,11 @@ export default {
         },
         publishCallBack() {
             this.currentArticle.plnum++
+            this.set_historyArticle(this.historyArticle)
+            if (this.listArticle) {
+                this.listArticle.plnum++
+                this.set_listArticle(this.listArticle)
+            }
         }
     },
     watch: {
@@ -220,9 +226,9 @@ export default {
         color: #333;
         font-size: 16px;
         border-bottom: 1px solid #ddd;
-        i {
-            font-size: 20px;
-            vertical-align: middle;
+        .menu{
+            background: url(../../assets/img/menu.png) no-repeat center center;
+            background-size: 20px;
         }
     }
     .content {
@@ -291,20 +297,16 @@ export default {
                 }
             }
         }
-        .comment_btn i{
-            position: relative;
-            .comment_num{
-                position: absolute;
-                right: -15px;
-                top: -5px;
-                padding: 0 5px;
-                text-align: center;
-                border-radius: 15px;
-                font-size: 12px;
-                color: #fff;
-                background: #d43d3d;
-            }
-        }
     }
+}
+</style>
+<style scoped>
+.comment_btn{
+    background: url(~@/assets/img/comment.png) no-repeat center center;
+    background-size: 18.5px;
+}
+.share_btn{
+    background: url(~@/assets/img/share.png) no-repeat center center;
+    background-size: 18.5px;
 }
 </style>

@@ -1,22 +1,22 @@
 <template>
-    <div id="spinnerLoad" v-show="show">
+    <div id="spinnerLoad" v-if="visible">
         <mt-spinner :type="0" :color="color" :size='size'></mt-spinner>
     </div>
 </template>
 <script>
 export default {
     props: {
-        show: {
+        visible: {
             type: Boolean,
-            default: false,
+            default: false
         }
     },
     data() {
         return {
             size: 36,
-            color: 'rgb(240, 61, 61)',
+            color: 'rgb(240, 61, 61)'
         }
-    },
+    }
 }
 </script>
 <style>
@@ -24,8 +24,7 @@ export default {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    position: absolute;
-    left: 0;
+    position: fixed;
     top: 0;
     background-color: #fff;
     z-index: 888;
@@ -33,9 +32,8 @@ export default {
 
 #spinnerLoad span {
     position: absolute;
-    top: 28%;
+    top: 40%;
     left: 50%;
     margin-left: -18px;
 }
-
 </style>

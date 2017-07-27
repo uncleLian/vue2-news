@@ -18,7 +18,7 @@ export default {
             transitionName: ''
         }
     },
-    beforeRouteUpdate(to, from, next) {
+    beforeRouteUpdate (to, from, next) {
         let isBack = this.$router.isBack
         if (isBack) {
             this.transitionName = 'slide-right'
@@ -30,36 +30,34 @@ export default {
     },
     methods: {
         ...mapMutations([
-            'set_device',
-            'set_apkURL',
+            'set_device'
         ]),
         init(){
-            $(function() {
-                fastClick.attach(document.body);
-            })
             this.checkOS();
-            this.dataCollection();
+            this.baiduCollect();
+            $(function() {
+                fastClick.attach(document.body)
+            })
         },
-        checkOS() {
-            var ua = navigator.userAgent.toLowerCase();
+        checkOS () {
+            var ua = navigator.userAgent.toLowerCase()
             if (/iphone|ipad|ipod/.test(ua)) {
-                this.set_device('ios');
-                this.set_apkURL('');
+                this.set_device('ios')
             }
         },
-        dataCollection() {
-            var _hmt = _hmt || [];
-            (function() {
-                var hm = document.createElement("script");
-                hm.src = "https://hm.baidu.com/hm.js?87e080ee32b19db3f8adcacfb178347a";
-                var s = document.getElementsByTagName("script")[0];
-                s.parentNode.insertBefore(hm, s);
-            })();
-        }
+        baiduCollect () {
+            var _hmt = _hmt || []
+            ;(function () {
+                var hm = document.createElement('script')
+                hm.src = 'https://hm.baidu.com/hm.js?87e080ee32b19db3f8adcacfb178347a'
+                var s = document.getElementsByTagName('script')[0]
+                s.parentNode.insertBefore(hm, s)
+            })()
+        },
     },
     mounted() {
-        this.init();
-    },
+        this.init()
+    }
 }
 </script>
 <style>

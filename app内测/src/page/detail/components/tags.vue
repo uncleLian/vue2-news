@@ -1,23 +1,14 @@
 <template>
-    <div class="tags" v-if='tagsData'>
-        <router-link v-for='(item,index) in tagsData' :to='`/search?key=${item}`' :key='index'>{{item}}</router-link>
+    <div class="tags">
+        <router-link v-for='(item,index) in tagsArr' :to='`/search?key=${item}`' :key='index'>{{item}}</router-link>
     </div>
 </template>
 <script>
 export default {
     props: ['json'],
-    data () {
-        return {
-            tagsData: ''
-        }
-    },
-    watch: {
-        json (val) {
-            if (val) {
-                this.tagsData = val.match(/[\u4e00-\u9fa5]+/g).slice(0, 4)
-            } else {
-                this.tagsData = ''
-            }
+    computed: {
+        tagsArr() {
+            return this.json.match(/[\u4e00-\u9fa5]+/g).slice(0, 4)
         }
     }
 }

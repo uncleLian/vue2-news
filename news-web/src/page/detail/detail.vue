@@ -2,66 +2,77 @@
     <div id="detail">
         <my-header fixed>
             <a slot="left" @click.stop='$router.go(-1)'><i class="icon-back"></i></a>
-            <a slot="mid" @click.stop='goTop'>{{title}}</a>
+            <a slot="mid" v-goTop:click='true'>{{title}}</a>
             <a slot="right" @click.stop='$refs.share.toggle()'><i class="icon-menu"></i></a>
         </my-header>
         
         <div class="content">
             <div class="container" v-swiper:swiperRight='true'>
                 <!-- 文章 -->
-                <detail-article class='article' :json='currentArticle'></detail-article>
+                <my-article  :json='currentArticle'></my-article>
                 <!-- 标签 -->
-                <detail-tags class='tag' :json='currentArticle.infotags'></detail-tags>
+                <tags  v-if='currentArticle.infotags' :json='currentArticle.infotags'></tags>
                 <!--  推荐 -->
-                <detail-recommend class='recommend' :json='recommendJson'></detail-recommend>
+                <recommend  :json='recommend'></recommend>
                 <!-- 下载 -->
-                <a class="downLoad" :href='$store.state.apkURL'>都翻到这儿了，就下载个头条呗~</a>
+                <a class="downLoad" href='../toutiaojk.apk'>都翻到这儿了，就下载个头条呗~</a>
+
+                <loading :visible='loading'></loading>
+
+                <error fixed :visible='error' :method='init'></error>
             </div>
         </div>
         <!-- 分享 -->
-        <detail-share ref="share"></detail-share>
+        <share ref="share"></share>
         <!-- 加载 -->
-        <loading :show='loading'></loading>
+        <loading :visible='loading'></loading>
     </div>
 </template>
 <script>
-import detailArticle from './components/article'
-import detailTags from './components/tags'
-import detailRecommend from './components/recommend'
-import detailShare from './components/share'
-import { mapGetters, mapActions } from 'vuex'
+import myArticle from './components/article'
+import tags from './components/tags'
+import recommend from './components/recommend'
+import share from './components/share'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
     name:'detail',
-    components: { detailArticle, detailTags, detailRecommend, detailShare },
+    components: { myArticle, tags, recommend, share },
     data() {
         return {
             id: null,
             classid: null,
             title: '健康头条',
-            currentArticle: {}, // 文章数据
-            recommendJson: [], // 推荐数据
-            loading: true, // 加载动画
+            loading: true, 
+            error: false,
         }
     },
     computed: {
         ...mapGetters('index', [
-            'indexColumn',
+            'indexColumn'
         ]),
+        ...mapGetters('detail', [
+            'currentArticle',
+            'recommend',
+            'localtion'
+        ])
     },
     methods: {
         ...mapActions('index', [
             'get_indexColumn_data',
         ]),
+        ...mapMutations('detail', [
+            'set_id',
+            'set_currentArticle',
+            'set_localtion'
+        ]),
         ...mapActions('detail', [
             'get_Article_data',
             'get_Recommend_data',
         ]),
-        goTop() {
-            $("#detail .container").animate({scrollTop: 0});
-        },
         async init(){
             this.classid = this.$route.query.classid;
             this.id = this.$route.query.id;
+            this.set_id(this.id)
             $("#detail .container").scrollTop(0);
             if (!(this.indexColumn.length > 1 )) {
                 await this.get_indexColumn_data();
@@ -79,24 +90,19 @@ export default {
             this.get_Article_data(this.id)
             .then(res => {
                 if (res) {
-                    this.currentArticle = res;
-                    this.loading = false;
+                    this.set_currentArticle(res)
+                    this.loading = false
                 }
+                this.error = false
             })
             .catch(err => {
-                console.log(err);
+                console.log(err)
+                this.error = true
+                this.loading = false
             })
         },
         get_Recommend() {
             this.get_Recommend_data({'classid': this.classid, 'id': this.id})
-            .then(res => {
-                if (res) {
-                    this.recommendJson = res;
-                }
-            })
-            .catch(err => {
-                console.log(err);
-            })
         },
         visitCollect() {
             $.ajax({
@@ -104,17 +110,33 @@ export default {
                 type: 'GET'
             })
         },
-    },
-    watch: {
-        $route(val) {
-            if (val.path.includes('detail')) {
-                this.init();
+        handleLocaltion(type) {
+            if (type === 'get') {
+                if (this.localtion && this.localtion[this.id]) {
+                    $('#detail .container').scrollTop(this.localtion[this.id])
+                }
+            } else if (type === 'set') {
+                let scrollTop = $('#detail .container').scrollTop()
+                this.localtion[this.id] = scrollTop
+                this.set_localtion(this.localtion)
             }
         },
     },
+    watch: {
+        $route(val) {
+            if (val.query.id) {
+                this.init()
+            }
+        }
+    },
     mounted() {
         this.init();
+        this.handleLocaltion('get')
     },
+    beforeRouteLeave(to, from, next) {
+        this.handleLocaltion('set')
+        next()
+    }
 }
 </script>
 <style scoped lang='stylus'>
@@ -124,12 +146,12 @@ export default {
     overflow: hidden;
     background: #f8f8f8;
     header {
-        background: #f8f8f8;
+        background: #fdfdfd;
         color: #333;
         font-size: 16px;
+        border-bottom: 1px solid #ddd;
         i {
             font-size: 20px;
-            font-weight: bold;
             vertical-align: middle;
         }
     }
@@ -144,15 +166,6 @@ export default {
             position: relative;
             -webkit-overflow-scrolling: touch;
         }
-        .article {
-            padding: 0 16px;
-        }
-        .tag {
-            margin: 10px 0;
-        }
-        .recommend {
-            margin-top: 10px;
-        }
         .downLoad {
             display: block;
             width: 100%;
@@ -162,6 +175,7 @@ export default {
             color: #fff;
             text-align: center;
             font-size: 14px;
+            text-decoration: none;
         }
     }
 }

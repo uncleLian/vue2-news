@@ -14,9 +14,9 @@
         <mt-loadmore :top-method="loadTopAjax" @top-status-change="handleTopChange" ref="loadmore" :auto-fill='false' :distance='indexSwiper'>
         
             <div slot="top" class="mint-loadmore-top">
-                <span v-show="topStatus == 'pull'">下拉刷新↓</span>
-                <span v-show="topStatus == 'drop'">释放更新↑</span>
-                <span v-show="topStatus == 'loading'">加载中...</span>
+                <span v-show="topStatus == 'pull'"><img class='pullLoading' src="~@/assets/img/loading.png"> 下拉刷新↓</span>
+                <span v-show="topStatus == 'drop'"><img class='pullLoading' src="~@/assets/img/loading.png"> 释放更新↑</span>
+                <span v-show="topStatus == 'loading'"><img class='pullLoading' src="~@/assets/img/loading.gif"> 加载中...</span>
             </div>
 
             <!-- banner -->
@@ -58,8 +58,6 @@ export default {
           'indexActive',
           'indexPage',
           'indexLocation',
-          'activeIndex',
-          'activeClassid',
           'activePage',
           'activeLocation',
           'indexSwiper',
@@ -228,12 +226,20 @@ export default {
     }
 }
 
-
 .mint-loadmore-top {
     height: 50px;
     line-height: 50px;
-    font-size: 16px;
+    font-size: 14px;
+    color: #999;
+    span{
+        display: block;
+    }
 }
-
-
+.pullLoading{
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    margin-top: -4px;
+    margin-right: 3px;
+}
 </style>

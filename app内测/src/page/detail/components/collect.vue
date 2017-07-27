@@ -1,6 +1,6 @@
 <template>
     <span class="collect_btn icon-collect" v-if="btn" @click.stop='collectClick' :class="{active: json.collect? true : false}"> 收藏</span>
-    <a class="collect_icon" v-else-if="icon" @click.stop="collectClick" :class="{active: json.collect? true : false}"><i class="icon-collect"></i></a>
+    <a class="collect_icon" v-else-if="icon" @click.stop="collectClick" :class="{active: json.collect? true : false}"></a>
 </template>
 <script>
 import {
@@ -76,17 +76,14 @@ export default {
         color: #bbb20d;
     }
 }
+</style>
+<style scoped>
 .collect_icon{
-    a{
-        display: inline-block;
-        text-align: center;
-        width: 33%;
-        font-size: 20px;
-        padding-left: 16px;
-        text-decoration: none;
-    }
-    &.active {
-        color: #bbb20d;
-    }
+    background: url(~@/assets/img/collect.png)no-repeat center center;
+    background-size: 18.5px;
+}
+.collect_icon.active{
+    background: url(~@/assets/img/collect-active.png)no-repeat center center;
+    background-size: 18.5px;
 }
 </style>

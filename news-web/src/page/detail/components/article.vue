@@ -114,6 +114,11 @@ export default {
                 }
             });
         },
+        backTo() {
+            document.addEventListener('pause', () => {
+                this.video.pause()
+            }, false)
+        }
     },
     watch:{
         json(val){
@@ -126,6 +131,9 @@ export default {
             this.video_fixed = false;
         }
     },
+    mounted() {
+        this.backTo()
+    }
 }
 </script>
 <style lang='stylus'>
@@ -133,6 +141,7 @@ export default {
 #article {
     width: 100%;
     position: relative;
+    padding: 0 16px;
     .article_title {
         color: #000;
         font-size: 20px;
@@ -258,17 +267,21 @@ export default {
         margin: 10px 0;
         .content_html{
             overflow: hidden;
-            text-indent: none!important;
-            img{
-                width: 100%!important;
-                height: auto!important;
+            text-indent: none !important;
+            font-size: inherit;
+            img {
+                width: 100% !important;
+                height: auto !important;
             }
-            p,span,a,h1,h2,h3,h4,h5,h6{
-                text-indent: inherit!important;
-                font-size: inherit!important;
-                font-family: inherit!important;
-                line-height: inherit!important;
-            } 
+            img[type="icon"]{
+                width: initial!important;
+            }
+            *{
+                text-indent: inherit !important;
+                font-size: inherit !important;
+                font-family: inherit !important;
+                line-height: inherit !important;
+            }
         }
         .content_html-close {
             height: 1200px;

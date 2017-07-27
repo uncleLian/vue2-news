@@ -6,26 +6,27 @@
 <script>
 export default {
     props: ['json'],
-    data() {
+    data () {
         return {
-            tagsData: '',
+            tagsData: ''
         }
     },
     watch: {
-        json(val) {
+        json (val) {
             if (val) {
-                this.tagsData = val.match(/[\u4e00-\u9fa5]+/g).slice(0, 4);
-            }else{
-                this.tagsData = '';
+                this.tagsData = val.match(/[\u4e00-\u9fa5]+/g).slice(0, 4)
+            } else {
+                this.tagsData = ''
             }
         }
-    },
+    }
 }
 </script>
 <style scoped lang='stylus'>
 .tags {
     width: 100%;
     position: relative;
+    margin: 20px 0;
     a {
         display: inline-block;
         text-align: center;

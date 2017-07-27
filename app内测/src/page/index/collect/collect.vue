@@ -1,7 +1,7 @@
 <template>
     <div id="collect" :class="{edit: editBtn}">
-        <my-header fixed title='收藏'>
-            <a slot='right' class="edit_btn icon-edit" :class="{disable:!(collectArticle.length > 0)}" @click.stop='editToggle'></a>
+        <my-header fixed title='收藏' v-goTop:click='true'>
+            <a slot='right' class="edit_btn" :class="[collectArticle.length > 0 ? 'edit-white' : 'edit-black']" @click.stop='editToggle'></a>
         </my-header>
         <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
             <div class="container" v-infinite-scroll="getCollectAjax" infinite-scroll-disabled="bottomStatus" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">

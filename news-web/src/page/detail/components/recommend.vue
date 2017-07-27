@@ -6,13 +6,14 @@
 </template>
 <script>
 export default {
-    props: ['json'],
+    props: ['json']
 }
 </script>
 <style scoped lang='stylus'>
 #recommend {
     width: 100%;
     position: relative;
+    margin-top: 10px;
     h2 {
         display: inline-block;
         font-size: 16px;

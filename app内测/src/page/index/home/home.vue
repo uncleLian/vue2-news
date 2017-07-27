@@ -4,6 +4,7 @@
         <home-header :column='indexColumn'></home-header>
         <!-- content -->
         <swiper-container :column='indexColumn'></swiper-container>
+        
         <keep-alive>
             <router-view></router-view>
         </keep-alive>

@@ -1,6 +1,6 @@
 <template>
     <div id="video">
-        <my-header fixed title='视频'></my-header>
+        <my-header fixed title='视频' v-goTop:click='true'></my-header>
         <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
             <div class="container" v-infinite-scroll="loadBottomAjax" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
                 <div class="globalTip">

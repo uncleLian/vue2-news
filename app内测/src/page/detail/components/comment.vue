@@ -2,7 +2,7 @@
     <transition name='fadeIn'>
         <div id='comment' v-if="visible">
             <my-header fixed title='评论'>
-                <a slot="left" @click.stop="visible = false"><i class="icon-close"></i></a>
+                <a slot="left" class='close-black' @click.stop="visible = false"></a>
             </my-header>
 
             <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
@@ -38,7 +38,7 @@
                 </div>
             </div>
 
-            <reply ref="reply"></reply>
+            <reply ref="reply" @openStatus='replyCallBack'></reply>
         </div>
     </transition>
 </template>
@@ -57,6 +57,7 @@ export default {
     },
     computed: {
         ...mapGetters('detail', [
+            'listArticle',
             'currentArticle',
             'myComment',
             'comment'
@@ -64,6 +65,7 @@ export default {
     },
     methods: {
         ...mapMutations('detail', [
+            'set_listArticle',
             'set_myComment'
         ]),
         ...mapActions('detail', [
@@ -79,9 +81,34 @@ export default {
             this.set_myComment(this.myComment)
             $('#comment .container').scrollTop(0)
             this.currentArticle.plnum = this.myComment.length + this.comment.length
+            if (this.listArticle) {
+                this.listArticle.plnum++
+                this.set_listArticle(this.listArticle)
+            }
         },
         delCallBack() {
             this.currentArticle.plnum = this.myComment.length + this.comment.length
+        },
+        commentClose() {
+            if (this.visible) {
+                this.visible = false
+            }
+        },
+        replyCallBack(val) {
+            if (val) {
+                document.removeEventListener('backbutton', this.commentClose, false)
+            } else {
+                document.addEventListener('backbutton', this.commentClose, false)
+            }
+        }
+    },
+    watch: {
+        visible(val) {
+            if (val) {
+                document.addEventListener('backbutton', this.commentClose, false)
+            } else {
+                document.removeEventListener('backbutton', this.commentClose, false)
+            }
         }
     }
 }

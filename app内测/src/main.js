@@ -35,6 +35,7 @@ Vue.component('popup-menu', popupMenu) // 弹框组件
 
 import { swiper, goTop } from '@/components/directive.js' // 手势指令
 // 注册全局指令
+
 // 右滑返回上一页 & 滑动input失去焦点
 Vue.directive('swiper', {
     inserted: function(el, binding, vnode) {
@@ -45,7 +46,6 @@ Vue.directive('swiper', {
         }
     }
 })
-
 // 点击回到页面顶部
 Vue.directive('goTop', {
     inserted: function(el, binding, vnode) {

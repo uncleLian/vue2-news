@@ -33,14 +33,14 @@ export default {
         indexSwiper: state => {
             return state.indexSwiper
         },
-        channelData: state => {
-            return state.channelData
-        },
         stickJson: state => {
             return state.stickJson
         },
         bannerJson: state => {
             return state.bannerJson
+        },
+        channelData: state => {
+            return state.channelData
         },
         activeIndex: state => {
             return state.indexColumn.findIndex(obj => obj.classpath === state.indexActive)
@@ -54,7 +54,6 @@ export default {
         activeLocation: state => {
             return state.indexLocation[state.indexActive]
         }
-
     },
     mutations: {
         set_indexActive(state, val) {

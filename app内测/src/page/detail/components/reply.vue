@@ -2,7 +2,7 @@
     <transition name='fadeIn'>
         <div id='reply' v-if='visible'>
             <my-header fixed title='回复'>
-                <a slot='left' @click.stop="visible = false"><i class="icon-close"></i></a>
+                <a slot='left' class='close-black' @click.stop="visible = false"></a>
             </my-header>
 
             <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
@@ -79,6 +79,22 @@ export default {
         },
         delCallBack(data) {
             this.json.plnum = this.myReply.length
+        },
+        replyClose() {
+            if (this.visible) {
+                this.visible = false
+            }
+        }
+    },
+    watch: {
+        visible(val) {
+            if (val) {
+                this.$emit('openStatus', true)
+                document.addEventListener('backbutton', this.replyClose, false)
+            } else {
+                this.$emit('openStatus', false)
+                document.removeEventListener('backbutton', this.replyClose, false)
+            }
         }
     }
 }

@@ -9,7 +9,6 @@ const ajaxURL = {
     Artilce: 'apparticle.php',
     Recommend: 'apptuijian.php',
     Search: 'search.php',
-
 }
 
 export var fetch = async(type = 'POST', url = '', data = {}) => {

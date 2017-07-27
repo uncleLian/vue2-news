@@ -1,7 +1,7 @@
 <template>
     <div id="thirdparty">
         <my-header fixed title='登录'>
-            <a class="back" slot='left' @click='$router.go(-1)'></a>
+            <a class="back-white" slot='left' @click='$router.go(-1)'></a>
         </my-header>
         <div class="content">
             <div class="membersImg">
@@ -93,7 +93,7 @@ export default {
     }
 }
 </script>
-<style scoped>
+<style scoped lang='stylus'>
 #thirdparty {
     width: 100%;
     height: 100%;

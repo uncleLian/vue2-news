@@ -281,6 +281,9 @@ export default {
                 font-family: inherit !important;
                 line-height: inherit !important;
             }
+            div,p{
+                width: 100% !important;
+            }
         }
     }
 }

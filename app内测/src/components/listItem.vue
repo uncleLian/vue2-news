@@ -12,7 +12,7 @@
                     <div class="video_wrapper">
                         <div class="video_info">
                             <div class="video_title">
-                                <p>{{section.title}}</p>
+                                <h3 v-html="section.title"></h3>
                             </div>
                             <div class="totalTime">{{section.playtime}}</div>
                             <img v-lazy.container="section.titlepic">
@@ -33,7 +33,7 @@
                 </div>
                 <router-link :to="url(section)" class='oneLarge'>
                     <div class="news_title">
-                        <h3>{{section.title}}</h3>
+                        <h3 v-html="section.title"></h3>
                     </div>
                     <div class='news_img'>
                         <img v-lazy.container='section.ptitlepic'>
@@ -50,7 +50,7 @@
                 </div>
                 <router-link :to="url(section)" class='threeSmall'>
                     <div class="news_title">
-                        <h3>{{section.title}}</h3>
+                        <h3 v-html="section.title"></h3>
                     </div>
                     <div class='list_img'>
                         <ul>
@@ -69,9 +69,9 @@
                     <label :for="section.id"></label>
                     <div class="checked_btn" @click='checkBoxMethod(section)'></div>
                 </div>
-                <router-link :to="url(section)" class='oneSmall clearfix'>
+                <router-link :to="url(section)" class='oneSmall'>
                     <div class="news_title">
-                        <h3>{{section.title}}</h3>
+                        <h3 v-html="section.title"></h3>
                         <list-info :infoJson='section'></list-info>
                     </div>
                     <div class='news_img'>
@@ -91,7 +91,7 @@
                     <div class="checked_btn" @click='checkBoxMethod(section)'></div>
                 </div>
                 <router-link :to="url(section)" class='text'>
-                    <p>{{section.title}}</p>
+                    <h3 v-html="section.title"></h3>
                     <list-info :infoJson='section'></list-info>
                 </router-link>
             </li>
@@ -150,7 +150,7 @@ larger_height=4.6875rem
     img[lazy=loading] {
         height: 100%;
     }
-    .news_title h3 {
+    h3 {
         white-space: normal;
         font-size: 17px;
         line-height: 21px;
@@ -165,9 +165,13 @@ larger_height=4.6875rem
 }
 
 .oneSmall {
+    font-size: 0;
+    & > div{
+        display: inline-block;
+        vertical-align: middle;
+    }
     .news_title {
         width: 67%;
-        float: left;
         overflow: hidden;
         h3 {
             margin-right: 12px;
@@ -203,7 +207,7 @@ larger_height=4.6875rem
         margin-top: 6px;
         ul {
             width: 100%;
-            display: flex;
+            /*display: flex;*/
             font-size: 0;
         }
         li {
@@ -212,7 +216,7 @@ larger_height=4.6875rem
             height: small_height;
             overflow: hidden;
             margin: 0!important;
-            flex: 1;
+            /*flex: 1;*/
         }
         li:nth-child(2) {
             padding: 0 2px;
@@ -259,7 +263,7 @@ larger_height=4.6875rem
             color: #fff;
             background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgba(0, 0, 0, .5)), color-stop(100%, transparent));
             z-index: 222;
-            p {
+            h3 {
                 width: 100%;
                 font-size: 14px;
                 line-height: 24px;
@@ -327,20 +331,6 @@ larger_height=4.6875rem
     }
 }
 
-.text {
-    p {
-        font-size: 17px;
-        line-height: 21px;
-        color: #222;
-        font-weight: 400;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        text-overflow: ellipsis;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-}
-
 #listItem.checkBox li {
     white-space: nowrap;
     position: relative;
@@ -385,5 +375,12 @@ larger_height=4.6875rem
             z-index: 888;
         }
     }
+}
+
+</style>
+<style>
+#listItem li a highlight{
+    color: #fe3333!important;
+    font-weight: bold;
 }
 </style>

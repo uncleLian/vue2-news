@@ -1,46 +1,61 @@
 <template>
-    <transition name='fadeIn'>
-        <div id="readHistory">
-            <div class="myheader">
-                <!--<div class="iosHeader"></div>-->
-                <my-header fixed title='历史记录'>
-                    <a class="back" slot='left' @click='$router.go(-1)'></a>
-                    <a slot='right' @click='editToggle'>清除</a>
-                </my-header>
-            </div>
-            <div id="content" :class="{isIOS: $store.state.device == 'ios'}">
-                <div class="container">
-                    <list-item :itemJson='get_historyArticle'></list-item>
-                </div>
-            </div>
+  <transition name='fadeIn'>
+    <div id="readHistory">
+      <div class="myheader">
+        <!--<div class="iosHeader"></div>-->
+        <my-header fixed title='历史记录'>
+          <a class="back-white" slot='left' @click='$router.go(-1)'></a>
+          <a slot='right' class="clean" @click='editToggle()'>清除</a>
+        </my-header>
+      </div>
+      <div id="content" :class="{isIOS: $store.state.device == 'ios'}">
+        <div class="container" v-swiper:swiperRight='true'>
+          <list-item :itemJson='readHistory'></list-item>
         </div>
-    </transition>
+      </div>
+    </div>
+  </transition>
 </template>
 <script>
-import { mapGetters, mapMutations } from 'vuex'
-export default {
+  import {mapActions, mapMutations} from 'vuex'
+  export default {
     name: 'readHistory',
     data() {
-        return {}
+      return {
+        readHistory: ''
+      }
     },
-    computed: {
-        ...mapGetters('detail', [
-            'get_historyArticle'
-        ])
-    },
-    methods: {
-        ...mapMutations('detail', [
-            'set_historyArticle'
-        ]),
-        editToggle() {
-            this.set_historyArticle({})
-        }
-    }
 
-}
+    methods: {
+      ...mapActions('user', [
+        'get_readHistory'
+      ]),
+      ...mapMutations('detail', [
+        'set_historyArticle'
+      ]),
+      editToggle() {
+        this.set_historyArticle([])
+        this.readHistory = ''
+      },
+      get_History() {
+        this.get_readHistory()
+          .then(res => {
+              this.set_historyArticle(res)
+              this.readHistory = res
+            }
+          )
+      }
+    },
+    mounted() {
+      this.get_History()
+    },
+    activated () {
+      this.get_History()
+    }
+  }
 </script>
 <style scoped lang='stylus'>
-#readHistory {
+  #readHistory {
     position: absolute;
     top: 0;
     left: 0;
@@ -49,21 +64,21 @@ export default {
     overflow: hidden;
     z-index: 1000;
     #content {
-        width: 100%;
+      width: 100%;
+      height: 100%;
+      padding-top: 44px;
+      position: relative;
+      background: #ffffff;
+      &.isIOS {
+        padding-top: 64px;
+      }
+      .container {
         height: 100%;
-        padding-top: 44px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         position: relative;
-        background: #ffffff;
-        &.isIOS {
-            padding-top: 64px;
-        }
-        .container {
-            height: 100%;
-            overflow-x: hidden;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            position: relative;
-        }
+      }
     }
-}
+  }
 </style>

@@ -6,6 +6,7 @@
         <span class="news_label red" v-else-if="infoJson.firsttitle >= 6">热</span>
         <span class='from' v-if='infoJson.befrom'>{{infoJson.befrom}}</span>
         <span class='news_click' v-if='infoJson.onclick'>{{infoJson.onclick | watchFilter }}阅</span>
+        <span class='news_plnum' v-if='infoJson.plnum'>{{infoJson.plnum}}评论</span>
         <span class='news_time' v-if='infoJson.time'>{{infoJson.time}}</span>
     </div>
 </template>
@@ -22,27 +23,30 @@ export default {
 </script>
 <style lang='stylus' scoped>
 .news_info {
-    font-size: 10px;
+    position: relative;
+    left: -12.5%;
+    width: 125%;
+    white-space: normal;
     color: #999;
     margin-top: 6px;
     overflow: hidden;
+    font-size: 12.5px;
+    -webkit-transform: scale(0.8);
+    transform: scale(0.8);
     span {
         display: inline-block;
-        margin-right: 2px;
     }
     .news_label {
-        font-size: 9px;
-        height: 12px;
-        line-height: 13px;
-        border-radius: 2px; 
+        border-radius: 2px;
+        padding: 0 2px;
     }
     .blue {
-        color: #3d99d4;
-        border: 1px solid #3d99d4;
+        color: #fff;
+        background: #3d99d4;
     }
     .red {
-        color: #f85959;
-        border: 1px solid rgba(248, 89, 89, .5);
+        color: #fff;
+        background: #f85959;
     }
 }
 </style>

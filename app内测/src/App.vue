@@ -13,6 +13,7 @@ import '@/assets/css/icon.css'
 import fastClick from 'fastclick'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 // import { Indicator } from 'mint-ui'
+import { Toast } from 'mint-ui'
 export default {
     data () {
         return {
@@ -77,27 +78,23 @@ export default {
                 s.parentNode.insertBefore(hm, s)
             })()
         },
-        onBackKeyDown () {
-            window.plugins.toast.showShortBottom('再点击一次退出程序')
+        onBackKeyDown() {
+            Toast({
+                message: '再点击一次退出程序',
+                position: 'bottom',
+                duration: 2000
+            })
             document.removeEventListener('backbutton', this.onBackKeyDown, false)
             document.addEventListener('backbutton', this.exitApp, false)
-            var timer = setTimeout(function () {
+            var timer = setTimeout(() => {
                 document.removeEventListener('backbutton', this.exitApp, false)
                 document.addEventListener('backbutton', this.onBackKeyDown, false)
                 clearTimeout(timer)
             }, 2000)
         },
-        exitApp () {
+        exitApp() {
             navigator.app.exitApp()
         }
-    },
-    watch: {
-        // $route (val) {
-        //     if (this.$route.name === 'home' || this.$route.name === 'video' || this.$route.name === 'collect' || this.$route.name === 'user') {
-        //         document.removeEventListener('backbutton', this.onBackKeyDown, false)
-        //         document.removeEventListener('backbutton', this.exitApp, false)
-        //     }
-        // }
     },
     created () {
         this.get_user()
@@ -108,8 +105,16 @@ export default {
         }, false)
         this.init()
     },
-    activated () {
-        // document.addEventListener('backbutton', this.onBackKeyDown, false)
+    watch: {
+        $route (val) {
+            if (this.$route.name === 'home' || this.$route.name === 'video' || this.$route.name === 'collect' || this.$route.path === '/index/user') {
+                document.addEventListener('backbutton', this.onBackKeyDown, false)
+                document.removeEventListener('backbutton', this.exitApp, false)
+            } else {
+                document.removeEventListener('backbutton', this.onBackKeyDown, false)
+                document.removeEventListener('backbutton', this.exitApp, false)
+            }
+        }
     }
 }
 </script>

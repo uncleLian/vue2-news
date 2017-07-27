@@ -1,13 +1,10 @@
 <template>
     <transition name='fadeIn'>
         <div id="userguide">
-            <div class="myheader">
-                <!--<div class="iosHeader"></div>-->
-                <my-header fixed title='版本介绍'>
-                    <a class="back" slot='left' @click='$router.go(-1)'></a>
-                </my-header>
-            </div>
-            <div id="content">
+            <my-header fixed title='版本介绍'>
+                <a class="back-white" slot='left' @click='$router.go(-1)'></a>
+            </my-header>
+            <div id="content" v-swiper:swiperRight='true'>
                 1111111
             </div>
         </div>

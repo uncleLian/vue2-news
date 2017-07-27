@@ -23,6 +23,7 @@ const userGuide = () => import('@/page/index/user/children/userGuide')
 const QRcode = () => import('@/page/index/user/children/QRcode')
 const feedBack = () => import('@/page/index/user/children/feedBack')
 const readHistory = () => import('@/page/index/user/children/readHistory')
+const myComments = () => import('@/page/index/user/children/myComments')
 const detail = () => import('@/page/detail/detail')
 // const comment = () => import('@/page/detail/children/comment')
 // const reply = () => import('@/page/detail/children/reply')
@@ -88,6 +89,10 @@ export default new Router({
                 {
                     path: 'readHistory',
                     component: readHistory
+                },
+                {
+                    path: 'myComments',
+                    component: myComments
                 }
                 ]
             }

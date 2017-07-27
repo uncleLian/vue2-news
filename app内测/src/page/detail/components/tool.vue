@@ -1,25 +1,24 @@
 <template>
-    <div class='tool' :class="{'focus': focus}" @keyup.enter.prevent="sendComment">
+    <div class='tool' :class="{'focus': focus}">
+         
         <div class="left">
-            <a v-show='!focus' class="text" @click.stop="inputFocus">
-                <i class="icon-write"></i>
-                <span v-if="comment === 'reply'">写回复...</span>
-                <span v-else>写评论...</span>
-            </a>
-            <!-- 回复页 -->
-            <input id='input' name='input' type="text" v-model.trim='inputVal' @focus.stop="replyFocus" @blur.stop="focus = false" :placeholder="placeholderVal" v-if="comment === 'reply'">
-            <!-- 评论页 -->
-            <input id='input' name='input' type="text" v-model.trim='inputVal' @focus.stop="focus = true" @blur.stop="focus = false"  v-else>
+            <div class="text" v-show='!focus'  @click.stop="inputFocus">
+                <a class="icon-write"> 写评论...</a>
+            </div>
+            <textarea id='input' v-if="comment === 'reply'"  :class="{ normal: !focus }" v-model.trim='inputVal' @focus.stop="replyFocus" @blur.stop="focus = false" :placeholder="placeholderVal" ><br/></textarea>
+
+            <textarea  id='input' v-else :class="{ normal: !focus }" v-model.trim='inputVal' @focus.stop="focus = true" @blur.stop="focus = false"><br/></textarea>
         </div>
         <div class="right" v-show='!focus' v-if='icon'>
             <slot name='tool_btn'></slot>
         </div>
-        <span v-show='focus' class="publish_btn">发送</span>
+        <span v-show='focus' class="publish_btn" :class="{ hasVal: inputVal.length > 0 ? true : false }">发送</span>
     </div>
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import {Toast} from 'mint-ui'
+import { Toast, MessageBox } from 'mint-ui'
+import { autoTextarea } from '@/components/autoTextarea.js'
 export default {
     props: {
         ele: {
@@ -60,6 +59,9 @@ export default {
     computed: {
         ...mapGetters('detail', [
             'talkReply'
+        ]),
+        ...mapGetters('login', [
+            'login'
         ])
     },
     methods: {
@@ -80,46 +82,63 @@ export default {
             }
         },
         sendComment() {
-            if (this.inputVal) {
-                if (this.comment === 'remark') {
-                    // 评论页
-                    this.post_Comment_data({'content': this.inputVal})
-                    .then(res => {
-                        if (this.ele) {
-                            this.ele.open()
+            if (this.login) {
+                if (this.inputVal) {
+                    if (this.comment === 'remark') {
+                        // 评论页
+                        this.post_Comment_data({'content': this.inputVal})
+                        .then(res => {
+                            if (this.ele) {
+                                this.ele.open()
+                            }
+                            if (res.err) {
+                                this.inputVal = ''
+                                this.keepInputVal = ''
+                                this.focus = false
+                                this.$emit('publishStatus', res.data)
+                                Toast({message: '发送成功', duration: 1500})
+                                $('.tool #input').blur()
+                            }
+                        })
+                    } else if (this.comment === 'reply') {
+                        // 回复页
+                        let params = {
+                            'content': this.inputVal,
+                            'remarkid': this.remarkid,
+                            'altUserId': this.talkReply.replyid
                         }
-                        if (res.err) {
-                            this.inputVal = ''
-                            this.keepInputVal = ''
-                            this.focus = false
-                            this.$emit('publishStatus', res.data)
-                            Toast({message: '发送成功', duration: 1500})
-                            $('.tool #input').blur()
-                        }
-                    })
-                } else if (this.comment === 'reply') {
-                    // 回复页
-                    let params = {
-                        'content': this.inputVal,
-                        'remarkid': this.remarkid,
-                        'altUserId': this.talkReply.replyid
+                        this.post_Reply_data(params)
+                        .then(res => {
+                            if (res.err) {
+                                this.inputVal = ''
+                                this.keepInputVal = ''
+                                this.focus = false
+                                this.$emit('publishStatus', res.data)
+                                Toast({message: '发送成功', duration: 1500})
+                                $('.tool #input').blur()
+                            }
+                        })
                     }
-                    this.post_Reply_data(params)
-                    .then(res => {
-                        if (res.err) {
-                            this.inputVal = ''
-                            this.keepInputVal = ''
-                            this.focus = false
-                            this.$emit('publishStatus', res.data)
-                            Toast({message: '发送成功', duration: 1500})
-                            $('.tool #input').blur()
-                        }
-                    })
                 }
+            } else {
+                MessageBox({
+                    title: '提示',
+                    message: '你还未登录，跳转到登录页？',
+                    showCancelButton: true,
+                    closeOnClickModal: false
+                })
+                .then(action => {
+                    console.log(action)
+                    if (action !== 'cancel') {
+                        this.$router.push('/login')
+                    }
+                })
             }
         }
     },
     mounted() {
+        let text = this.$el.querySelector('.tool #input')
+        autoTextarea(text, 0, 80)
         $(this.$el.querySelector('.tool .publish_btn')).on('touchend', () => {
             this.sendComment()
         })
@@ -133,54 +152,97 @@ export default {
     right: 0;
     bottom: 0;
     z-index: 666;
-    height: 48px;
-    line-height: 47px;
     display: flex;
     background: #fdfdfd;
     border-top: 1px solid #ddd;
-    padding: 0 16px;
+    padding-right: 16px;
+    font-size: 0;
+    align-items: center;
+    
     .left {
         flex: 1;
         position: relative;
+        padding-left: 16px;
         font-size: 0;
         .text {
             position: absolute;
-            left: 16px;
+            left: 32px;
             top: 0;
             z-index: 111;
             font-size: 12px;
+            a{
+                height: 48px;
+                display: table-cell;
+                vertical-align: middle;
+                white-space: nowrap;
+            }
         }
         #input {
             width: 100%;
-            height: 32px;
-            line-height: 32px;
-            margin: 6px 0 8px;
-            border-radius: 30px;
+            height: 36px;
+            font-size: 14px;
+            line-height: 24px;
+            border-radius: 20px;
             border: 1px solid #ddd;
             background: #eee;
-            font-size: 14px;
-            padding: 0 16px;
+            -webkit-appearance: none;
+            outline: none;
+            resize: none;
+            overflow-y: auto !important;
+            margin: 6px 0;
+            padding: 6px 15px;
+            word-break:break-all;
+            &::-webkit-scrollbar {
+                width: 0;
+                height: 0;
+                display: none;
+            }
+            &.normal{
+                height: 36px !important;
+            }
         }
     }
     .right {
         flex: 1;
-        text-align: right;
         font-size: 0;
+        padding-left: 15px;
         a {
             display: inline-block;
             text-align: center;
             width: 33.3%;
+            height: 48px;
             font-size: 20px;
-            padding-left: 16px;
             text-decoration: none;
+            vertical-align: top;
+            
+        }
+        .comment_btn{
+            position: relative;
+            .comment_num{
+                position: absolute;
+                top: 6px;
+                padding: 1px 4px;
+                text-align: center;
+                border-radius: 15px;
+                font-size: 10px;
+                color: #fff;
+                background: #d43d3d;
+                line-height: 1;
+            }
         }
     }
     .publish_btn {
-        display: inline-block;
+        display: table-cell;
         padding-left: 15px;
         font-size: 16px;
+        font-weight: bold;
         color: #aaa;
         user-select:none;
+        vertical-align: middle;
+        &.hasVal{
+            color: #007aff
+        }
     }
 }
 </style>
+

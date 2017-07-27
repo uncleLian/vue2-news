@@ -10,7 +10,6 @@
                                 <p>{{section.title}}</p>
                             </div>
                             <div class="totalTime">{{section.playtime}}</div>
-                            <!-- <img v-lazy.container='section.titlepic'> -->
                             <img v-lazy.container="section.titlepic">
                         </div>
                         <div class="playRound">
@@ -89,8 +88,8 @@ export default {
 }
 </script>
 <style scoped lang='stylus'>
-small_height = 1.96875rem
-larger_height = 4.6875rem
+small_height=1.96875rem 
+larger_height=4.6875rem 
 #listItem li {
     margin: 0 15px;
     border-bottom: 1px solid hsla(0, 0%, 87%, .6);
@@ -112,18 +111,18 @@ larger_height = 4.6875rem
     img[lazy=loading] {
         height: 100%;
     }
-}
-
-.news_title h3 {
-    font-size: 17px;
-    line-height: 21px;
-    color: #222;
-    font-weight: 400;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    text-overflow: ellipsis;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    .news_title h3 {
+        white-space: normal;
+        font-size: 17px;
+        line-height: 21px;
+        color: #222;
+        font-weight: 400;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        text-overflow: ellipsis;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 }
 
 .oneSmall {
@@ -166,9 +165,11 @@ larger_height = 4.6875rem
         ul {
             width: 100%;
             display: flex;
+            font-size: 0;
         }
         li {
-            width: 33%;
+            display: inline-block;
+            width: 33.3%;
             height: small_height;
             overflow: hidden;
             margin: 0!important;
@@ -287,8 +288,8 @@ larger_height = 4.6875rem
     }
 }
 
-.text{
-    p{
+.text {
+    p {
         font-size: 17px;
         line-height: 21px;
         color: #222;

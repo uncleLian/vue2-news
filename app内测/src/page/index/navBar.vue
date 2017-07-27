@@ -59,38 +59,38 @@ export default {
             background-size: 22px!important;
             padding-bottom: 4px;
             &.home {
-                background: url('../../assets/icon/home.png') no-repeat center center;
+                background: url('../../assets/icon/Nowicon1/now.png') no-repeat center center;
             }
             &.video {
-                background: url('../../assets/icon/video.png') no-repeat center center;
+                background: url('../../assets/icon/Nowicon1/video.png') no-repeat center center;
             }
             &.collect {
-                background: url('../../assets/icon/shouchang.png') no-repeat center center;
+                background: url('../../assets/icon/Nowicon1/shouchang.png') no-repeat center center;
             }
             &.user {
-                background: url('../../assets/icon/my.png') no-repeat center center;
+                background: url('../../assets/icon/Nowicon1/my.png') no-repeat center center;
             }
         }
         .nav_name {
             font-size: 10px;
             color: #222;
             text-align: center;
-            line-height: 1;
+            line-height: 16px;
         }
     }
     .nav_item.active {
         .nav_icon {
             &.home {
-                background: url('../../assets/icon/home_1.png') no-repeat center center;
+                background: url('../../assets/icon/Nowicon2/now_1.png') no-repeat center center;
             }
             &.video {
-                background: url('../../assets/icon/video_1.png') no-repeat center center;
+                background: url('../../assets/icon/Nowicon2/video_1.png') no-repeat center center;
             }
             &.collect {
-                background: url('../../assets/icon/shouchang_1.png') no-repeat center center;
+                background: url('../../assets/icon/Nowicon2/shouchang_1.png') no-repeat center center;
             }
             &.user {
-                background: url('../../assets/icon/my_1.png') no-repeat center center;
+                background: url('../../assets/icon/Nowicon2/my_1.png') no-repeat center center;
             }
         }
         .nav_name {

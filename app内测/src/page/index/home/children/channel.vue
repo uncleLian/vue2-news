@@ -2,8 +2,9 @@
     <transition name='fadeIn'>
         <div id="channel">
             <my-header fixed title='频道管理'>
-                <a class="back" slot='left' @click='$router.go(-1)'></a>
+                <a class="back-white" slot='left' @click='$router.go(-1)'></a>
             </my-header>
+
             <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
                 <div class="container" v-swiper:swiperRight='true'>
                     <section class="column">

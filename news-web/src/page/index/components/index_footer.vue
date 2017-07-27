@@ -5,7 +5,7 @@
             <p class="title">健康头条</p>
             <p class="title-sub">看头条，知健康</p>
         </div>
-        <a class="down_btn center" :href='$store.state.apkURL'>立即下载</a>
+        <a class="down_btn center" href='../toutiaojk.apk'>立即下载</a>
         <a class="close_btn center" @click='close'></a>
     </footer>
 </template>

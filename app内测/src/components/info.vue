@@ -24,17 +24,20 @@ export default {
 </script>
 <style lang='stylus' scoped>
 .news_info {
+    position: relative;
+    left: -12.5%;
+    width: 125%;
     white-space: normal;
-    font-size: 10px;
     color: #999;
     margin-top: 6px;
     overflow: hidden;
+    font-size: 12.5px;
+    -webkit-transform: scale(0.8);
+    transform: scale(0.8);
     span {
         display: inline-block;
-        margin-right: 2px;
     }
     .news_label {
-        font-size: 9px;
         border-radius: 2px;
         padding: 0 2px;
     }
