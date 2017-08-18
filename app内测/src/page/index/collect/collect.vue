@@ -4,7 +4,7 @@
             <a slot='right' class="edit_btn" :class="[collectArticle.length > 0 ? 'edit-white' : 'edit-black']" @click.stop='editToggle'></a>
         </my-header>
         <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
-            <div class="container" v-infinite-scroll="getCollectAjax" infinite-scroll-disabled="bottomStatus" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
+            <div class="container" v-swiper:swiperRight='true'>
                 <!-- 列表 -->
                 <list-item :itemJson='collectArticle' :visible='editBtn' :checkBoxMethod='checkCollect'></list-item>
                 <!-- 无收藏 -->
@@ -12,8 +12,11 @@
                     <p>沒有文章哦，</p>
                     <p>赶快去收藏吧！</p>
                 </div>
+                <div class="loadAll" v-if='collectArticle.length > 0'>没有更多了</div>
                 <!-- 错误 -->
-                <error :visible='error' :method='getCollectAjax'></error>
+                <loading :visible='loading'></loading>
+
+                <error fixed :visible='error' :method='getCollectAjax'></error>
             </div>
         </div>
         <div class="delete" v-if='editBtn' :class="{ active: checkedArr.length > 0 }">
@@ -30,8 +33,11 @@ export default {
         return {
             request: false,
             editBtn: false,
+            loading: false,
             error: false,
-            bottomLock: false
+            bottomLock: false,
+            first: true,
+            localtion: 0
         }
     },
     computed: {
@@ -51,6 +57,11 @@ export default {
             if (!val) {
                 this.set_checkedArr([])
             }
+        },
+        $route(to, from) {
+            if (from.path.includes('detail')) {
+                this.handleLocaltion('get')
+            }
         }
     },
     methods: {
@@ -68,16 +79,19 @@ export default {
         ]),
         getCollectAjax() {
             if (!this.request) {
+                this.loading = true
                 this.get_collect_data()
                 .then(res => {
                     if (res) {
                         this.request = true
                         this.set_collectArticle(res)
                     }
+                    this.loading = false
                     this.error = false
                 })
                 .catch(err => {
                     console.log(err)
+                    this.loading = false
                     this.error = true
                 })
             }
@@ -128,6 +142,16 @@ export default {
             .catch(err => {
                 console.log(err)
             })
+        },
+        handleLocaltion(type) {
+            if (type === 'get') {
+                if (this.localtion > 0) {
+                    $('#collect .container').scrollTop(this.localtion)
+                }
+            } else if (type === 'set') {
+                let scrollTop = $('#collect .container').scrollTop()
+                this.localtion = scrollTop
+            }
         }
     },
     beforeRouteEnter(to, from, next) {
@@ -139,19 +163,25 @@ export default {
                     vm.getCollectAjax()
                 }
             } else {
-                MessageBox.confirm('登录可以同步云端数据')
-                .then(action => {
-                    vm.$router.push('/login')
-                })
-                .catch(err => {
-                    console.log(err)
+                if (vm.first) {
+                    MessageBox.confirm('登录可以同步云端数据')
+                    .then(action => {
+                        vm.$router.push('/login')
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        vm.get_collect_cache()
+                    })
+                    vm.first = false
+                } else {
                     vm.get_collect_cache()
-                })
+                }
             }
         })
     },
-    deactivated() {
+    deactivated () {
         this.editBtn = false
+        this.handleLocaltion('set')
     }
 }
 </script>
@@ -176,19 +206,8 @@ export default {
         }
     }
     .content {
-        width: 100%;
-        height: 100%;
-        padding-top: 44px;
         position: relative;
-        &.isIOS {
-            padding-top: 64px;
-        }
         .container {
-            height: 100%;
-            overflow-x: hidden;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            position: relative;
             .noData {
                 position: absolute;
                 left: 0;
@@ -201,6 +220,14 @@ export default {
                     color: #999;
                 }
             }
+            .loadAll{
+                width: 100%;
+                text-align: center;
+                font-size: 14px;
+                height: 50px;
+                line-height: 50px;
+                color: #999;
+            }
         }
     }
     .delete {
@@ -211,7 +238,7 @@ export default {
         z-index: 999;
         height: 40px;
         line-height: 40px;
-        background: #f8f8f8;
+        background: #f4f5f6;
         text-align: right;
         padding: 0 6px;
         &.active span {
@@ -226,9 +253,5 @@ export default {
             text-align: center;
         }
     }
-}
-
-#listItem li a:visited h3 {
-    color: #131313!important;
 }
 </style>

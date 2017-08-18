@@ -1,7 +1,7 @@
 <template>
     <transition name='fadeIn'>
         <div id="channel">
-            <my-header fixed title='频道管理'>
+            <my-header fixed title='频道管理' v-goTop:click='true'>
                 <a class="back-white" slot='left' @click='$router.go(-1)'></a>
             </my-header>
 
@@ -120,39 +120,28 @@ export default {
     overflow: hidden;
     z-index: 1000;
     .content {
-        height: 100%;
-        padding-top: 44px;
         background-color: #f8f8f8;
-        &.isIOS {
-            padding-top: 64px;
-        }
-        .container {
-            height: 100%;
-            overflow: auto;
-            position: relative;
-            -webkit-overflow-scrolling: touch;
-        }
         .column {
-            margin-top: 5px;
+            margin-top: 0.133rem;
             .title {
                 font-size: 12px;
-                padding: 0 10px;
+                padding: 0 0.266rem;
                 line-height: 2em;
                 background-color: #f5f5f5;
                 color: #666;
             }
             ul {
-                margin: 10px 0;
+                margin: 0.266rem 0;
                 li {
                     display: inline-block;
                     width: 25%;
-                    margin-bottom: 10px;
+                    margin-bottom: 0.266rem;
                     -webkit-animation: zoomIn .3s ease;
                     animation: zoomIn .3s ease;
                     a {
                         display: block;
                         font-size: 16px;
-                        margin: 0 8px;
+                        margin: 0 0.213rem;
                         border: 1px solid #ccc;
                         line-height: 2em;
                         color: #131313;

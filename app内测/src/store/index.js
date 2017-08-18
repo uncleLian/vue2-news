@@ -12,12 +12,16 @@ import user_module from './user/index'
 Vue.use(Vuex)
 
 const state = {
+    // detailWindow: [],
     device: 'android',
-    userid: '123456', // oqKkTv6XI_iDnYha-1VYKbtsvbYw //oqKkTvySObkOpp6L2z__GjacVFN8
+    userid: 'oqKkTv6XI_iDnYha-1VYKbtsvbYw', // oqKkTv6XI_iDnYha-1VYKbtsvbYw //oqKkTvySObkOpp6L2z__GjacVFN8
     firstTime: ''
 }
 
 const getters = {
+    // detailWindow: state => {
+    //     return state.detailWindow
+    // },
     device: state => {
         return state.device
     },
@@ -30,6 +34,9 @@ const getters = {
 }
 
 const mutations = {
+    // set_detailWindow(state, val) {
+    //     state.detailWindow = val
+    // },
     set_device(state, val) {
         state.device = val
     },

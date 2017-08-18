@@ -24,9 +24,9 @@ const QRcode = () => import('@/page/index/user/children/QRcode')
 const feedBack = () => import('@/page/index/user/children/feedBack')
 const readHistory = () => import('@/page/index/user/children/readHistory')
 const myComments = () => import('@/page/index/user/children/myComments')
+const userCover = () => import('@/page/index/user/children/userCover')
 const detail = () => import('@/page/detail/detail')
-// const comment = () => import('@/page/detail/children/comment')
-// const reply = () => import('@/page/detail/children/reply')
+// const myWindow = () => import('@/page/detail/myWindow')
 const search = () => import('@/page/search/search')
 const login = () => import('@/page/login/login')
 const theme = () => import('@/page/theme/theme')
@@ -93,6 +93,10 @@ export default new Router({
                 {
                     path: 'myComments',
                     component: myComments
+                },
+                {
+                    path: 'userCover',
+                    component: userCover
                 }
                 ]
             }
@@ -101,17 +105,11 @@ export default new Router({
         {
             path: '/detail',
             component: detail
-            // children: [
-            // {
-            //     path: 'comment',
-            //     component: comment
-            // },
-            // {
-            //     path: 'reply',
-            //     component: reply
-            // }
-            // ]
         },
+        // {
+        //     path: '/myWindow',
+        //     component: myWindow
+        // },
         {
             path: '/search',
             component: search

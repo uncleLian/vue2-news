@@ -2713,7 +2713,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     /****************  修改地方 ***************/
     distance:{
       type: Boolean,
-      default: false,
+      default: false
     }
     /****************  修改地方 ***************/
   },
@@ -2886,12 +2886,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
       }
       this.currentY = event.touches[0].clientY;
       var distance = (this.currentY - this.startY) / this.distanceIndex;
+
       /****************  修改地方 ***************/
       if(this.distance){
         distance = 0;
       }
-      /****************  修改地方 ***************/
       this.direction = distance > 5 ? 'down' : 'up';
+      /****************  修改地方 ***************/
       if (typeof this.topMethod === 'function' && this.direction === 'down' &&
         this.getScrollTop(this.scrollEventTarget) === 0 && this.topStatus !== 'loading') {
         event.preventDefault();

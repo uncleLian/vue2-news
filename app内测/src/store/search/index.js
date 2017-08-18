@@ -1,4 +1,4 @@
-import { getCache, setCache, removeCache } from '@/config/cache'
+import { setCache, removeCache } from '@/config/cache'
 import { fetch } from '@/config/fetch'
 export default {
     namespaced: true,
@@ -28,24 +28,26 @@ export default {
         }
     },
     actions: {
-
-        get_current_cache({ commit, state }) {
-            let data = JSON.parse(getCache('search_current'))
-            return data
+        async get_search_data({ commit, state }, { key, page }) {
+            // let res
+            // let historyData
+            // historyData = JSON.parse(getCache('search_history'))
+            // if (historyData && historyData[key] && page === 1) {
+            //     res = historyData[key]
+            // } else {
+            //     res = await fetch('post', 'Search', { 'key': key, 'page': page })
+            // }
+            let res = await fetch('post', 'Search', { 'key': key, 'page': page })
+            return res
         },
 
-        async get_search_data({ commit, state }, { key, page }) {
-            let res
-            let historyData
-            historyData = JSON.parse(getCache('search_history'))
-            if (historyData && historyData[key] && page === 1) {
-                res = historyData[key]
-            } else {
-                await fetch('post', 'Search', { 'key': key, 'page': page })
-                    .then(json => {
-                        res = json
-                    })
-            }
+        async get_hot_data() {
+            let res = await fetch('post', 'Search')
+            return res
+        },
+
+        async get_topic_data() {
+            let res = await fetch('post', 'Search', {type: 'topic'})
             return res
         }
     }

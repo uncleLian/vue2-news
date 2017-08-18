@@ -54,14 +54,13 @@ export default {
 </script>
 <style scoped lang='stylus'>
 .swiper-box.isIOS {
-    padding-top: 100px;
+    padding-top: 2.83rem;
 }
-
 .swiper-box {
     width: 100%;
     height: 100%;
     z-index: 0;
     background: #fff;
-    padding-top: 80px;
+    padding-top: 2.295rem;
 }
 </style>

@@ -12,21 +12,21 @@ import '@/assets/css/reset.css'
 import '@/assets/css/icon.css'
 import fastClick from 'fastclick'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-// import { Indicator } from 'mint-ui'
 import { Toast } from 'mint-ui'
+// import { Indicator } from 'mint-ui'
 export default {
     data () {
         return {
             transitionName: ''
         }
     },
-//    beforeRouteEnter(to, from, next) {
-//        Indicator.open()
-//        document.addEventListener('deviceready', () => {
-//            Indicator.close()
-//            next()
-//        }, false)
-//    },
+   // beforeRouteEnter(to, from, next) {
+   //     Indicator.open()
+   //     document.addEventListener('deviceready', () => {
+   //         Indicator.close()
+   //         next()
+   //     }, false)
+   // },
     beforeRouteUpdate (to, from, next) {
         let isBack = this.$router.isBack
         if (isBack) {
@@ -51,6 +51,9 @@ export default {
         ...mapActions('login', [
             'get_user'
         ]),
+        ...mapActions('detail', [
+            'get_historyArticle_cache'
+        ]),
         init () {
             this.firstEnterTime()
             this.checkOS()
@@ -58,6 +61,10 @@ export default {
             $(function () {
                 fastClick.attach(document.body)
             })
+            this.cache_init()
+        },
+        cache_init() {
+            this.get_historyArticle_cache()
         },
         firstEnterTime () {
             let time = new Date().getTime()

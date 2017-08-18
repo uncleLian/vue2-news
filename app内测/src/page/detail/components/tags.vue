@@ -17,7 +17,7 @@ export default {
 .tags {
     width: 100%;
     position: relative;
-    margin: 20px 0;
+    padding: 0.4rem 0;
     a {
         display: inline-block;
         text-align: center;
@@ -25,7 +25,7 @@ export default {
         border: 1px solid rgb(238, 238, 238);
         border-radius: 5px;
         font-size: 12px;
-        padding: 4px 8px;
+        padding: 0.107rem 0.214rem;
         background: #fff;
         margin: 0 0 10px 10px;
     }

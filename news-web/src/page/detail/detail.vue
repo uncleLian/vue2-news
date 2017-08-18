@@ -1,21 +1,40 @@
 <template>
-    <div id="detail">
-        <my-header fixed>
-            <a slot="left" @click.stop='$router.go(-1)'><i class="icon-back"></i></a>
-            <a slot="mid" v-goTop:click='true'>{{title}}</a>
-            <a slot="right" @click.stop='$refs.share.toggle()'><i class="icon-menu"></i></a>
+    <div id="detail" :title='title'>
+        <my-header fixed :title='title' v-goTop:click='true'>
+            <a slot="left" class="back-black" @click.stop='$router.go(-1)'></a>
+            <a slot="right" class="menu" @click.stop='$refs.share.toggle()'></a>
         </my-header>
         
         <div class="content">
             <div class="container" v-swiper:swiperRight='true'>
+
                 <!-- 文章 -->
                 <my-article  :json='currentArticle'></my-article>
+
                 <!-- 标签 -->
                 <tags  v-if='currentArticle.infotags' :json='currentArticle.infotags'></tags>
+                
+                <!-- 分割线 -->
+                <div class="bg_line" v-if='currentArticle.comment'></div>
+                <!-- 热点评论 -->
+                <div class="comment-hot" v-if='currentArticle.comment'>
+                    <div class="comment_title">
+                        <div class="Line">
+                            <div class="title">用户热评</div>
+                        </div>
+                    </div>
+                    <comment-item v-for='item in currentArticle.comment' :itemJson='item' :key='item'></comment-item>
+                    <a href='http://m.toutiaojk.com/guide.html' class="comment_more" v-if="currentArticle.plnum > 0 ">下载健康头条阅读全部{{currentArticle.plnum}}条评论<i class="icon-detail"></i></a>
+                </div>
+
+                <!-- 分割线 -->
+                <div class="bg_line"></div>
+
                 <!--  推荐 -->
                 <recommend  :json='recommend'></recommend>
+                
                 <!-- 下载 -->
-                <a class="downLoad" href='../toutiaojk.apk'>都翻到这儿了，就下载个头条呗~</a>
+                <a class="downLoad" href='http://m.toutiaojk.com/guide.html'>都翻到这儿了，下载个头条呗~</a>
 
                 <loading :visible='loading'></loading>
 
@@ -41,6 +60,7 @@ export default {
         return {
             id: null,
             classid: null,
+            datafrom: null,
             title: '健康头条',
             loading: true, 
             error: false,
@@ -72,6 +92,7 @@ export default {
         async init(){
             this.classid = this.$route.query.classid;
             this.id = this.$route.query.id;
+            this.datafrom = this.$route.query.datafrom;
             this.set_id(this.id)
             $("#detail .container").scrollTop(0);
             if (!(this.indexColumn.length > 1 )) {
@@ -87,7 +108,7 @@ export default {
         },
         get_Article() {
             this.loading = true;
-            this.get_Article_data(this.id)
+            this.get_Article_data({'id': this.id, 'datafrom': this.datafrom})
             .then(res => {
                 if (res) {
                     this.set_currentArticle(res)
@@ -146,37 +167,79 @@ export default {
     overflow: hidden;
     background: #f8f8f8;
     header {
-        background: #fdfdfd;
+        background: #fff;
         color: #333;
         font-size: 16px;
-        border-bottom: 1px solid #ddd;
-        i {
-            font-size: 20px;
-            vertical-align: middle;
+        .menu {
+            background: url(../../assets/img/menu.png) no-repeat center center;
+            background-size: 20px;
         }
     }
-    .content {
+    .downLoad {
+        display: block;
         width: 100%;
-        height: 100%;
-        padding-top: 44px;
-        position: relative;
-        .container {
-            height: 100%;
-            overflow: auto;
+        height: 36px;
+        line-height: 36px;
+        background: #00939c;
+        color: #fff;
+        text-align: center;
+        font-size: 14px;
+        text-decoration: none;
+    }
+    .comment-hot {
+        padding: 0.533rem 0 0;
+        background: #f9f9f9;
+        .comment_title {
+            margin-bottom: 0.4rem;
             position: relative;
-            -webkit-overflow-scrolling: touch;
+            .Line {
+                position: relative;
+                width: 2.8rem;
+                margin: 0 auto;
+                text-align: center &:before {
+                    content: "";
+                    border-top: 2px solid #aaa;
+                    display: block;
+                    position: absolute;
+                    width: 0.4rem;
+                    top: 50%;
+                    left: 0
+                }
+                &:after {
+                    content: "";
+                    border-top: 2px solid #aaa;
+                    display: block;
+                    position: absolute;
+                    width: 0.4rem;
+                    top: 50%;
+                    right: 0
+                }
+            }
+            .title {
+                font-size: 14px;
+                font-weight: bold;
+            }
         }
-        .downLoad {
+        .comment_more {
             display: block;
-            width: 100%;
-            height: 36px;
-            line-height: 36px;
-            background: #f67373;
-            color: #fff;
             text-align: center;
-            font-size: 14px;
-            text-decoration: none;
+            font-size: 12px;
+            color: #00939c;
+            padding: 0.533rem 0;
+            vertical-align: middle;
+            i {
+                display: inline-block;
+                vertical-align: middle;
+                margin-left: 2px;
+                margin-top: -2px;
+                padding: 0 2px;
+                font-size: 12px;
+            }
         }
+    }
+    .bg_line {
+        height: 0.1333rem;
+        background: #eee;
     }
 }
 </style>

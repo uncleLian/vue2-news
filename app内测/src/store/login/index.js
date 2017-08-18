@@ -2,7 +2,12 @@ import { get_local_cache, set_local_cache } from '@/config/cache'
 export default {
     namespaced: true,
     state: {
-        login: '',
+        login: 'wx',
+        // wx: {
+        //     headimgurl: 'http://wx.qlogo.cn/mmopen/8IqTY9nvCLT3w8UibMQCorTs5kc7ZIrMvSTaAgvcNO9dxwNQGy7xjgdJKhYXoOZ5Nib1mlfUg1vicViaKCZYWXe5zfq6vrkmDv2R/0',
+        //     nickname: '小鑫',
+        //     city: '广州'
+        // },
         wx: '',
         qq: ''
     },

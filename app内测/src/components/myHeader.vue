@@ -32,16 +32,18 @@ export default {
 }
 </script>
 <style scoped lang='stylus'>
+ios_height = 0.535rem
+header_height = 1.335rem
 .iosStatus {
     width: 100%;
-    height: 20px;
+    height: ios_height;
 }
-
 header {
     display: block;
     position: relative;
     overflow: hidden;
-    background-color: #d43d3d;
+    /*background-color: #d43d3d;*/
+    background-color: #00939c;
     color: #fff;
     font-size: 16px;
     &.fixed {
@@ -53,14 +55,14 @@ header {
     }
     .top_bar {
         position: relative;
-        height: 44px;
+        height: header_height;
         user-select: none;
         display: flex;
         align-items: center;
         a {
             display: table-cell;
-            width: 44px;
-            height: 44px;
+            width: header_height;
+            height: header_height;
             color: inherit;
             font-size: inherit;
             font-weight: inherit;
@@ -68,8 +70,8 @@ header {
             vertical-align: middle;
         }
         .abs_l,.abs_r {
-            width: 44px;
-            height: 44px;
+            width: header_height;
+            height: header_height;
             font-size: inherit;
             color: inherit;
             text-align: center;

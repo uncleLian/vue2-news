@@ -31,11 +31,12 @@ export default {
     color: #999;
     margin-top: 6px;
     overflow: hidden;
-    font-size: 12.5px;
+    font-size: 0.267rem;
     -webkit-transform: scale(0.8);
     transform: scale(0.8);
     span {
         display: inline-block;
+        vertical-align: middle;
     }
     .news_label {
         border-radius: 2px;
@@ -43,7 +44,8 @@ export default {
     }
     .blue {
         color: #fff;
-        background: #3d99d4;
+        /*background: #3d99d4;*/
+        background: #00939c;
     }
     .red {
         color: #fff;

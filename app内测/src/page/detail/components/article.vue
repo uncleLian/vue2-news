@@ -1,13 +1,13 @@
 <template>
     <article id="article">
-        <h1 class="article_title">{{json.title}}</h1>
-        <div class="article_info clearfix">
-            <span class="author"><i class="icon-author"></i> 文 / {{json.befrom}}</span>
-            <span class="time">{{json.newstime}}</span>
+        <div class="article_info">
+            <h1 class="title">{{json.title}}</h1>
+            <span class="befrom">{{json.befrom}}</span>
+            <span class="newstime">{{json.newstime}}</span>
         </div>
         <template v-if="json.playonlineurl">
             <div class="article_video">
-                <div class="video" :class="{'video-fixed': video_fixed}" id='ckVideo'>
+                <div class="video" :class="{'video-fixed': video_fixed}">
                     <template v-if="video_poster">
                         <div class="video_info">
                             <img :src="json.titlepic">
@@ -59,7 +59,7 @@ export default {
     },
     methods: {
         videoPlay() {
-            this.video = document.querySelector('video')
+            this.video = this.$el.querySelector('video')
             this.video.play()
             this.video_playing = true
             this.video_poster = false
@@ -68,25 +68,20 @@ export default {
             this.videoFixed()
         },
         videoEvent() {
+            this.video.oncanplay = () => {
+                this.video_loading = false
+            }
             this.video.onplay = () => {
-                // console.log('播放')
                 this.video_playing = true
             }
             this.video.onpause = () => {
-                // console.log('暂停')
                 this.video_playing = false
                 this.video_loading = false
             }
             this.video.onwaiting = () => {
-                // console.log('缓冲...')
                 this.video_loading = true
             }
-            this.video.oncanplay = () => {
-                // console.log('可以播放了...')
-                this.video_loading = false
-            }
             this.video.onended = () => {
-                // console.log('播放结束')
                 this.video_ended = true
             }
         },
@@ -112,7 +107,7 @@ export default {
     },
     watch: {
         json(val) {
-            this.video = document.querySelector('video')
+            this.video = this.$el.querySelector('video')
             this.video_poster = true
             this.video_playing = false
             this.video_ended = false
@@ -129,24 +124,21 @@ export default {
 #article {
     width: 100%;
     position: relative;
-    padding: 0 16px;
-    .article_title {
-        color: #000;
-        font-size: 20px;
-        font-weight: bold;
-        padding: 15px 0 10px;
-    }
     .article_info {
-        color: #999;
         font-size: 12px;
-        padding: 5px 0;
         overflow: hidden;
-        position: relative;
-        .author {
-            float: left;
+        background: #fff;
+        padding: 0 0.427rem 0.4rem;
+        border-bottom: 1px solid #eee;
+        background: #fff;
+        .title {
+            color: #000;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 0.4rem 0;
         }
-        .time {
-            float: right;
+        .befrom {
+            margin-right: 5px;
         }
     }
     .article_video {
@@ -263,7 +255,7 @@ export default {
         color: #333;
         font-size: 18px !important;
         line-height: 30px;
-        margin: 10px 0;
+        padding: 0.4rem 0.427rem;
         .content_html {
             overflow: hidden;
             text-indent: none !important;
@@ -280,9 +272,11 @@ export default {
                 font-size: inherit !important;
                 font-family: inherit !important;
                 line-height: inherit !important;
+                text-align: justify !important;
             }
             div,p{
                 width: 100% !important;
+                padding-bottom: 15px;
             }
         }
     }

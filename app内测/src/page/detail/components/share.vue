@@ -33,7 +33,7 @@ export default {
     data () {
         return {
             contentFrame: false,
-            shareURL: `http://gg.toutiaojk.com/e/action/ShowInfo.php?classid=${this.$route.query.classid}&id=${this.$route.query.id}`
+            shareURL: `http://m.toutiaojk.com/#/detail?classid=${this.$route.query.classid}&id=${this.$route.query.id}&datafrom=${this.$route.query.datafrom}`
         }
     },
     methods: {

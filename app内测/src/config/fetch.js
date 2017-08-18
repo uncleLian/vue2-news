@@ -3,7 +3,7 @@ import qs from 'qs'
 // let url = window.location.host
 // let baseUrl = `http://${url}/e/extend/list/`
 // if(url == 'localhost:8082' || url == '192.168.3.24:8082'){
-let baseUrl = 'http://wt.toutiaojk.com/e/extend/list/'
+let baseUrl = 'http://wt.toutiaojk.com:6112/e/extend/list/'
     // }
 const ajaxURL = {
     classID: 'appclassid.php',
@@ -16,7 +16,10 @@ const ajaxURL = {
     collectList: 'appreaduserdata.php',
     videoList: 'appvideo.php',
     postComment: 'appPostComment.php',
-    getComment: 'appGetComment.php'
+    getComment: 'appGetComment.php',
+    historyComment: 'historyComment.php',
+    appreaduserdata: 'appreaduserdata.php',
+    addata: 'ad.php'
 }
 
 export var fetch = async(type = 'POST', url = '', data = {}) => {

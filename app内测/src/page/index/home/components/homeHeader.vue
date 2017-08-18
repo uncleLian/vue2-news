@@ -1,9 +1,17 @@
 <template>
     <div id="indexHeader">
-        <my-header class='header' @click.stop.native.prevent='goTop'>
-            <div class='title' slot='mid' ></div>
-            <a class='search_btn' slot='right' @click.stop="$router.push('/search')"></a>
-        </my-header>
+        <header>
+            <div class="iosStatus" v-if="this.$store.state.device === 'ios'? true : false"></div>
+            <div class="top_bar">
+                <div class="logo" @click.stop.prevent='goTop'></div>
+                <div class="search" @click.stop="$router.push('/search')">
+                    <div class="search_wrap">
+                        <i class="icon-search"></i>
+                        <div class="hot_topic">{{hot_topic}}</div>
+                    </div>
+                </div>
+            </div>
+        </header>
         <nav>
             <div class="nav_ul">
                 <a href='javascript:;' v-for="(item,index) in column" :class='{active: indexActive == item.classpath}' @click="navClick(item.classpath)" :key="item">{{item.classname}}</a>
@@ -16,11 +24,12 @@
     </div>
 </template>
 <script>
-import {mapGetters, mapMutations} from 'vuex'
+import {mapGetters, mapMutations, mapActions} from 'vuex'
 export default {
     props: ['column'],
     data () {
         return {
+            hot_topic: '搜你想搜的',
             move: 0
         }
     },
@@ -38,6 +47,9 @@ export default {
     methods: {
         ...mapMutations('index', [
             'set_indexActive'
+        ]),
+        ...mapActions('search', [
+            'get_topic_data'
         ]),
         goTop() {
             $(`.container.${this.indexActive}`).animate({scrollTop: 0})
@@ -65,16 +77,35 @@ export default {
                     $ul.animate({'scrollLeft': this.move}, 300)
                 }
             })
+        },
+        get_topic() {
+            this.get_topic_data()
+            .then(res => {
+                if (res.code === 0 && res.data) {
+                    this.hot_topic = res.data
+                }
+            })
         }
     },
     activated () {
         this.$nextTick(() => {
             $('.nav_ul').scrollLeft(this.move)
         })
+    },
+    mounted() {
+        this.get_topic()
     }
 }
 </script>
 <style scoped lang='stylus'>
+ios_height = 0.535rem
+header_height = 1.335rem
+nav_height = 0.96rem
+menu_width = 1.06rem
+.iosStatus {
+    width: 100%;
+    height: ios_height;
+}
 #indexHeader {
     position: fixed;
     top: 0;
@@ -82,19 +113,59 @@ export default {
     right: 0;
     z-index: 999;
     overflow: hidden;
-    .header {
-        .title {
-            background-size: 145px;
-        }
-        .search_btn {
-            background-size: 24px;
+    header {
+        display: block;
+        position: relative;
+        overflow: hidden;
+        background-color: #00939c;
+        color: #fff;
+        .top_bar {
+            position: relative;
+            height: header_height;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            .logo{
+                flex: 1.5;
+                height: 100%;
+                margin-left: 0.4rem;
+            }
+            .search{
+                flex: 2.5;
+                height: 100%;
+                padding: 0.3rem 0.4rem 0.25rem;
+                color: #00939c;
+                overflow: hidden;
+                .search_wrap{
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    height: 100%;
+                    border: 1px solid #ddd;
+                    border-radius: 50px;
+                    background: #fff;
+                    overflow: hidden;
+                    padding: 0 0.267rem;
+                    .icon-search{
+                        font-size: 15px;
+                    }
+                    .hot_topic{
+                        margin-left: 0.16rem
+                        font-size: 14px;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        white-space: nowrap;
+                    }
+                }
+            }
         }
     }
     nav {
         position: relative;
         background-color: #f4f5f6;
         border-bottom: 1px solid #ddd;
-        padding-right: 40px;
+        padding-right: menu_width;
         .nav_ul {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -108,20 +179,21 @@ export default {
                 display:table-cell; 
                 *display:inline-block;
                 vertical-align: middle;
-                padding: 0 10px;
-                margin-left: 5px;
-                height: 36px;
+                padding: 0 0.267rem;
+                margin-left: 0.133rem;
+                height: nav_height;
                 font-size: 17px;
                 color: #505050;
                 white-space: nowrap;
                 -webkit-tap-highlight-color: rgba(0, 0, 0, .3);
                 text-decoration: none;
                 &:last-child {
-                    margin-right: 5px;
+                    margin-right: 0.133rem;
                 }
                 &.active {
-                    color: #ea413c;
-                    border-bottom: 2px solid #ea413c;
+                    color: #00939c;
+                    border-bottom: 2px solid #00939c;
+                    font-weight: bold;
                 }
             }
         }
@@ -132,17 +204,17 @@ export default {
             height: 100%;
             .shadow {
                 position: absolute;
-                width: 10px;
+                width: 0.267rem;
                 height: 100%;
-                left: -10px;
+                left: -0.267rem;
                 background-size: contain;
                 background-color: rgba(244, 245, 246, .3);
             }
             .more_btn {
                 display: block;
-                width: 40px;
+                width: menu_width;
                 height: 100%;
-                background-size: 20px;
+                background-size: 16px;
                 background-color: #f4f5f6;
             }
         }
@@ -150,15 +222,10 @@ export default {
 }
 </style>
 <style scoped>
-.title {
-    height: 44px;
+.logo {
     background: url(~@/assets/img/news_logo.png)no-repeat center center;
+    background-size: contain;
 }
-
-.search_btn {
-    background: url(~@/assets/img/search.png)no-repeat center center;
-}
-
 .shadow {
     background: url(~@/assets/img/shadow.png) no-repeat 100%;
 }

@@ -6,11 +6,11 @@
             </my-header>
 
             <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
-                <div class="container" v-swiper:swiperRight="'close'">
+                <div class="container" v-swiper:swiperRight="'close'" v-swiper:all="'blur'">
 
                     <!-- 评论摘要 -->
                     <div class="reply-full">
-                        <comment-item :itemJson='json'></comment-item>
+                        <comment-item comment='reply' :itemJson='json'></comment-item>
                     </div>
 
                     <!-- 我的回复 -->
@@ -108,6 +108,7 @@ export default {
     height: 100%;
     overflow: hidden;
     z-index: 1112;
+    background: #fff;
     header {
         background: #fdfdfd;
         color: #333;
@@ -118,27 +119,22 @@ export default {
             vertical-align: middle;
         }
     }
+    .tool{
+        z-index: 1112;
+    }
     .content {
-        height: 100%;
-        padding-top: 44px;
         padding-bottom: 48px;
         background-color: #f8f8f8;
-        &.isIOS {
-            padding-top: 64px;
-        }
         .container {
-            height: 100%;
-            overflow: auto;
-            position: relative;
-            -webkit-overflow-scrolling: touch;
             h2 {
-                font-size: 12px;
+                font-weight: bold;
+                font-size: 14px;
                 padding: 10px 16px;
                 color: #333;
             }
-            .reply-full {
-                border-bottom: 1px solid #ddd;
-            }
+        }
+        .comment_item:last-of-type {
+            border:none;
         }
     }
 }

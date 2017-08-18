@@ -1,6 +1,6 @@
 <template>
 	<div id="user">
-		 <keep-alive>
+		 <keep-alive exclude='userCover'>
 	        <router-view></router-view>
 	    </keep-alive>
 	</div>
@@ -15,8 +15,7 @@ export default {
 	position: relative;
 	width: 100%;
 	height: 100%;
-	overflow: hidden;
+	overflow: auto;
 	padding-bottom: 48px;
-  background-color: #EEEEEE;
 }
 </style>

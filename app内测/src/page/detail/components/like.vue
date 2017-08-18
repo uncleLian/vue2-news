@@ -12,9 +12,7 @@ import {
 } from 'mint-ui'
 export default {
     props: {
-        json: {
-            default: ''
-        }
+        json: Object
     },
     data() {
         return {

@@ -1,10 +1,12 @@
 <template>
     <div id="indexHeader">
-        <my-header class='header'>
-            <a class='title' slot='mid' @click.stop="goTop"></a>
-            <a class='search_btn' slot='right' @click.stop="$router.push('/search')"></a>
-        </my-header>
-        
+        <header>
+            <div class="top_bar">
+                <div class="abs_l"></div>
+                <div class="abs_m"><a class='title' @click.stop="goTop"></a></div>
+                <div class="abs_r"><a class='search_btn' slot='right' @click.stop="$router.push('/search')"></a></div>
+            </div>
+        </header>
         <nav>
             <div class="nav_ul">
                 <a href='javascript:;' v-for="(item,index) in column" :class='{active: indexActive == item.classpath}' @click="navClick(item.classpath)" :key="item">{{item.classname}}</a>
@@ -88,12 +90,60 @@ export default {
     right: 0;
     z-index: 999;
     overflow: hidden;
-    .header {
+    header {
+        display: block;
+        position: relative;
+        overflow: hidden;
+        background-color: #00939c;
+        color: #fff;
+        &.fixed{
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
         .title {
             background-size: 145px;
         }
         .search_btn {
             background-size: 24px;
+        }
+        .top_bar {
+            position: relative;
+            height: 44px;
+            line-height: 44px;
+            user-select:none;
+            a{
+                display: block;
+                width: 100%;
+                height: 100%;
+                color: inherit;
+                font-size: inherit;
+                font-weight: inherit;
+            }
+            .abs_l,.abs_m,.abs_r {
+                position: absolute;
+                top: 0;
+                width: 44px;
+                height: 100%;
+                font-size: inherit;
+                color: inherit;
+                text-align: center
+            }
+            .abs_l {
+                left: 0;
+                z-index: 1000;
+            }
+            .abs_m {
+                width: 100%;
+                font-weight: 700;
+                z-index: 999;
+            }
+            .abs_r {
+                right: 0;
+                z-index: 1000;
+            }
         }
     }
     nav {
@@ -127,8 +177,8 @@ export default {
                     margin-right: 5px;
                 }
                 &.active {
-                    color: #ea413c;
-                    border-bottom: 2px solid #ea413c;
+                    color: #00939c;
+                    border-bottom: 2px solid #00939c;
                 }
             }
         }
@@ -159,6 +209,7 @@ export default {
 <style scoped>
 .title {
     background: url(~@/assets/img/news_logo.png)no-repeat center center;
+    background-size: contain;
 }
 
 .search_btn {

@@ -45,15 +45,15 @@ export default {
         }
     },
     actions: { 
-        async get_Article_data({ commit, state }, id) {
+        async get_Article_data({ commit, state }, { id, datafrom }) {
             let res, currentData, historyData;
             historyData = JSON.parse(getCache('history_Article'));
             if ( historyData && historyData[id] ) {
                 res = historyData[id];
             } else {
-                await fetch( 'post', 'Artilce', { 'id': id } )
+                await fetch( 'post', 'Artilce', {'id': id, 'datafrom': datafrom} )
                 .then(json =>{
-                    res = json[0];
+                    res = json.data;
                     currentData = res
                     historyData = { ...state.historyArticle, ...currentData };
                 })

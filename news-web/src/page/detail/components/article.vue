@@ -1,12 +1,10 @@
 <template>
     <article id="article">
-
-        <h1 class="article_title">{{json.title}}</h1>
-        <div class="article_info clearfix">
-            <span class="author"><i class="icon-author"></i> 文 / {{json.befrom}}</span>
-            <span class="time">{{json.newstime}}</span>
+        <div class="article_info">
+            <h1 class="title">{{json.title}}</h1>
+            <span class="befrom">{{json.befrom}}</span>
+            <span class="newstime">{{json.newstime}}</span>
         </div>
-
         <template v-if="json.playonlineurl">
             <div class="article_video">
                 <div class="video" :class="{'video-fixed': video_fixed}">
@@ -31,9 +29,11 @@
                     <div class="loading" v-show='video_loading'>
                         <mt-spinner :type="0" :size='50'></mt-spinner>
                     </div>
-                    <video ref='video' :controls='!video_poster' v-if='json.playonlineurl' :key='json.playonlineurl'>
-                        <source :src="json.playonlineurl" type="video/mp4" >
-                    </video>
+                    <div class="video_box">
+                        <video ref='video' :controls='!video_poster' :key='json.playonlineurl'>
+                            <source :src="json.playonlineurl" type="video/mp4">
+                        </video>
+                    </div>
                 </div>
             </div>
         </template>
@@ -41,7 +41,7 @@
         <template v-else>
             <section class="article_content">
                 <div class="content_html" v-html='json.newstext' :class="{'content_html-close' : content_more}"></div>
-                <div class='content_moreBtn' v-if="content_more" @click="content_more = false">展开全文...</div>
+                <div class='content_moreBtn' v-if="content_more" @click.stop="content_more = false">展开全文...</div>
             </section>
         </template>
     </article>
@@ -137,47 +137,41 @@ export default {
 }
 </script>
 <style lang='stylus'>
-
 #article {
     width: 100%;
     position: relative;
-    padding: 0 16px;
-    .article_title {
-        color: #000;
-        font-size: 20px;
-        font-weight: bold;
-        padding: 15px 0 10px;
-    }
     .article_info {
-        color: #999;
         font-size: 12px;
-        padding: 5px 0;
         overflow: hidden;
-        position: relative;
-        .author{
-            float: left;
+        background: #fff;
+        padding: 0 0.427rem 0.4rem;
+        border-bottom: 1px solid #eee;
+        background: #fff;
+        .title {
+            color: #000;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 0.4rem 0;
         }
-        .time {
-            float: right;
+        .befrom {
+            margin-right: 5px;
         }
     }
-    .article_video{
+    .article_video {
         width: 100%;
         margin-bottom: 40px;
         .video {
             position: relative;
-            width: 100%;
             overflow: hidden;
+            width: 100%;
+            height: 5.3rem;
         }
-        .video-fixed{
+        .video-fixed {
             position: fixed;
             left: 0;
             right: 0;
             top: 0;
             z-index: 1000;
-        }
-        video {
-            width: 100%;
         }
         .video_info {
             position: absolute;
@@ -187,6 +181,7 @@ export default {
             z-index: 111;
             img {
                 width: 100%;
+                height: 5.3rem;
             }
         }
         .playRound {
@@ -215,7 +210,7 @@ export default {
                 margin-top: -16px;
             }
         }
-        .loading{
+        .loading {
             position: absolute;
             width: 50px;
             height: 50px;
@@ -225,7 +220,7 @@ export default {
             margin-top: -25px;
             z-index: 222;
         }
-        .repeat{
+        .repeat {
             position: absolute;
             width: 44px;
             height: 44px;
@@ -236,39 +231,54 @@ export default {
             border-radius: 50%;
             z-index: 444;
             background: #f8f8f8;
-            .repeat_round{
+            .repeat_round {
                 width: 44px;
                 height: 44px;
-                background: url(../../../assets/img/repeat.png)no-repeat center center;
+                background: url(../../../assets/img/repeat.png) no-repeat center center;
                 background-size: 28px;
             }
-            .repeat_text{
+            .repeat_text {
                 font-size: 12px;
                 color: #fff;
                 text-align: center;
                 margin-top: 4px;
             }
         }
-        .black{
+        .black {
             position: absolute;
             left: 0;
             right: 0;
             top: 0;
             z-index: 333;
             height: 200px;
-            background: rgba(0,0,0,.3);
+            background: rgba(0, 0, 0, .3);
+        }
+        .video_box {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            text-align: center;
+            height: 5.3rem;
+            video {
+                width: 100%;
+            }
         }
     }
-    .article_content{
+    .article_content {
         position: relative;
         color: #333;
-        font-size: 18px!important;
+        font-size: 18px !important;
         line-height: 30px;
-        margin: 10px 0;
-        .content_html{
+        padding: 0.4rem 0.427rem;
+        .content_html {
             overflow: hidden;
             text-indent: none !important;
             font-size: inherit;
+            &.content_html-close{
+                height: 1200px;
+            }
             img {
                 width: 100% !important;
                 height: auto !important;
@@ -281,17 +291,19 @@ export default {
                 font-size: inherit !important;
                 font-family: inherit !important;
                 line-height: inherit !important;
+                text-align: justify !important;
+            }
+            div,p{
+                width: 100% !important;
+                padding-bottom: 15px;
             }
         }
-        .content_html-close {
-            height: 1200px;
-        }
-        .content_moreBtn{
+        .content_moreBtn {
             margin-top: 15px;
             padding: 5px 0;
             text-align: center;
             font-size: 14px;
-            color: #5784df;
+            color: #00939c;
         }
     }
 }

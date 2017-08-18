@@ -12,7 +12,7 @@
                     <div class="video_wrapper">
                         <div class="video_info">
                             <div class="video_title">
-                                <h3 v-html="section.title"></h3>
+                                <p v-html="section.title"></p>
                             </div>
                             <div class="totalTime">{{section.playtime}}</div>
                             <img v-lazy.container="section.titlepic">
@@ -79,11 +79,7 @@
                     </div>
                 </router-link>
             </li>
-            <!-- 上次观看到这里 -->
-            <li v-else-if='section.type' id="lookHere">
-                <p>上次看到这里，点击刷新 <i class="icon-refresh"></i></p>
-            </li>
-            <!-- 文字 -->
+             <!-- 文字 -->
             <li v-else-if='section.title' @click.stop='saveData(section)'>
                 <div class="checkBox" v-if='visible'>
                     <input type="checkbox" :id="section.id" v-if='visible'>
@@ -95,10 +91,14 @@
                     <list-info :infoJson='section'></list-info>
                 </router-link>
             </li>
+            <li v-else-if='section.type' id="lookHere">
+                <p>上次看到这里，点击刷新 <i class="icon-refresh"></i></p>
+            </li>
         </template>
     </ul>
 </template>
 <script>
+// import { mapGetters, mapMutations } from 'vuex'
 import { mapMutations } from 'vuex'
 export default {
     props: {
@@ -113,15 +113,26 @@ export default {
             type: Function
         }
     },
+    // computed: {
+    //     ...mapGetters([
+    //         'detailWindow'
+    //     ])
+    // },
     methods: {
         ...mapMutations('detail', [
             'set_listArticle'
         ]),
+        ...mapMutations([
+            'set_detailWindow'
+        ]),
         url(item) {
             return `/detail?classid=${item.classid}&id=${item.id}&datafrom=${item.datafrom}`
+            // return `/myWindow?classid=${item.classid}&id=${item.id}&datafrom=${item.datafrom}`
         },
         saveData(json) {
             this.set_listArticle(json)
+            // this.detailWindow.push(json)
+            // this.set_detailWindow(this.detailWindow)
         }
     }
 }
@@ -130,12 +141,12 @@ export default {
 small_height=1.96875rem 
 larger_height=4.6875rem 
 #listItem li {
-    margin: 0 15px;
+    margin: 0 0.4rem;
     border-bottom: 1px solid hsla(0, 0%, 87%, .6);
     a {
         display: block;
         width: 100%;
-        padding: 16px 0;
+        padding: 0.427rem 0;
         outline: none;
         color: #131313;
         -webkit-tap-highlight-color: rgba(0, 0, 0, .1);
@@ -174,7 +185,7 @@ larger_height=4.6875rem
         width: 67%;
         overflow: hidden;
         h3 {
-            margin-right: 12px;
+            margin-right: 0.32rem;
         }
     }
     .news_img {
@@ -191,7 +202,7 @@ larger_height=4.6875rem
 .oneLarge {
     .news_img {
         width: 100%;
-        margin-top: 6px;
+        margin-top: 0.16rem;
         overflow: hidden;
         height: larger_height;
     }
@@ -204,7 +215,7 @@ larger_height=4.6875rem
 .threeSmall {
     .list_img {
         width: 100%;
-        margin-top: 6px;
+        margin-top: 0.16rem;
         ul {
             width: 100%;
             /*display: flex;*/
@@ -263,12 +274,13 @@ larger_height=4.6875rem
             color: #fff;
             background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgba(0, 0, 0, .5)), color-stop(100%, transparent));
             z-index: 222;
-            h3 {
+            p {
                 width: 100%;
                 font-size: 14px;
                 line-height: 24px;
-                padding: 8px 15px 0;
+                padding: 8px 0.4rem 0;
                 margin: 0;
+                color: #fff!important;
             }
         }
         .totalTime {
@@ -315,19 +327,17 @@ larger_height=4.6875rem
 }
 
 #listItem #lookHere {
-    width: 86%;
-    margin: 10px 7%;
-    border-radius: 5px;
-    border: 1px solid rgb(245, 103, 103);
-    background: rgb(255, 240, 245);
+    background: #f4f5f6;
+    border: none !important;
+    margin: 0 !important;
     p {
         font-size: 12px;
         line-height: 18px;
-        color: rgb(255, 51, 51);
+        color: #00939c;
         text-align: center;
         user-select: none;
         margin: 0;
-        padding: 5px 0;
+        padding: 10px 0;
     }
 }
 
@@ -339,7 +349,7 @@ larger_height=4.6875rem
     }
     .checkBox {
         width: 30px;
-        padding: 16px 0;
+        padding: 0.427rem 0;
         display: inline-block;
         vertical-align: top;
         input[type="checkbox"] {

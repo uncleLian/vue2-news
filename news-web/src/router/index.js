@@ -15,7 +15,6 @@ const index = () => import('@/page/index/index')
 	const channel = () => import('@/page/index/children/channel')
 const detail = () => import('@/page/detail/detail')
 const search = () => import('@/page/search/search')
-const theme = () => import('@/page/theme/theme')
 
 export default new Router({
 	// mode:'history',
@@ -42,10 +41,6 @@ export default new Router({
 			    {	
 			    	path: '/search', 
 			    	component: search
-			    },
-			    {	
-			    	path: '/theme', 
-			    	component: theme
 			    },
 		    ]
 		},

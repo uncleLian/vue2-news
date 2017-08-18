@@ -20,10 +20,10 @@
             </div>
 
             <!-- banner -->
-            <banner :bannerJson="bannerJson" v-if='bannerJson'></banner> 
+            <banner :bannerJson="bannerJson" v-if='bannerJson && bannerJson.length > 0'></banner> 
 
             <!-- 置顶 -->
-            <list-item :itemJson="stickJson" v-if='stickJson'></list-item> 
+            <list-item :itemJson="stickJson" v-if='stickJson && stickJson.length > 0'></list-item> 
             
             <!-- listItem --> 
             <list-item :itemJson="contentJson" v-if='contentJson.length > 0'></list-item>
@@ -42,6 +42,8 @@ export default {
     data () {
         return {
             classPage: 1,
+            stickJson: [],
+            bannerJson: [],
             contentJson: [], // 整个列表数据arr
             topStatus: '', // 下拉状态
             bottomLoading: true,
@@ -60,9 +62,7 @@ export default {
           'indexLocation',
           'activePage',
           'activeLocation',
-          'indexSwiper',
-          'stickJson',
-          'bannerJson'
+          'indexSwiper'
         ])
     },
     methods: {
@@ -83,9 +83,16 @@ export default {
         init () {
             if (this.indexActive === this.type && !(this.contentJson.length > 0)) {
                 this.classPage = this.activePage
+                this.error = false
                 this.loading = true
                 this.get_banner_data()
+                .then(res => {
+                    this.bannerJson = res
+                })
                 this.get_stick_data()
+                .then(res => {
+                    this.stickJson = res
+                })
                 this.loadTopAjax()
             }
         },
@@ -198,13 +205,6 @@ export default {
 }
 </script>
 <style scoped lang='stylus'>
-.container {
-    height: 100%;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    position: relative;
-}
-
 .globalTip{
     position: absolute;
     top: 0;

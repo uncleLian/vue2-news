@@ -1,6 +1,6 @@
 <template>
-    <div id="spinnerLoad" v-if="visible">
-        <mt-spinner :type="0" :color="color" :size='size'></mt-spinner>
+    <div id="spinnerLoad" v-if="visible" :class="{'absolute': type === 'absolute'? true : false}">
+        <mt-spinner :type="3" :color="color" :size='size'></mt-spinner>
     </div>
 </template>
 <script>
@@ -9,17 +9,21 @@ export default {
         visible: {
             type: Boolean,
             default: false
+        },
+        type: {
+            type: String,
+            default: 'fixed'
         }
     },
     data() {
         return {
             size: 36,
-            color: 'rgb(240, 61, 61)'
+            color: '#00939c'
         }
     }
 }
 </script>
-<style>
+<style scoped lang='stylus'>
 #spinnerLoad {
     width: 100%;
     height: 100%;
@@ -27,13 +31,21 @@ export default {
     position: fixed;
     top: 0;
     background-color: #fff;
-    z-index: 888;
+    z-index: 588;
+    span {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        margin-left: -18px;
+    }
+    &.absolute {
+        position: absolute;
+    }
 }
-
-#spinnerLoad span {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    margin-left: -18px;
-}
+</style>
+<style>
+#spinnerLoad{
+    background: url(~@/assets/img/loading_logo.png)no-repeat center 55%;
+    background-size: 200px;
+}  
 </style>

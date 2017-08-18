@@ -94,7 +94,7 @@ export default {
             }
         }
         .nav_name {
-            color: #d43d3d;
+            color: #00939c;
         }
     }
 }

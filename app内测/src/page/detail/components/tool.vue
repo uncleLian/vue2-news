@@ -5,9 +5,9 @@
             <div class="text" v-show='!focus'  @click.stop="inputFocus">
                 <a class="icon-write"> 写评论...</a>
             </div>
-            <textarea id='input' v-if="comment === 'reply'"  :class="{ normal: !focus }" v-model.trim='inputVal' @focus.stop="replyFocus" @blur.stop="focus = false" :placeholder="placeholderVal" ><br/></textarea>
+            <textarea id='input' v-if="comment === 'reply'"  :class="{ normal: !focus }" v-model.trim='inputVal' @focus.stop="onFocus" @blur.stop="onBlur" :placeholder="placeholderVal" ><br/></textarea>
 
-            <textarea  id='input' v-else :class="{ normal: !focus }" v-model.trim='inputVal' @focus.stop="focus = true" @blur.stop="focus = false"><br/></textarea>
+            <textarea  id='input' v-else :class="{ normal: !focus }" v-model.trim='inputVal' @focus.stop="onFocus" @blur.stop="onBlur"><br/></textarea>
         </div>
         <div class="right" v-show='!focus' v-if='icon'>
             <slot name='tool_btn'></slot>
@@ -21,9 +21,6 @@ import { Toast, MessageBox } from 'mint-ui'
 import { autoTextarea } from '@/components/autoTextarea.js'
 export default {
     props: {
-        ele: {
-            default: ''
-        },
         comment: String,
         icon: Boolean,
         remarkid: {
@@ -75,33 +72,36 @@ export default {
         inputFocus() {
             $('.tool #input').focus()
         },
-        replyFocus() {
+        onFocus() {
             this.focus = true
-            if (this.talkReply) {
+            setTimeout(() => {
+                this.$el.scrollIntoView(true)
+            }, 100)
+            if (this.comment === 'reply' && this.talkReply) {
                 this.placeholderVal = `回复 ${this.talkReply.nickname}`
             }
+            document.addEventListener('backbutton', this.backButtonFocus, false)
+        },
+        onBlur() {
+            this.focus = false
+            document.removeEventListener('backbutton', this.backButtonFocus, false)
         },
         sendComment() {
             if (this.login) {
                 if (this.inputVal) {
                     if (this.comment === 'remark') {
-                        // 评论页
-                        this.post_Comment_data({'content': this.inputVal})
+                        this.post_Comment_data(this.inputVal)
                         .then(res => {
-                            if (this.ele) {
-                                this.ele.open()
-                            }
                             if (res.err) {
+                                this.$emit('publishStatus', res.data)
                                 this.inputVal = ''
                                 this.keepInputVal = ''
                                 this.focus = false
-                                this.$emit('publishStatus', res.data)
                                 Toast({message: '发送成功', duration: 1500})
                                 $('.tool #input').blur()
                             }
                         })
                     } else if (this.comment === 'reply') {
-                        // 回复页
                         let params = {
                             'content': this.inputVal,
                             'remarkid': this.remarkid,
@@ -134,6 +134,12 @@ export default {
                     }
                 })
             }
+        },
+        backButtonFocus() {
+            let isFocus = $('.tool #input').is(':focus')
+            if (isFocus) {
+                $('.tool #input').blur()
+            }
         }
     },
     mounted() {
@@ -158,7 +164,6 @@ export default {
     padding-right: 16px;
     font-size: 0;
     align-items: center;
-    
     .left {
         flex: 1;
         position: relative;
@@ -184,7 +189,7 @@ export default {
             line-height: 24px;
             border-radius: 20px;
             border: 1px solid #ddd;
-            background: #eee;
+            background: #f4f5f6;
             -webkit-appearance: none;
             outline: none;
             resize: none;
@@ -220,10 +225,10 @@ export default {
             position: relative;
             .comment_num{
                 position: absolute;
-                top: 6px;
-                padding: 1px 4px;
+                top: 8px;
+                padding: 2px 4px 1px;
                 text-align: center;
-                border-radius: 15px;
+                border-radius: 100%;
                 font-size: 10px;
                 color: #fff;
                 background: #d43d3d;
@@ -240,7 +245,7 @@ export default {
         user-select:none;
         vertical-align: middle;
         &.hasVal{
-            color: #007aff
+            color: #00939c
         }
     }
 }

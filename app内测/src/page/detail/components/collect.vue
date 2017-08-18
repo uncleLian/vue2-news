@@ -3,19 +3,11 @@
     <a class="collect_icon" v-else-if="icon" @click.stop="collectClick" :class="{active: json.collect? true : false}"></a>
 </template>
 <script>
-import {
-    mapGetters,
-    mapMutations,
-    mapActions
-} from 'vuex'
-import {
-    Toast
-} from 'mint-ui'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { Toast } from 'mint-ui'
 export default {
     props: {
-        json: {
-            default: ''
-        },
+        json: Object,
         btn: Boolean,
         icon: Boolean
     },
@@ -72,8 +64,8 @@ export default {
     color: #333;
     margin-left: 30px;
     &.active {
-        border: 1px solid #bbb20d;
-        color: #bbb20d;
+        border: 1px solid #d43d3d;
+        color: #d43d3d;
     }
 }
 </style>
