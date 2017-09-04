@@ -369,12 +369,29 @@ larger_height=4.6875rem
             text-align: center;
         }
         input[type="checkbox"]:checked + label {
-            border: 1px solid #d81e06;
-            background: #d81e06;
+            border-color: #00939c;
+            background-color: #00939c;
             color: #fff;
         }
         input[type="checkbox"]:checked + label:after {
-            content: "\2714";
+            border: 2px solid transparent;
+            border-left: 0;
+            border-top: 0;
+            content: " ";
+            top: 3px;
+            left: 6px;
+            position: absolute;
+            width: 4px;
+            height: 8px;
+            -webkit-transform: rotate(45deg) scale(0);
+            transform: rotate(45deg) scale(0);
+            -webkit-transition: -webkit-transform .2s;
+            transition: -webkit-transform .2s;
+            transition: transform .2s;
+            transition: transform .2s,-webkit-transform .2s;
+            border-color: #fff;
+            -webkit-transform: rotate(45deg) scale(1);
+            transform: rotate(45deg) scale(1);
         }
         .checked_btn {
             position: absolute;

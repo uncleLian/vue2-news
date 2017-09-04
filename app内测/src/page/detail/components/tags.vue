@@ -17,7 +17,7 @@ export default {
 .tags {
     width: 100%;
     position: relative;
-    padding: 0.4rem 0;
+    padding-bottom: 0.4rem;
     a {
         display: inline-block;
         text-align: center;

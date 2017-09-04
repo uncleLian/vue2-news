@@ -246,7 +246,6 @@ export default {
         }
         .delete_btn {
             display: inline-block;
-            width: 60px;
             height: 100%;
             color: #999;
             font-size: 16px;

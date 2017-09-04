@@ -11,9 +11,6 @@
         <nav-bar></nav-bar>
       </template>
 
-      <!--<div class="coverAA" v-if="coverSend">-->
-      <!--<img src="../../assets/icon/1.png"/>-->
-      <!--</div>-->
 
       <div class="coverAd" v-if="!sendMsgDisabled">
         <img class="coverOne" :src="coverData" v-if="coverImg"/>
@@ -22,6 +19,7 @@
           <span>跳过</span>
         </button>
       </div>
+
 
     </div>
   </transition>
@@ -76,7 +74,7 @@
       }
     },
     created() {
-      this.cordova_updateInstalled()
+//      this.cordova_updateInstalled()
       this.appShow = true
     },
     mounted() {
@@ -84,11 +82,17 @@
         var that = this
         window.plugins.jPushPlugin.init()
         window.plugins.jPushPlugin.setDebugMode(true)
-        // 点击通知栏的回调，在这里编写特定逻辑
+
         window.plugins.jPushPlugin.openNotificationInAndroidCallback = function (data) {
-//          alert(data.extras.classid+"+"+data.extras.id+"+"+data.extras.datafrom);
           that.$router.push(`/detail?classid=${data.extras.classid}&id=${data.extras.id}&datafrom=${data.extras.datafrom}`)
+          window.plugins.jPushPlugin.resetBadge()
+          window.plugins.jPushPlugin.setBadge(0)
+          window.plugins.jPushPlugin.setApplicationIconBadgeNumber(0)
         }
+
+        window.plugins.jPushPlugin.resetBadge()
+        window.plugins.jPushPlugin.setBadge(0)
+        window.plugins.jPushPlugin.setApplicationIconBadgeNumber(0)
         window.plugins.jPushPlugin.clearLocalNotifications()
       }, false)
 
@@ -97,7 +101,7 @@
         if (error.code === -2) {
           MessageBox.confirm('有新的版本，点击确认前往更新').then(action => {
             document.addEventListener('deviceready', function () {
-              window.open('http://ts.toutiaojk.com/download.html', '_system', 'location=yes')
+              window.open('http://m.toutiaojk.com/download.html', '_system', 'location=yes')
             }, false)
           })
         }
@@ -118,7 +122,6 @@
     height: 100%;
     overflow: hidden;
   }
-
 
   .coverAd {
     width: 100%;
@@ -162,7 +165,6 @@
         display: table-cell;
         vertical-align: middle;
       }
-
     }
   }
 

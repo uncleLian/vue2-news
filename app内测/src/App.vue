@@ -13,20 +13,17 @@ import '@/assets/css/icon.css'
 import fastClick from 'fastclick'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { Toast } from 'mint-ui'
-// import { Indicator } from 'mint-ui'
 export default {
     data () {
         return {
             transitionName: ''
         }
     },
-   // beforeRouteEnter(to, from, next) {
-   //     Indicator.open()
-   //     document.addEventListener('deviceready', () => {
-   //         Indicator.close()
-   //         next()
-   //     }, false)
-   // },
+    // beforeRouteEnter(to, from, next) {
+    //     document.addEventListener('deviceready', () => {
+    //         next()
+    //     }, false)
+    // },
     beforeRouteUpdate (to, from, next) {
         let isBack = this.$router.isBack
         if (isBack) {
@@ -46,7 +43,8 @@ export default {
         ...mapMutations([
             'set_device',
             'set_userid',
-            'set_firstTime'
+            'set_firstTime',
+            'set_deviceUa'
         ]),
         ...mapActions('login', [
             'get_user'
@@ -72,6 +70,7 @@ export default {
         },
         checkOS () {
             var ua = navigator.userAgent.toLowerCase()
+            this.set_deviceUa(ua)
             if (/iphone|ipad|ipod/.test(ua)) {
                 this.set_device('ios')
             }

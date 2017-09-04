@@ -255,7 +255,7 @@ export default {
         color: #333;
         font-size: 18px !important;
         line-height: 30px;
-        padding: 0.4rem 0.427rem;
+        padding: 0.4rem 0.427rem 0;
         .content_html {
             overflow: hidden;
             text-indent: none !important;
@@ -273,6 +273,7 @@ export default {
                 font-family: inherit !important;
                 line-height: inherit !important;
                 text-align: justify !important;
+                text-justify: inter-ideograph !important;
             }
             div,p{
                 width: 100% !important;

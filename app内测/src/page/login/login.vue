@@ -8,20 +8,22 @@
         <img src="../../assets/icon/members.png"/>
       </div>
       <div class="container">
+
         <div class="time-horizontal">
           <div></div>
           <i>请选择登录方式</i>
           <div></div>
         </div>
-      </div>
-      <div class="cenlogin">
-        <div class="col-5" @click="login(0)">
-          <img src="../../assets/icon/qqlogin.png"/>
-          <!--<span>QQ登录</span>-->
-        </div>
-        <div class="col-5" @click="login(1)">
-          <img src="../../assets/icon/wxlogin.png"/>
-          <!--<span>微信登录</span>-->
+
+        <div class="cenlogin">
+          <div class="col-5" @click="login(0)">
+            <img src="../../assets/icon/qqlogin.png"/>
+            <!--<span>QQ登录</span>-->
+          </div>
+          <div class="col-5" @click="login(1)">
+            <img src="../../assets/icon/wxlogin.png"/>
+            <!--<span>微信登录</span>-->
+          </div>
         </div>
       </div>
     </div>
@@ -29,11 +31,12 @@
 </template>
 <script>
   import {mapMutations, mapActions} from 'vuex'
+  import {Toast} from 'mint-ui'
   export default {
     data() {
       return {
-        userName: '123',
-        passWord: '123',
+        userName: '',
+        passWord: '',
         cordova_location: {}
       }
     },
@@ -57,41 +60,88 @@
         var that = this
         if (loginType === 1) {
           var scope = 'snsapi_userinfo'
-          document.addEventListener('deviceready', function () {
+          document.addEventListener('deviceready', () => {
             cordova.exec(successCallback, errorCallback, 'Wechat', 'sendAuthRequest', [scope])
             function successCallback(response) {
               var code = response.code
+              var appidA = 'wxab47f0260fabea40'
+              // var appidB = 'wx13b05ceac5e7a654'
+              var secretA = '24950a2a032720541e0e952954dd6248'
+              // var secretB = '9c96f15b353dc26658def855f9b04ce0'
               $.ajax({
                 type: 'GET',
-                data: that.cordova_location,
-                url: `http://wt.toutiaojk.com/e/extend/list/appuser.php?code=${code}`
+                url: `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${appidA}&secret=${secretA}&code=${code}&grant_type=authorization_code`
               })
-                .then(res => {
-                  var ress = JSON.parse(res)
-                  if (ress.err !== 1) {
-                    that.set_login('wx')
-                    that.set_wx(ress.data)
-                    that.set_userid(ress.data.unionid)
-                    that.$router.go(-1)
-                  } else {
-                    alert(ress.errMsg)
+                .then(
+                  function (res1) {
+                    var data1 = JSON.parse(res1)
+                    console.log(data1)
+                    var refresh_token = data1.refresh_token
+                    $.ajax({
+                      type: 'GET',
+                      url: `https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=${appidA}&grant_type=refresh_token&refresh_token=${refresh_token}`
+                    }).then(
+                      function (res2) {
+                        var data2 = JSON.parse(res2)
+                        console.log(data2)
+                        var access_token = data2.access_token
+                        var openid = data2.openid
+                        $.ajax({
+                          type: 'GET',
+                          url: `https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}`
+                        }).then(
+                          function (res3) {
+                            var data3 = JSON.parse(res3)
+                            console.log(data3)
+                            that.set_login('wx')
+                            that.set_wx(data3)
+                            that.set_userid(data3.unionid)
+                            that.$router.go(-1)
+                          },
+                          function () {
+                            Toast({message: '登录失败', duration: 2000})
+                          }
+                        )
+                      },
+                      function () {
+                        Toast({message: '登录失败', duration: 2000})
+                      }
+                    )
+                  },
+                  function () {
+                    Toast({message: '登录失败', duration: 2000})
                   }
-                })
+                )
+//              $.ajax({
+//                type: 'GET',
+//                data: that.cordova_location,
+//                url: `http://app.toutiaojk.com/e/extend/list/appuser.php?code=${code}`
+//              })
+//                .then(res => {
+//                  var ress = JSON.parse(res)
+//                  if (ress.err !== 1) {
+//                    that.set_login('wx')
+//                    that.set_wx(ress.data)
+//                    that.set_userid(ress.data.unionid)
+//                    that.$router.go(-1)
+//                  } else {
+//                    alert(ress.errMsg)
+//                  }
+//                })
             }
 
             function errorCallback() {
-              alert('授权失败！')
+              Toast({message: '授权失败', duration: 2000})
             }
           }, false)
         } else {
-            console.log(that.cordova_location)
-//
+          Toast({message: '暂不支持QQ登录', duration: 2000})
         }
       },
       location() {
         var that = this
         if (this.$store.state.device === 'ios') {
-          navigator.geolocation.getCurrentPosition(function(result) {
+          navigator.geolocation.getCurrentPosition(function (result) {
             that.cordova_location = result.coords
           })
         } else {
@@ -110,6 +160,7 @@
   #thirdparty {
     width: 100%;
     height: 100%;
+    overflow: auto;
   }
 
   .content {

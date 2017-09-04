@@ -12,11 +12,6 @@
           </dt>
         </dl>
         <div class="dl_share">
-          <dl class="dl_share_1">
-            <dt>
-              <i class="tt_share"></i>
-            </dt>
-          </dl>
           <dl class="dl_share_2">
             <dd @click="wxShare(1)">
               <img src="~@/assets/img/wx_1.png">
@@ -43,7 +38,20 @@
   import {Toast} from 'mint-ui'
   export default {
     data() {
-      return {}
+      return {
+        test: {
+          QQimage: 'http://ts.toutiaojk.com/wdata/downloadImg/Serne.png',
+          QQurl: 'http://ts.toutiaojk.com/wdata/download.html',
+          wxthumb: 'http://ts.toutiaojk.com/wdata/downloadImg/Serne.png',
+          wxwebpageUrl: 'http://ts.toutiaojk.com/wdata/download.html'
+        },
+        Aformal: {
+          QQimage: 'http://m.toutiaojk.com/downloadImg/Serne.png',
+          QQurl: 'http://m.toutiaojk.com/download.html',
+          wxthumb: 'http://m.toutiaojk.com/downloadImg/Serne.png',
+          wxwebpageUrl: 'http://m.toutiaojk.com/download.html'
+        }
+      }
     },
     methods: {
       qqShare() {
@@ -51,8 +59,8 @@
         qqShareObj.scene = 0
         qqShareObj.title = '健康头条下载'
         qqShareObj.description = '下载页面'
-        qqShareObj.image = 'http://ts.toutiaojk.com/downloadImg/Serne.png'
-        qqShareObj.url = 'http://ts.toutiaojk.com/download.html'
+        qqShareObj.image = this.Aformal.QQimage
+        qqShareObj.url = this.Aformal.QQurl
         document.addEventListener('deviceready', function () {
           cordova.exec(successCallback, errorCallback, 'QQSDK', 'shareNews', [qqShareObj])
           function successCallback() {
@@ -71,9 +79,9 @@
         wxShareObj.scene = share
         wxShareObj.message.title = '健康头条下载'
         wxShareObj.message.description = '下载页面'
-        wxShareObj.message.thumb = 'http://ts.toutiaojk.com/downloadImg/Serne.png'
+        wxShareObj.message.thumb = this.Aformal.wxthumb
         wxShareObj.message.media.type = 7
-        wxShareObj.message.media.webpageUrl = 'http://ts.toutiaojk.com/download.html'
+        wxShareObj.message.media.webpageUrl = this.Aformal.wxwebpageUrl
         document.addEventListener('deviceready', function() {
           cordova.exec(onSuccess, onError, 'Wechat', 'share', [wxShareObj])
           function onSuccess() {
