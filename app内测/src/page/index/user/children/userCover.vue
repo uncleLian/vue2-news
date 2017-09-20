@@ -25,7 +25,7 @@
                         </div>
 
                         <ul class="list">
-                            <li v-for="item in json" :key='item'>
+                            <li v-for="(item,index) in json" :key='index'>
                                 <div class="top clearfix">
                                     <div class="portrait">
                                         <img :src="item.headimgurl">

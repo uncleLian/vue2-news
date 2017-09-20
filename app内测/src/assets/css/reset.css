@@ -56,8 +56,11 @@ a:focus{outline: none;}
     height: 50px;
     line-height: 50px;
     text-align: center;
-    font-size: 16px;
+    font-size: 14px;
     color: #999;
+}
+.mint-indicator-wrapper{
+    z-index: 1001;
 }
 
 section:last-of-type .topFooter{

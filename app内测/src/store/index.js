@@ -13,7 +13,6 @@ import health_module from './health/index'
 Vue.use(Vuex)
 
 const state = {
-  // detailWindow: [],
   device: 'android',
   userid: 'oqKkTv6XI_iDnYha-1VYKbtsvbYw', // oqKkTv6XI_iDnYha-1VYKbtsvbYw //oqKkTvySObkOpp6L2z__GjacVFN8
   firstTime: '',
@@ -21,9 +20,6 @@ const state = {
 }
 
 const getters = {
-  // detailWindow: state => {
-  //     return state.detailWindow
-  // },
   deviceUa: state => {
     return state.deviceUa
   },
@@ -39,9 +35,6 @@ const getters = {
 }
 
 const mutations = {
-  // set_detailWindow(state, val) {
-  //     state.detailWindow = val
-  // },
   set_deviceUa(state, val) {
     state.deviceUa = val
   },

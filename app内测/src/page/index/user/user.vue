@@ -1,6 +1,6 @@
 <template>
 	<div id="user">
-		 <keep-alive exclude='userCover'>
+		 <keep-alive exclude='userCover,health,publish'>
 	        <router-view></router-view>
 	    </keep-alive>
 	</div>

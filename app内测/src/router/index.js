@@ -26,6 +26,8 @@ const readHistory = () => import('@/page/index/user/children/readHistory')
 const myComments = () => import('@/page/index/user/children/myComments')
 const userCover = () => import('@/page/index/user/children/userCover')
 const health = () => import('@/page/index/user/children/health/health')
+const publish = () => import('@/page/index/user/children/health/publish')
+const preview = () => import('@/page/index/user/children/health/preview')
 const detail = () => import('@/page/detail/detail')
 // const myWindow = () => import('@/page/detail/myWindow')
 const search = () => import('@/page/search/search')
@@ -102,6 +104,16 @@ export default new Router({
                 {
                     path: 'health',
                     component: health
+                },
+                {
+                    path: 'publish',
+                    component: publish,
+                    children: [
+                        {
+                            path: 'preview',
+                            component: preview
+                        }
+                    ]
                 }
                 ]
             }
