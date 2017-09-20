@@ -25,6 +25,7 @@ const feedBack = () => import('@/page/index/user/children/feedBack')
 const readHistory = () => import('@/page/index/user/children/readHistory')
 const myComments = () => import('@/page/index/user/children/myComments')
 const userCover = () => import('@/page/index/user/children/userCover')
+const health = () => import('@/page/index/user/children/health/health')
 const detail = () => import('@/page/detail/detail')
 // const myWindow = () => import('@/page/detail/myWindow')
 const search = () => import('@/page/search/search')
@@ -97,6 +98,10 @@ export default new Router({
                 {
                     path: 'userCover',
                     component: userCover
+                },
+                {
+                    path: 'health',
+                    component: health
                 }
                 ]
             }

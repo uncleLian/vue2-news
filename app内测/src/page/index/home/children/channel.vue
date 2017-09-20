@@ -10,7 +10,7 @@
                     <section class="column">
                         <p class="title">点击删除以下频道</p>
                         <ul>
-                            <li v-for='(item,index) in indexColumn' @click='remove(item,index)' :key='item'>
+                            <li v-for='(item,index) in indexColumn' @click='remove(item,index)' :key='index'>
                                 <a href='javascript:;' :class='item.classpath'>{{item.classname}}</a>
                             </li>
                         </ul>
@@ -18,7 +18,7 @@
                     <section class="column">
                         <p class="title">点击添加以下频道</p>
                         <ul>
-                            <li v-for='(item,index) in channel' @click='add(index)' :key='item'>
+                            <li v-for='(item,index) in channel' @click='add(index)' :key='index'>
                                 <a href='javascript:;'>{{item.classname}}</a>
                             </li>
                         </ul>

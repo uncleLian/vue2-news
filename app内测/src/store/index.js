@@ -8,6 +8,7 @@ import collect_module from './collect/index'
 import video_module from './video/index'
 import cordova_module from './cordova/index'
 import user_module from './user/index'
+import health_module from './health/index'
 
 Vue.use(Vuex)
 
@@ -70,6 +71,7 @@ export default new Vuex.Store({
     collect: collect_module,
     video: video_module,
     cordova: cordova_module,
-    user: user_module
+    user: user_module,
+    health: health_module
   }
 })
