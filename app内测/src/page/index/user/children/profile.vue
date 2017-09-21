@@ -59,7 +59,7 @@
                     <i></i>
                 </router-link>
             </div>
-            <div class="dd_nav01 dd_nav02">
+            <div class="dd_nav01 dd_nav02" v-if="$store.state.health.isEditor">
                 <router-link to="user/health" class="myList">
                     <span>作品管理</span>
                     <i></i>

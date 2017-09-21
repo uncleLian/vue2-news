@@ -1,5 +1,5 @@
 <template>
-    <article id="article">
+    <article id="article" v-if="json">
         <div class="article_info">
             <h1 class="title">{{json.title}}</h1>
             <span class="befrom">{{json.befrom}}</span>
@@ -107,7 +107,9 @@ export default {
     },
     watch: {
         json(val) {
-            this.video = this.$el.querySelector('video')
+            if (this.$el.querySelector) {
+                this.video = this.$el.querySelector('video')
+            }
             this.video_poster = true
             this.video_playing = false
             this.video_ended = false

@@ -17,7 +17,7 @@ const ajaxURL = {
     historyComment: baseUrl + 'historyComment.php',
     appreaduserdata: baseUrl + 'appreaduserdata.php',
     addata: baseUrl + 'ad.php',
-    // login: 'Logincc.php',
+    power: publishURL + 'Logincc.php',
     list: publishURL + 'List.php',
     edit: publishURL + 'Edit.php',
     uploadFile: publishURL + 'upload_file.php'

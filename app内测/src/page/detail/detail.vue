@@ -27,7 +27,7 @@
                             <div class="title">用户热评</div>
                         </div>
                     </div>
-                    <comment-item layout='topFooter' comment='remark' type='all' v-for='item in currentArticle.comment' :itemJson='item' :key='item' @click.native.stop='$refs.comment.open()'></comment-item>
+                    <comment-item layout='topFooter' comment='remark' type='all' v-for='(item,index) in currentArticle.comment' :itemJson='item' :key='index' @click.native.stop='$refs.comment.open()'></comment-item>
                     <div class="comment_more" v-if="currentArticle.plnum > 0 " @click.stop="$refs.comment.open()">全部{{currentArticle.plnum}}条评论<i class="icon-detail"></i></div>
                 </div>
 

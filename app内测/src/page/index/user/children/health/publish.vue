@@ -2,7 +2,7 @@
     <transition name='fadeIn'>
         <div id='publish'>
             <my-header fixed :title='$store.state.login.wx.nickname' v-goTop:click='true'>
-                <a slot="left" class="back-black" @click='$router.go(-1)'></a>
+                <a slot="left" class="back-black" @click.stop.prevent='$router.go(-1)'></a>
             </my-header>
             <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
                 <div class="container">
@@ -33,15 +33,15 @@
                     </div>
                     <!-- 按钮 -->
                     <div class="control">
+                        <mt-button class='publish_btn' type='danger' @click.stop="verify('new')">发表</mt-button>
                         <template v-if="id">
-                            <mt-button class='publish_btn' type='danger' @click="verify('edit')">发表</mt-button>
+                            <mt-button class='draft_btn' type='danger' @click.stop="verify('edit')">保存</mt-button>
                         </template>
                         <template v-else>
-                            <mt-button class='publish_btn' type='danger' @click="verify('new')">发表</mt-button>
-                            <mt-button class='draft_btn' type='danger' @click="verify('draft')">存草稿</mt-button>
+                            <mt-button class='draft_btn' @click.stop="verify('draft')">存草稿</mt-button>
                         </template>
-                        <mt-button class='cancle_btn' type='danger' @click="$router.push('publish/preview')">预览</mt-button>
-                        <mt-button class='cancle_btn' type='danger' @click="$router.go(-1)">取消</mt-button>
+                        <mt-button class='cancle_btn' @click.stop="openPreview">预览</mt-button>
+                        <mt-button class='cancle_btn' @click.stop="$router.go(-1)">取消</mt-button>
                     </div>
                 </div>
             </div>
@@ -51,9 +51,12 @@
 </template>
 <script>
 import { Toast, Indicator, MessageBox } from 'mint-ui'
+import axios from 'axios'
 import { mapActions } from 'vuex'
+import myPreview from './preview'
 export default {
     name: 'publish',
+    components: { myPreview },
     data() {
         return {
             id: null,
@@ -104,13 +107,28 @@ export default {
                         maxStack: 500,
                         userOnly: true
                     }
-                }
+                },
+                placeholder: ' ',
+                imageHandler: this.imageHandler
+            },
+            ajax: false,
+            edit: false
+        }
+    },
+    watch: {
+        isChange (val) {
+            this.edit = true
+            if (this.ajax) {
+                this.ajax = this.edit = false
             }
         }
     },
     computed: {
         editor() {
             return this.$refs.myQuillEditor.quill
+        },
+        isChange() {
+            return this.title + this.content
         }
     },
     methods: {
@@ -129,10 +147,48 @@ export default {
                         this.content = item.newstext
                         this.classid = item.classid
                     }
+                    this.ajax = true
                 })
                 .catch(err => {
                     console.log(err)
                 })
+            }
+        },
+        upLoadToServer(params) {
+            axios.post('http://api.toutiaojk.com/e/extend/jkh/upload_file.php', params, {
+                headers: {'Content-Type': 'multipart/form-data'},
+                responseType: 'json'
+            })
+            .then(res => {
+                let data = res.data.data
+                if (data) {
+                    // 图片地址插入富文本编辑器
+                    const range = this.editor.getSelection()
+                    this.editor.insertEmbed(range.index, 'image', data)
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                Toast({
+                    message: '操作失败',
+                    iconClass: 'icon-close'
+                })
+            })
+        },
+        imageHandler(image, callback) {
+            const input = document.createElement('input')
+            input.setAttribute('type', 'file')
+            input.click()
+            input.onchange = () => {
+                const file = input.files[0]
+                if (/^image\//.test(file.type)) {
+                    let fd = new FormData()
+                    fd.append('file', file)
+                    this.upLoadToServer(fd) // 上传图片
+                } else {
+                    Toast('只能上传图片')
+                    console.warn('上传格图片式错误')
+                }
             }
         },
         publish(state, type = 'new') {
@@ -158,15 +214,15 @@ export default {
                 .then(res => {
                     Indicator.close()
                     if (res && res.data) {
+                        this.edit = false
                         Toast({
                             message: '操作成功',
-                            iconClass: 'icon icon-success'
+                            iconClass: 'icon-dui'
                         })
-                        this.$router.push('health')
                     } else {
                         Toast({
                             message: '操作失败',
-                            iconClass: 'icon icon-error'
+                            iconClass: 'icon-close'
                         })
                     }
                 })
@@ -175,13 +231,12 @@ export default {
                     Indicator.close()
                     Toast({
                             message: '操作失败',
-                            iconClass: 'icon icon-error'
+                            iconClass: 'icon-close'
                         })
                 })
         },
         verify(type) {
             this.coverImages = this.editor.container.querySelectorAll('img')
-            console.log(this.coverImages)
             // 草稿
             if (type === 'draft') {
                 if (!this.title) {
@@ -213,10 +268,46 @@ export default {
                     })
                 }
             }
+        },
+        openPreview() {
+            if (!this.title) {
+                Toast('标题不能为空')
+            } else {
+                let d = new Date()
+                const Year = d.getFullYear()
+                const Month = d.getMonth() + 1
+                const Day = d.getDate()
+                const nowTime = `${Year}-${Month}-${Day}`
+                let previewJson = {
+                    title: this.title,
+                    newstext: this.content,
+                    classid: this.classid,
+                    newstime: nowTime,
+                    befrom: this.$store.state.login.wx.nickname
+                }
+                this.$router.push({ path: 'publish/preview', query: {json: previewJson} })
+            }
         }
     },
     created() {
         this.init()
+    },
+    mounted() {
+        this.editor.getModule('toolbar').addHandler('image', this.imageHandler)
+    },
+    beforeRouteLeave (to, from, next) {
+        if (this.edit) {
+            MessageBox.confirm('离开将不会保留修改内容，是否确定？')
+            .then(() => {
+                next()
+            })
+            .catch(err => {
+                console.log(err)
+                next(false)
+            })
+        } else {
+            next()
+        }
     }
 }
 </script>
@@ -313,6 +404,7 @@ export default {
             .mint-cell {
                 display: inline-block;
                 border: none;
+                background: none;
                 .mint-cell-wrapper {
                     font-size: 13px;
                     background: none;

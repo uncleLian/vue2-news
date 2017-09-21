@@ -49,6 +49,9 @@
       ...mapMutations([
         'set_userid'
       ]),
+      ...mapActions('health', [
+        'get_userPower_data'
+      ]),
       ...mapActions('cordova', [
         'cordova_baidu_location',
         'cordova_getGeolocation'
@@ -96,6 +99,7 @@
                             that.set_login('wx')
                             that.set_wx(data3)
                             that.set_userid(data3.unionid)
+                            that.get_userPower_data(data3.unionid) // 获取用户权限
                             that.$router.go(-1)
                           },
                           function () {
