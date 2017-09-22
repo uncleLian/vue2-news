@@ -102,6 +102,9 @@ export default {
         border-bottom-width: .5px;
         font-size: 0;
         background: #fff;
+        a{
+            text-decoration: none;
+        }
         .mint-tab-item {
             position: relative;
             display: inline-block;

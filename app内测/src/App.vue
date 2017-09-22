@@ -10,7 +10,6 @@
 <script>
 import '@/assets/css/reset.css'
 import '@/assets/css/icon.css'
-import fastClick from 'fastclick'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { Toast } from 'mint-ui'
 export default {
@@ -56,9 +55,6 @@ export default {
             this.firstEnterTime()
             this.checkOS()
             this.baiduCollect()
-            $(function () {
-                fastClick.attach(document.body)
-            })
             this.cache_init()
         },
         cache_init() {

@@ -4,6 +4,7 @@
 html{
 	width: 100%;
 	height: 100%;
+    touch-action: manipulation;
 }
 body{
 	width: 100%;

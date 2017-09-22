@@ -98,7 +98,6 @@
     </ul>
 </template>
 <script>
-// import { mapGetters, mapMutations } from 'vuex'
 import { mapMutations } from 'vuex'
 export default {
     props: {
@@ -113,11 +112,6 @@ export default {
             type: Function
         }
     },
-    // computed: {
-    //     ...mapGetters([
-    //         'detailWindow'
-    //     ])
-    // },
     methods: {
         ...mapMutations('detail', [
             'set_listArticle'
@@ -127,12 +121,9 @@ export default {
         ]),
         url(item) {
             return `/detail?classid=${item.classid}&id=${item.id}&datafrom=${item.datafrom}`
-            // return `/myWindow?classid=${item.classid}&id=${item.id}&datafrom=${item.datafrom}`
         },
         saveData(json) {
             this.set_listArticle(json)
-            // this.detailWindow.push(json)
-            // this.set_detailWindow(this.detailWindow)
         }
     }
 }

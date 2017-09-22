@@ -11,7 +11,7 @@
                         <div class="edit-main">
                             <label class="edit-label" for="title">标题5-30字</label>
                             <div class="edit-input">
-                                <input id="title" type='text' v-model="title">
+                                <input id="title" type='text' v-model.trim="title">
                             </div>
                         </div>
                     </div>
@@ -20,7 +20,7 @@
                         <div class="edit-main">
                             <label class="edit-label" for="title">正文</label>
                             <div class="edit-input">
-                                <quill-editor v-model="content" ref="myQuillEditor" :options="editorOption" />
+                                <quill-editor v-model.trim="content" ref="myQuillEditor" :options="editorOption"/>
                             </div>
                         </div>
                     </div>
@@ -33,15 +33,20 @@
                     </div>
                     <!-- 按钮 -->
                     <div class="control">
-                        <mt-button class='publish_btn' type='danger' @click.stop="verify('new')">发表</mt-button>
-                        <template v-if="id">
-                            <mt-button class='draft_btn' type='danger' @click.stop="verify('edit')">保存</mt-button>
+                        <!-- 修改 -->
+                        <template v-if="$route.query.id">
+                            <mt-button class='publish_btn' type='danger' @click.stop="verify('edit','3',true)">发表</mt-button>
+                            <mt-button class='draft_btn' type='danger' @click.stop="verify('edit',json.state)">保存</mt-button>
+                            <mt-button class='cancle_btn' @click.stop="openPreview">预览</mt-button>
+                            <mt-button class='cancle_btn' @click.stop="$router.go(-1)">取消</mt-button>
                         </template>
+                        <!-- 默认 -->
                         <template v-else>
-                            <mt-button class='draft_btn' @click.stop="verify('draft')">存草稿</mt-button>
+                            <mt-button class='publish_btn' type='danger' @click.stop="verify('new','3',true)">发表</mt-button>
+                            <mt-button class='draft_btn' @click.stop="verify('new','2',true)">存草稿</mt-button>
+                            <mt-button class='cancle_btn' @click.stop="openPreview">预览</mt-button>
+                            <mt-button class='cancle_btn' @click.stop="$router.go(-1)">取消</mt-button>
                         </template>
-                        <mt-button class='cancle_btn' @click.stop="openPreview">预览</mt-button>
-                        <mt-button class='cancle_btn' @click.stop="$router.go(-1)">取消</mt-button>
                     </div>
                 </div>
             </div>
@@ -59,7 +64,6 @@ export default {
     components: { myPreview },
     data() {
         return {
-            id: null,
             title: '', // 标题
             content: '', // 正文
             classid: '', // 标签
@@ -111,15 +115,17 @@ export default {
                 placeholder: ' ',
                 imageHandler: this.imageHandler
             },
+            json: null, // 修改获取的数据
             ajax: false,
             edit: false
         }
     },
     watch: {
-        isChange (val) {
+        isChange (val, old) {
             this.edit = true
             if (this.ajax) {
-                this.ajax = this.edit = false
+                this.edit = false
+                this.ajax = false
             }
         }
     },
@@ -128,7 +134,7 @@ export default {
             return this.$refs.myQuillEditor.quill
         },
         isChange() {
-            return this.title + this.content
+            return this.title + this.content + this.classid
         }
     },
     methods: {
@@ -137,15 +143,15 @@ export default {
             'post_article_data'
         ]),
         init() {
-            this.id = this.$route.query.id
-            if (this.id) {
-                this.get_article_data(this.id)
+            let id = this.$route.query.id
+            if (id) {
+                this.get_article_data(id)
                 .then(res => {
                     if (res.data) {
-                        let item = res.data
-                        this.title = item.title
-                        this.content = item.newstext
-                        this.classid = item.classid
+                        this.json = res.data
+                        this.title = this.json.title
+                        this.content = this.json.newstext
+                        this.classid = this.json.classid
                     }
                     this.ajax = true
                 })
@@ -191,16 +197,13 @@ export default {
                 }
             }
         },
-        publish(state, type = 'new') {
+        publish(type, state, goback) {
             let params = {
                 'type': type,
+                'state': state,
                 'title': this.title,
                 'newstext': this.content,
-                'classid': this.classid,
-                'state': state
-            }
-            if (this.id) {
-                params.id = this.id
+                'classid': this.classid
             }
             if (this.coverImages[0]) {
                 params.titlepic = this.coverImages[0].src
@@ -208,6 +211,9 @@ export default {
             if (this.coverImages.length >= 3) {
                 params.titlepic2 = this.coverImages[1].src
                 params.titlepic3 = this.coverImages[2].src
+            }
+            if (this.json) {
+                params.id = this.json.id
             }
             Indicator.open()
             this.post_article_data(params)
@@ -219,6 +225,9 @@ export default {
                             message: '操作成功',
                             iconClass: 'icon-dui'
                         })
+                        if (goback) {
+                            this.$router.push('/index/user/health')
+                        }
                     } else {
                         Toast({
                             message: '操作失败',
@@ -235,44 +244,47 @@ export default {
                         })
                 })
         },
-        verify(type) {
+        verify(type, state, goback) {
             this.coverImages = this.editor.container.querySelectorAll('img')
-            // 草稿
-            if (type === 'draft') {
-                if (!this.title) {
-                    Toast('标题不能为空')
-                } else {
-                    this.publish(2)
-                }
-            } else {
-                if (!this.title) {
-                    Toast('标题不能为空')
-                } else if (this.title.length < 5) {
-                    Toast('标题长度不能低于5个字')
-                } else if (this.title.length > 30) {
-                    Toast('标题长度不能超过30个字')
-                } else if (!this.content) {
-                    Toast('正文不能为空')
-                } else if (!this.coverImages.length > 0) {
-                    Toast('正文不能没有图片')
-                } else if (!this.classid) {
-                    Toast('标签不能为空')
-                } else {
+            if (state === '3') {
+                if (this.allRule()) {
                     MessageBox.confirm('确定执行此操作?')
                     .then(() => {
-                        if (type === 'new') {
-                            this.publish(3)
-                        } else if (type === 'edit') {
-                            this.publish(3, 'edit')
-                        }
+                        this.publish(type, state, goback)
                     })
+                }
+            } else if (state === '2') {
+                if (this.onlyTitleRule()) {
+                    this.publish(type, state, goback)
                 }
             }
         },
-        openPreview() {
+        allRule() {
+            if (!this.title) {
+                Toast('标题不能为空')
+            } else if (this.title.length < 5) {
+                Toast('标题长度不能低于5个字')
+            } else if (this.title.length > 30) {
+                Toast('标题长度不能超过30个字')
+            } else if (!this.content) {
+                Toast('正文不能为空')
+            } else if (!this.coverImages.length > 0) {
+                Toast('正文不能没有图片')
+            } else if (!this.classid) {
+                Toast('标签不能为空')
+            } else {
+                return true
+            }
+        },
+        onlyTitleRule() {
             if (!this.title) {
                 Toast('标题不能为空')
             } else {
+                return true
+            }
+        },
+        openPreview() {
+            if (this.onlyTitleRule()) {
                 let d = new Date()
                 const Year = d.getFullYear()
                 const Month = d.getMonth() + 1
@@ -285,7 +297,7 @@ export default {
                     newstime: nowTime,
                     befrom: this.$store.state.login.wx.nickname
                 }
-                this.$router.push({ path: 'publish/preview', query: {json: previewJson} })
+                this.$router.push({ path: '/index/user/publish/preview', query: {json: previewJson} })
             }
         }
     },
