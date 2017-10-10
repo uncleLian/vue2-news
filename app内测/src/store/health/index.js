@@ -23,9 +23,9 @@ export default {
       }
       fetch('POST', 'power', params)
       .then(res => {
-         if (res.checked === '1') {
+         // if (res.checked === '1') {
           commit('set_isEditor', true)
-         }
+         // }
       })
     },
 

@@ -37,16 +37,14 @@
                         <template v-if="$route.query.id">
                             <mt-button class='publish_btn' type='danger' @click.stop="verify('edit','3',true)">发表</mt-button>
                             <mt-button class='draft_btn' type='danger' @click.stop="verify('edit',json.state)">保存</mt-button>
-                            <mt-button class='cancle_btn' @click.stop="openPreview">预览</mt-button>
-                            <mt-button class='cancle_btn' @click.stop="$router.go(-1)">取消</mt-button>
                         </template>
                         <!-- 默认 -->
                         <template v-else>
                             <mt-button class='publish_btn' type='danger' @click.stop="verify('new','3',true)">发表</mt-button>
                             <mt-button class='draft_btn' @click.stop="verify('new','2',true)">存草稿</mt-button>
-                            <mt-button class='cancle_btn' @click.stop="openPreview">预览</mt-button>
-                            <mt-button class='cancle_btn' @click.stop="$router.go(-1)">取消</mt-button>
                         </template>
+                        <mt-button class='cancle_btn' @click.stop="openPreview">预览</mt-button>
+                        <mt-button class='cancle_btn' @click.stop="$router.go(-1)">取消</mt-button>
                     </div>
                 </div>
             </div>
@@ -198,6 +196,8 @@ export default {
             }
         },
         publish(type, state, goback) {
+            this.title = this.title.replace(/\s/gi, '')
+            this.content = this.content.replace(/\s/gi, '')
             let params = {
                 'type': type,
                 'state': state,

@@ -29,7 +29,6 @@ const health = () => import('@/page/index/user/children/health/health')
 const publish = () => import('@/page/index/user/children/health/publish')
 const preview = () => import('@/page/index/user/children/health/preview')
 const detail = () => import('@/page/detail/detail')
-// const myWindow = () => import('@/page/detail/myWindow')
 const search = () => import('@/page/search/search')
 const login = () => import('@/page/login/login')
 const theme = () => import('@/page/theme/theme')
@@ -123,10 +122,6 @@ export default new Router({
             path: '/detail',
             component: detail
         },
-        // {
-        //     path: '/myWindow',
-        //     component: myWindow
-        // },
         {
             path: '/search',
             component: search

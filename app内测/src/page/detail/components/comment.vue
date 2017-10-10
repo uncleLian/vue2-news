@@ -1,6 +1,6 @@
 <template>
     <transition name='fadeIn'>
-        <div id='comment' v-if="visible">
+        <div id='comment' v-show="visible">
             <my-header fixed title='评论'>
                 <a slot="left" class='close-black' @click.stop="visible = false"></a>
             </my-header>

@@ -1,6 +1,6 @@
 <template>
     <swiper :options="swiperOption" class="swiper-box" ref="mySwiper">
-        <swiper-slide v-for='(item,index) in column' :key='item'>
+        <swiper-slide v-for='(item,index) in column' :key='index'>
             <pull-container :type='item.classpath'></pull-container>
         </swiper-slide>
     </swiper>

@@ -11,6 +11,7 @@ Vue.config.productionTip = false
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/dist/css/swiper.css'
 Vue.use(MintUI) // 饿了么移动端UI组件
 Vue.use(VueAwesomeSwiper) // swiper滑动组件
 

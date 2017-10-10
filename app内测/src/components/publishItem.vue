@@ -1,37 +1,53 @@
 <template>
     <ul class="list">
         <li class="list-item" v-for="(item,index) in itemJson" :key='index'>
-            <a>
-                <div class="item-title" :class="item.titlepic?'':'text'">
-                    <router-link :to="url(item)" tag="h3">{{item.title}}</router-link>
-                    <div class="item-state">
-                        <span class="passed" v-if="item.state === '1'">已发表</span>
-                        <span class="draft" v-if="item.state === '2'">草稿</span>
-                        <span class="auditing" v-if="item.state === '3'">审核中</span>
-                        <span class="unpassed" v-if="item.state === '4'">未通过</span>
-                        <span class="recall" v-if="item.state === '5'">已撤回</span>
-                        <span class="time" v-if="item.newstime">{{item.newstime}}</span>
-                        <span class="icon-more" @click.stop="openSheet(item,index)"></span>
+
+            <!-- 草稿 -->
+                <a class="draft" v-if="item.state === '2'">
+                    <div class="item-title" :class="item.titlepic?'':'text'">
+                        <router-link :to="url(item)" tag="h3">{{item.title}}</router-link>
+                        <div class="item-state">
+                            <span>草稿</span>
+                            <span v-if="item.newstime">{{item.newstime}}</span>
+                            <span class="icon-more" @click.stop="openSheet(item,index)"></span>
+                        </div>
                     </div>
-                </div>
-                <router-link class="item-img" v-if="item.titlepic" :to="url(item)" tag="div"><img :src="item.titlepic"></router-link>
-                <ul class='item-analysis'>
-                    <li>
-                        <span v-if="item.onclick">阅读 {{item.onclick}}</span>
-                        <span v-else>阅读 0</span>
-                    </li>
-                    <li>
-                        <span v-if="item.plnum">评论 {{item.plnum}}</span>
-                        <span v-else>评论 0</span>
-                    </li>
-                    <li>
-                        <span v-if="item.collectnum">收藏 {{item.collectnum}}</span>
-                        <span v-else>收藏 0</span>
-                    </li>
-                </ul>
-            </a>
+                </a>
+                
+            <!-- 其他 -->
+                <a v-else>
+                    <div class="item-title" :class="item.titlepic?'':'text'">
+                        <router-link :to="url(item)" tag="h3">{{item.title}}</router-link>
+                        <div class="item-state">
+                            <span v-if="item.state === '0'">已推荐</span>
+                            <span v-if="item.state === '1'">已发表</span>
+                            <span v-if="item.state === '3'">审核中</span>
+                            <span v-if="item.state === '4'">未通过</span>
+                            <span v-if="item.state === '5'">已撤回</span>
+                            <span v-if="item.newstime">{{item.newstime}}</span>
+                            <span class="icon-more" @click.stop="openSheet(item,index)"></span>
+                        </div>
+                    </div>
+                    <router-link class="item-img" v-if="item.titlepic" :to="url(item)" tag="div"><img :src="item.titlepic"></router-link>
+                    <ul class='item-analysis' v-if="item.state !== '4'">
+                        <li>
+                            <span v-if="item.onclick">阅读 {{item.onclick}}</span>
+                            <span v-else>阅读 0</span>
+                        </li>
+                        <li>
+                            <span v-if="item.plnum">评论 {{item.plnum}}</span>
+                            <span v-else>评论 0</span>
+                        </li>
+                        <li>
+                            <span v-if="item.collectnum">收藏 {{item.collectnum}}</span>
+                            <span v-else>收藏 0</span>
+                        </li>
+                    </ul>
+                    <div class="unpass-reason" v-else>理由:内容不适合收录</div>
+                </a>
+
         </li>
-        <mt-actionsheet :actions="actions" v-model="actionsheet"> </mt-actionsheet>
+        <mt-actionsheet :actions="actions" v-model="actionsheet"></mt-actionsheet>
     </ul>
 </template>
 <script>
@@ -43,21 +59,26 @@ export default {
         return {
             item: null,
             index: null,
-            actionsheet: false,
-            actions: [
-                {
-                    name: '修改',
-                    method: this.edit
-                },
-                {
-                    name: '删除',
-                    method: this.delete
-                },
-                {
-                    name: '撤回',
-                    method: this.recall
+            actionsheet: false
+        }
+    },
+    computed: {
+        actions() {
+            if (this.item) {
+                let data = [
+                    {
+                        name: '删除',
+                        method: this.delete
+                    }
+                ]
+                if (this.item.state !== '4') {
+                    data[data.length] = { name: '修改', method: this.edit }
+                    if (this.item.state !== '2') {
+                        data[data.length] = { name: '撤回', method: this.recall }
+                    }
                 }
-            ]
+                return data
+            }
         }
     },
     methods: {
@@ -65,7 +86,7 @@ export default {
             'post_article_data'
         ]),
         url(item) {
-            if (item.state === '1') {
+            if (item.state === '0' || item.state === '1') {
                 return `/detail?classid=${item.classid}&id=${item.id}&datafrom=${item.datafrom}`
             } else {
                 return `/index/user/publish/preview?id=${item.id}`
@@ -170,7 +191,6 @@ export default {
                     height: 100%;
                 }
             }
-
             .item-state {
                 margin-top: 0.25rem;
                 span {
@@ -210,6 +230,20 @@ export default {
                 li:last-of-type span {
                     border-right: 0;
                 }
+            }
+        }
+        a.draft{
+            .item-title{
+                width: 100%;
+            }
+            .icon-more{
+                margin-right: 0;
+            }
+            .unpass-reason{
+                margin-top: 8px;
+                color: #505050;
+                font-size: 14px;
+                line-height: 1.4em;
             }
         }
     }

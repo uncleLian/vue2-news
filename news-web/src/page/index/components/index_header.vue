@@ -9,7 +9,7 @@
         </header>
         <nav>
             <div class="nav_ul">
-                <a href='javascript:;' v-for="(item,index) in column" :class='{active: indexActive == item.classpath}' @click="navClick(item.classpath)" :key="item">{{item.classname}}</a>
+                <a href='javascript:;' v-for="(item,index) in column" :class='{active: indexActive == item.classpath}' @click="navClick(item.classpath)" :key="index">{{item.classname}}</a>
             </div>
             <!-- <div class="nav_menu">
                 <div class="shadow"></div>
