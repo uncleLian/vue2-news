@@ -1,8 +1,8 @@
 {
-  "name": "news-web",
+  "name": "news-app",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "lian",
+  "author": "uncleLian <771674109@qq.com>",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
