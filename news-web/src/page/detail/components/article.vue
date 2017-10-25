@@ -1,10 +1,12 @@
 <template>
     <article id="article">
+        <!-- 信息 -->
         <div class="article_info">
             <h1 class="title">{{json.title}}</h1>
             <span class="befrom">{{json.befrom}}</span>
             <span class="newstime">{{json.newstime}}</span>
         </div>
+        <!-- 视频 -->
         <template v-if="json.playonlineurl">
             <div class="article_video">
                 <div class="video" :class="{'video-fixed': video_fixed}">
@@ -37,7 +39,7 @@
                 </div>
             </div>
         </template>
-        
+        <!-- 文字 & 图片 -->
         <template v-else>
             <section class="article_content">
                 <div class="content_html" v-html='json.newstext' :class="{'content_html-close' : content_more}"></div>
@@ -48,87 +50,87 @@
 </template>
 <script>
 export default {
-    props:['json'],
+    props: ['json'],
     data() {
         return {
-            video:'',
-            video_poster: true,
-            video_playing: false,
-            video_ended: false,
-            video_loading: false,
-            video_fixed: false,
-            content_more: false,
+            video: '',              // video元素
+            video_poster: true,     // video封面
+            video_playing: false,   // video是否播放
+            video_ended: false,     // video是否播放结束
+            video_loading: false,   // video是否正在缓冲
+            video_fixed: false,      // video是否悬浮
+            content_more: false
         }
     },
     methods: {
-        shrinkArticle() {
-            if ( this.json.newstext && this.json.newstext.length >= 1400) {
-                this.content_more = true;
-            }else{
-                this.content_more = false;
-            }
+        videoPlay() {
+            this.video = document.querySelector('video')
+            this.video.play()
+            this.videoEvent()
+            this.videoFixed()
         },
-        videoPlay(){
-            this.video = document.querySelector('video');
-            this.video.play();
-            this.video_playing = true;
-            this.video_poster = false;
-            this.video_ended = false;
-            this.videoEvent();
-            this.videoFixed();
-        },
-        videoEvent(){
+        videoEvent() {
+            // 播放
             this.video.onplay = () => {
-                // console.log('播放');
-                this.video_playing = true;
+                this.video_playing = true
+                this.video_poster = false
+                this.video_ended = false
             }
+            // 暂停
             this.video.onpause = () => {
-                // console.log('暂停');
-                this.video_playing = false;
-                this.video_loading = false;
+                this.video_playing = false
+                this.video_loading = false
             }
+            // 等待
             this.video.onwaiting = () => {
-                // console.log('缓冲...');
-                this.video_loading = true;
+                this.video_loading = true
             }
+            // 可以播放
             this.video.oncanplay = () => {
-                // console.log('可以播放了...');
-                this.video_loading = false;
+                this.video_loading = false
             }
+            // 结束
             this.video.onended = () => {
-                console.log('播放结束');
-                this.video_ended = true;
+                this.video_ended = true
             }
         },
-        videoFixed(){
-            const vm = this;
-            let videoTop = $('.video').position().top;
-            let videoHeight = $('video').height();
-            $('#detail .container').on('scroll', function(event) {
-                event.preventDefault();
-                if($('#detail .container').scrollTop() >= videoTop && vm.video_playing){
-                    $('.article_video').height(videoHeight);
-                    vm.video_fixed = true;
-                }else{
-                    vm.video_fixed = false;
+        videoFixed() {
+            let videoTop = $('.video').position().top   // video元素相对于屏幕上方的距离
+            $('#detail .container').on('scroll', (event) => {
+                event.preventDefault()
+                // 滚动到video元素 && video正在播放
+                if ($('#detail .container').scrollTop() >= videoTop && this.video_playing) {
+                    this.video_fixed = true
+                } else {
+                    this.video_fixed = false
                 }
-            });
+            })
+        },
+        // 是否显示查看全文
+        shrinkArticle() {
+            if (this.json.newstext && this.json.newstext.length >= 1400) {
+                this.content_more = true
+            } else {
+                this.content_more = false
+            }
         },
         backTo() {
+            // 监听浏览器是否回到手机后台（当前应用不是浏览器或者手机息屏），是就暂停播放。（效果可在手机上查看）
             document.addEventListener('pause', () => {
                 this.video.pause()
             }, false)
         }
     },
-    watch:{
-        json(val){
-            this.shrinkArticle();
-            this.video = document.querySelector('video');
-            this.video_poster = true;
-            this.video_playing = false;
-            this.video_ended = false;
-            this.video_loading = false;
-            this.video_fixed = false;
+    watch: {
+        json(val) {
+            this.shrinkArticle()
+            this.video = document.querySelector('video')
+            // 自己调用自己的时候，需要初始化一些数据状态，这是自己调用自己所带来的弊端，使用场景：在详情页打开其他详情页的时候会用到。
+            this.video_poster = true
+            this.video_playing = false
+            this.video_ended = false
+            this.video_loading = false
+            this.video_fixed = false
         }
     },
     mounted() {

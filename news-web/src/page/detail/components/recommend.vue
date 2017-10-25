@@ -15,7 +15,7 @@ export default {
     }
 }
 </script>
-<style scoped lang='stylus'>
+<style lang='stylus'>
 #recommend {
     width: 100%;
     position: relative;

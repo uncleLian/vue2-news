@@ -1,4 +1,5 @@
 <template>
+    <!-- 因为mint-ui的header不符合我需求，只能自己封装了 -->
     <header :class="{ 'fixed': fixed }">
         <div class="top_bar">
             <div class="abs_l"><slot name="left"></slot></div>
@@ -10,9 +11,9 @@
 <script>
 export default {
     props: {
-        fixed:Boolean,
-        title:String,
-    },
+        fixed: Boolean,
+        title: String
+    }
 }
 </script>
 <style scoped lang='stylus'>

@@ -1,85 +1,194 @@
 <template>
-  <div id="QRcode">
-    <div class="myheader">
-      <!--<div class="iosHeader"></div>-->
-      <mt-header title="扫码分享">
-          <mt-button icon="back" slot="left" @click.native="$router.go(-1)">返回</mt-button>
-      </mt-header>
+  <transition name='fadeIn'>
+    <div id="QRcode">
+      <my-header fixed title='扫码分享'>
+        <a class="back-white" slot='left' @click='$router.go(-1)'></a>
+      </my-header>
+      <div class="content" :class="{isIOS: $store.state.device == 'ios'}" v-swiper:swiperRight='true'>
+        <dl class="middle">
+          <dt class="middle_dt">
+            <i class="toutiao"></i>
+            <span>邀请好友扫一扫</span>
+          </dt>
+        </dl>
+        <div class="dl_share">
+          <dl class="dl_share_2">
+            <dd @click="wxShare(1)">
+              <img src="~@/assets/img/wx_1.png">
+              <span>微信朋友圈</span></dd>
+            <dd @click="wxShare(0)">
+              <img src="~@/assets/img/wx_2.png">
+              <span>微信好友</span>
+            </dd>
+            <dd @click="qqShare()">
+              <img src="~@/assets/img/qq_1.png">
+              <span>手机QQ</span>
+            </dd>
+          </dl>
+        </div>
+        <dl class="base">
+          <dt>Copyright@Guangdong Eastone Century </dt>
+          <dt>Technology Co.,Ltd.</dt>
+        </dl>
+      </div>
     </div>
-    <div class="content">
-      <dl>
-        <dt>健康头条</dt>
-        <dt>V1.0.1</dt>
-      </dl>
-  
-      <dl class="middle">
-        <dt>
-          <i class="toutiao"></i>
-        </dt>
-        <dt>邀请好友扫一扫</dt>
-      </dl>
-
-      <dl class="base">
-        <dt>软件申明</dt>
-        <dt>@ 2017 宜通科技</dt>
-      </dl>
-    </div>
-  </div>
-
+  </transition>
 </template>
-
 <script>
-  export default{
-    data(){
-      return {}
+  import {Toast} from 'mint-ui'
+  export default {
+    data() {
+      return {
+        test: {
+          QQimage: 'http://ts.toutiaojk.com/wdata/downloadImg/Serne.png',
+          QQurl: 'http://ts.toutiaojk.com/wdata/download.html',
+          wxthumb: 'http://ts.toutiaojk.com/wdata/downloadImg/Serne.png',
+          wxwebpageUrl: 'http://ts.toutiaojk.com/wdata/download.html'
+        },
+        Aformal: {
+          QQimage: 'http://m.toutiaojk.com/downloadImg/Serne.png',
+          QQurl: 'http://m.toutiaojk.com/download.html',
+          wxthumb: 'http://m.toutiaojk.com/downloadImg/Serne.png',
+          wxwebpageUrl: 'http://m.toutiaojk.com/download.html'
+        }
+      }
     },
-    methods: {},
-    computed: {},
-    mounted(){
+    methods: {
+      qqShare() {
+        var qqShareObj = {}
+        qqShareObj.scene = 0
+        qqShareObj.title = '健康头条下载'
+        qqShareObj.description = '下载页面'
+        qqShareObj.image = this.Aformal.QQimage
+        qqShareObj.url = this.Aformal.QQurl
+        document.addEventListener('deviceready', function () {
+          cordova.exec(successCallback, errorCallback, 'QQSDK', 'shareNews', [qqShareObj])
+          function successCallback() {
+            Toast({message: '分享成功', duration: 2500})
+          }
 
-    },
+          function errorCallback() {
+            Toast({message: '取消分享', duration: 2500})
+          }
+        }, false)
+      },
+      wxShare(share) {
+        var wxShareObj = {}
+        wxShareObj.message = {}
+        wxShareObj.message.media = {}
+        wxShareObj.scene = share
+        wxShareObj.message.title = '健康头条下载'
+        wxShareObj.message.description = '下载页面'
+        wxShareObj.message.thumb = this.Aformal.wxthumb
+        wxShareObj.message.media.type = 7
+        wxShareObj.message.media.webpageUrl = this.Aformal.wxwebpageUrl
+        document.addEventListener('deviceready', function() {
+          cordova.exec(onSuccess, onError, 'Wechat', 'share', [wxShareObj])
+          function onSuccess() {
+            Toast({message: '分享成功', duration: 2500})
+          }
+          function onError() {
+            Toast({message: '取消分享', duration: 2500})
+          }
+        }, false)
+      }
+    }
   }
 </script>
-<style scoped>
+<style scope lang='stylus'>
   #QRcode {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 100%;
-    width: 100%;
     overflow: hidden;
-    color:#E8E8E8;
-  }
-  .myheader{
-    background: #4D7BA0;
+    z-index: 1000;
+    .content {
+      height: 100%;
+      width: 100%;
+      text-align: center;
+      padding-top: 42px;
+      background: #EEEFF0;
+      &.isIOS {
+        padding-top: 64px;
+      }
+      .middle {
+        height: 42%;
+        .middle_dt {
+          height: 100%;
+          background: #00939c;
+          i {
+            height: 80%;
+            width: 100%;
+            display: table;
+            text-align: center;
+            vertical-align: middle;
+          }
+          span {
+            font-size: 14px;
+            color: #fff;
+          }
+        }
+      }
+      .dl_share {
+        width: 100%;
+        height: 50%;
+        padding-top: 40px;
+        .dl_share_1 {
+          width: 100%;
+          height: 45px;
+          dt {
+            width: 100%;
+            height: 45px;
+            i {
+              width: 100%;
+              height: 100%;
+              display: table;
+              text-align: center;
+              vertical-align: middle;
+            }
+          }
+        }
+        .dl_share_2 {
+          width: 100%;
+          height: 200px;
+          padding: 30px 10px 0;
+          dd {
+            width 20%;
+            display: inline-table;
+            margin:0 10px;
+            img {
+              height: 54px;
+              width: 54px;
+            }
+            span {
+              width: 100%;
+              display: table;
+              text-align: center;
+              vertical-align: middle;
+              margin-top: 14px;
+              font-size : 12px;
+            }
+          }
+        }
+      }
+      .base {
+        dt{
+          color :#cccccc;
+          padding-bottom: 5px;
+        }
+      }
+    }
   }
 
-  #QRcode .content {
-    height: 100%;
-    width: 100%;
-    text-align: center;
-    background: -webkit-linear-gradient(rgba(255,0,0,0.7), rgba(255,0,0,.3)); /* Safari 5.1 - 6.0 */
-    background: -o-linear-gradient(rgba(255,0,0,0.7), rgba(255,0,0,.3)); /* Opera 11.1 - 12.0 */
-    background: -moz-linear-gradient(rgba(255,0,0,0.7), rgba(255,0,0,.3)); /* Firefox 3.6 - 15 */
-    background: linear-gradient(rgba(255,0,0,0.7), rgba(255,0,0,.3));
-  }
-  #QRcode .content dl{
-    margin: 0;
-    padding: 20px 0;
-  }
-  #QRcode .content dl.middle{
-    width: auto;
-    height: 200px;
-    margin: 50px 0 40%;
-    /*background-color: red;*/
-  }
-  #QRcode .content dl.middle dt{
-   padding-top: 10px;
-  }
-  #QRcode .content dl i{
-    display: block;
-    height: 170px;
-    width: 100%;
-  }
-  .toutiao{
-    background: url('../../../../assets/icon/liantu.png') no-repeat 50%;
+  .toutiao {
+    background: url('~@/assets/icon/saoma.png') no-repeat 50%;
     background-size: 170px;
+  }
+
+  .tt_share {
+    background: url('~@/assets/icon/qr_share.png') no-repeat 50%;
+    background-size: 40%;
   }
 </style>

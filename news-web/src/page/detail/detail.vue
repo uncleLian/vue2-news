@@ -7,63 +7,58 @@
         
         <div class="content">
             <div class="container" v-swiper:swiperRight='true'>
-
-                <!-- 文章 -->
-                <my-article  :json='currentArticle'></my-article>
-
+                <!-- 正文 -->
+                <my-article  :json='articleJson'></my-article>
                 <!-- 标签 -->
-                <tags  v-if='currentArticle.infotags' :json='currentArticle.infotags'></tags>
-                
-                <!-- 分割线 -->
-                <div class="bg_line" v-if='currentArticle.comment'></div>
+                <my-tags v-if="articleJson.infotags" :json='articleJson.infotags'></my-tags>
                 <!-- 热点评论 -->
-                <div class="comment-hot" v-if='currentArticle.comment'>
-                    <div class="comment_title">
-                        <div class="Line">
-                            <div class="title">用户热评</div>
+                <template v-if='articleJson.comment'>
+                    <!-- 分割线 -->
+                    <div class="bg_line" ></div>
+                    <div class="comment-hot">
+                        <div class="comment_title">
+                            <div class="Line">
+                                <div class="title">用户热评</div>
+                            </div>
                         </div>
+                        <comment-item v-for='(item,index) in articleJson.comment' :itemJson='item' :key='index'></comment-item>
+                        <a href='http://m.toutiaojk.com/guide.html' class="comment_more" v-if="articleJson.plnum > 0 ">下载健康头条阅读全部{{articleJson.plnum}}条评论<i class="icon-detail"></i></a>
                     </div>
-                    <comment-item v-for='item in currentArticle.comment' :itemJson='item' :key='item'></comment-item>
-                    <a href='http://m.toutiaojk.com/guide.html' class="comment_more" v-if="currentArticle.plnum > 0 ">下载健康头条阅读全部{{currentArticle.plnum}}条评论<i class="icon-detail"></i></a>
-                </div>
-
+                </template>
                 <!-- 分割线 -->
                 <div class="bg_line"></div>
 
                 <!--  推荐 -->
-                <recommend  :json='recommend'></recommend>
-                
+                <my-recommend :json='articleJson.recommend'></my-recommend>
                 <!-- 下载 -->
                 <a class="downLoad" href='http://m.toutiaojk.com/guide.html'>都翻到这儿了，下载个头条呗~</a>
-
-                <loading :visible='loading'></loading>
-
-                <error fixed :visible='error' :method='init'></error>
             </div>
         </div>
-        <!-- 分享 -->
-        <share ref="share"></share>
-        <!-- 加载 -->
-        <loading :visible='loading'></loading>
+        <!-- 分享组件 -->
+        <my-share ref="share"></my-share>
+        <!-- 请求提示 -->
+        <my-loading :visible='loading'></my-loading>
+        <my-error fixed :visible='error' :method='init'></my-error>
     </div>
 </template>
 <script>
 import myArticle from './components/article'
-import tags from './components/tags'
-import recommend from './components/recommend'
-import share from './components/share'
+import myTags from './components/tags'
+import myRecommend from './components/recommend'
+import myShare from './components/share'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
-    name:'detail',
-    components: { myArticle, tags, recommend, share },
+    name: 'detail',              // 不使用keep-alive时，组件有name属性，就可以方便的exclude排除这个路由组件
+    components: { myArticle, myTags, myRecommend, myShare },
     data() {
         return {
-            id: null,
-            classid: null,
-            datafrom: null,
-            title: '健康头条',
-            loading: true, 
-            error: false,
+            title: '健康头条',   // header的title
+            id: '',             // 文章id
+            classid: '',        // 文章classid（分类）
+            datafrom: '',       // 数据来源
+            articleJson: {},    // 文章数据
+            loading: true,
+            error: false
         }
     },
     computed: {
@@ -71,48 +66,59 @@ export default {
             'indexColumn'
         ]),
         ...mapGetters('detail', [
-            'currentArticle',
-            'recommend',
-            'localtion'
+            'location'          // 记录detail页面滚动位置的location对象
         ])
     },
+    watch: {
+        $route(val) {
+            if (val.query.id) {
+                // 自己调用自己，重新初始化
+                this.init()
+            }
+        }
+    },
     methods: {
-        ...mapActions('index', [
-            'get_indexColumn_data',
-        ]),
         ...mapMutations('detail', [
-            'set_id',
-            'set_currentArticle',
-            'set_localtion'
+            'set_location'
+        ]),
+        ...mapActions('index', [
+            'get_indexColumn_data'
         ]),
         ...mapActions('detail', [
-            'get_Article_data',
-            'get_Recommend_data',
+            'get_Article_data'
         ]),
-        async init(){
-            this.classid = this.$route.query.classid;
-            this.id = this.$route.query.id;
-            this.datafrom = this.$route.query.datafrom;
-            this.set_id(this.id)
-            $("#detail .container").scrollTop(0);
-            if (!(this.indexColumn.length > 1 )) {
-                await this.get_indexColumn_data();
+        async init() {
+            this.classid = this.$route.query.classid
+            this.id = this.$route.query.id
+            this.datafrom = this.$route.query.datafrom
+            $('#detail .container').scrollTop(0)    // 初始化返回顶部
+            await this.handleTitle()
+            this.get_Article()
+            this.visitCollect()
+        },
+        // 获取title分类
+        async handleTitle() {
+            if (!(this.indexColumn.length > 1)) {
+                await this.get_indexColumn_data()
             }
-            let index = this.indexColumn.findIndex(n => n.classid == this.classid);
+            let index = this.indexColumn.findIndex(n => n.classid === this.classid)
             if (index > -1) {
                 this.title = `健康头条 · ${this.indexColumn[index].classname}`
             }
-            this.get_Article(); // 获取 文章数据
-            this.get_Recommend(); // 获取 推荐数据
-            this.visitCollect(); // 浏览数据统计
         },
+        // 获取文章数据
         get_Article() {
-            this.loading = true;
-            this.get_Article_data({'id': this.id, 'datafrom': this.datafrom})
+            this.loading = true
+            let params = {
+                'id': this.id,
+                'datafrom': this.datafrom
+            }
+            this.get_Article_data(params)
             .then(res => {
                 if (res) {
-                    this.set_currentArticle(res)
+                    this.articleJson = res
                     this.loading = false
+                    this.handleLocaltion('get')
                 }
                 this.error = false
             })
@@ -122,9 +128,7 @@ export default {
                 this.loading = false
             })
         },
-        get_Recommend() {
-            this.get_Recommend_data({'classid': this.classid, 'id': this.id})
-        },
+        // 数据统计
         visitCollect() {
             $.ajax({
                 url: `http://api.toutiaojk.com/public/ViewClick/?classid=${this.classid}&id=${this.id}&addclick=1`,
@@ -133,34 +137,33 @@ export default {
         },
         handleLocaltion(type) {
             if (type === 'get') {
-                if (this.localtion && this.localtion[this.id]) {
-                    $('#detail .container').scrollTop(this.localtion[this.id])
-                }
+                this.$nextTick(() => {
+                    if (this.location && this.location[this.id]) {
+                        $('#detail .container').scrollTop(this.location[this.id])
+                    }
+                })
             } else if (type === 'set') {
-                let scrollTop = $('#detail .container').scrollTop()
-                this.localtion[this.id] = scrollTop
-                this.set_localtion(this.localtion)
-            }
-        },
-    },
-    watch: {
-        $route(val) {
-            if (val.query.id) {
-                this.init()
+                this.location[this.id] = $('#detail .container').scrollTop()
+                this.set_location(this.location)
             }
         }
     },
     mounted() {
-        this.init();
-        this.handleLocaltion('get')
+        this.init()
     },
+    // 离开路由钩子
     beforeRouteLeave(to, from, next) {
+        this.handleLocaltion('set')
+        next() // 一定要调用next() 不然路由不会跳转
+    },
+    // 重复调用组件的钩子
+    beforeRouteUpdate(to, from, next) {
         this.handleLocaltion('set')
         next()
     }
 }
 </script>
-<style scoped lang='stylus'>
+<style lang='stylus'>
 #detail {
     width: 100%;
     height: 100%;

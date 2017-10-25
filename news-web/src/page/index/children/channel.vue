@@ -2,23 +2,25 @@
     <transition name='fadeIn'>
         <div id="channel">
             <my-header fixed title='频道管理'>
-                <a class="back" slot='left' @click='$router.go(-1)'></a>
+                <a class="back-white" slot='left' @click='$router.go(-1)'></a>
             </my-header>
             
             <div class="content">
                 <div class="container" v-swiper:swiperRight='true'>
+                    <!-- 原有的栏目 -->
                     <section class="column">
                         <p class="title">点击删除以下频道</p>
                         <ul>
-                            <li v-for='(item,index) in indexColumn' @click='remove(item,index)' :key='item' >
+                            <li v-for='(item,index) in indexColumn' @click='remove(item,index)' :key='index' >
                                 <a href='javascript:;' :class='item.classpath'>{{item.classname}}</a>
                             </li>
                         </ul>
                     </section>
+                    <!-- 可以添加的栏目 -->
                     <section class="column">
                         <p class="title">点击添加以下频道</p>
                         <ul>
-                            <li v-for='(item,index) in json' @click='add(index)' :key='item'>
+                            <li v-for='(item,index) in channel' @click='add(index)' :key='index'>
                                 <a href='javascript:;'>{{item.classname}}</a>
                             </li>
                         </ul>
@@ -33,75 +35,90 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
     data() {
         return {
-            json: [
-                {classname:'Test20',classid:20,classpath:'t1'},
-                {classname:'Test21',classid:21,classpath:'t2'},
-                {classname:'Test22',classid:22,classpath:'t3'},
-                {classname:'Test23',classid:23,classpath:'t4'},
-                {classname:'Test24',classid:24,classpath:'t5'},
-                {classname:'Test25',classid:25,classpath:'t6'},
-            ],
+            channel: [
+                {classname: 'Test20', classid: 20, classpath: 't1'},
+                {classname: 'Test21', classid: 21, classpath: 't2'},
+                {classname: 'Test22', classid: 22, classpath: 't3'},
+                {classname: 'Test23', classid: 23, classpath: 't4'},
+                {classname: 'Test24', classid: 24, classpath: 't5'},
+                {classname: 'Test25', classid: 25, classpath: 't6'}
+            ]
         }
     },
-    computed:{
-        ...mapGetters('index',[
-          'indexActive',
+    computed: {
+        ...mapGetters('index', [
           'indexPage',
           'indexLocation',
-          'indexColumn',
-        ]),
+          'indexColumn'
+        ])
+    },
+    watch: {
+        indexColumn() {
+            this.set_indexColumn(this.indexColumn)
+            this.set_indexActive('news_recommend')
+        }
     },
     methods: {
-        ...mapMutations('index',[
+        ...mapMutations('index', [
             'set_indexActive',
             'set_indexPage',
             'set_indexLocation',
-            'set_indexColumn',
+            'set_indexColumn'
         ]),
-        remove(item,index){
-            if( item.classpath == 'news_recommend' ){
-                return
-            }else{
-                let removeEle = this.indexColumn.splice(index,1);
-                this.json.push(...removeEle);
+        ...mapActions('index', [
+            'get_channel_data'
+        ]),
+        // 获取可以添加的栏目数据
+        get_channel() {
+            this.get_channel_data()
+            .then(res => {
+                if (res) {
+                    this.channel = res
+                }
+            })
+        },
+        // 添加栏目
+        add(index) {
+            let addEle = this.channel.splice(index, 1)
+            this.indexColumn.push(...addEle)
+        },
+        // 移除栏目
+        remove(item, index) {
+            if (item.classpath !== 'news_recommend') {
+                let removeEle = this.indexColumn.splice(index, 1)
+                this.channel.push(...removeEle)
             }
         },
-        add(index){
-            let addEle = this.json.splice(index,1);
-            this.indexColumn.push(...addEle);
-        },
-        sync(){
-            let pageObj = {};
-            let locationObj = {};
-            for (let i = 0; i < this.indexColumn.length; i++){
-                var className = this.indexColumn[i].classpath;
-                if(this.indexPage[className] > 1 ){
-                    pageObj[className] = this.indexPage[className];
-                }else{
-                    pageObj[className] = 1;
+        // 增减栏目之后，同步page、location对象
+        sync() {
+            let pageObj = {}
+            let locationObj = {}
+            for (let i = 0; i < this.indexColumn.length; i++) {
+                var className = this.indexColumn[i].classpath
+                if (this.indexPage[className] > 1) {
+                    pageObj[className] = this.indexPage[className]
+                } else {
+                    pageObj[className] = 1
                 }
-                if(this.indexLocation[className] > 0){
-                    locationObj[className] = this.indexLocation[className];
-                }else{
-                    locationObj[className] = 0;
+                if (this.indexLocation[className] > 0) {
+                    locationObj[className] = this.indexLocation[className]
+                } else {
+                    locationObj[className] = 0
                 }
             }
-            this.set_indexPage(pageObj);
-            this.set_indexLocation(locationObj);
-        },
-    },
-    watch:{
-        indexColumn(){
-            this.set_indexColumn(this.indexColumn);
-            this.set_indexActive('news_recommend');
+            this.set_indexPage(pageObj)
+            this.set_indexLocation(locationObj)
         }
     },
-    deactivated(){
-        this.sync();
+    mounted() {
+        // this.get_channel()
     },
+    deactivated() {
+        this.sync()
+    }
 }
 </script>
-<style scoped lang='stylus'>
+<style lang='stylus'>
 #channel {
     position: absolute;
     top: 0;

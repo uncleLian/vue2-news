@@ -13,23 +13,23 @@
 export default {
     data() {
         return {
-            visible: false,
+            visible: false
         }
     },
     methods: {
         close() {
-            this.visible = false;
-            sessionStorage.setItem('downLoad', 'false');
-        },
+            this.visible = false
+            sessionStorage.setItem('downLoad', 'false') // 关闭之后刷新不会再次出现
+        }
     },
     mounted() {
         if (!sessionStorage.getItem('downLoad')) {
-            this.visible = true;
+            this.visible = true
         }
     }
 }
 </script>
-<style scoped lang='stylus'>
+<style lang='stylus'>
 #indexFooter {
     position: fixed;
     bottom: 0;

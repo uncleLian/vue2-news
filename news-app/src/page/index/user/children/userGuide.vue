@@ -1,36 +1,38 @@
 <template>
-  <div id="userguide">
-    <div class="myheader">
-      <!--<div class="iosHeader"></div>-->
-      <mt-header title="头条小贴士">
-          <mt-button icon="back" slot="left" @click.native='$router.go(-1)'>返回</mt-button>
-      </mt-header>
-    </div>
-    <div id="content">
+  <transition name='fadeIn'>
+    <div id="userguide">
+      <my-header fixed title='版本介绍'>
+        <a class="back-white" slot='left' @click='$router.go(-1)'></a>
+      </my-header>
+      <div id="content" :class="{isIOS: $store.state.device == 'ios'}" v-swiper:swiperRight='true'>
         1111111
+      </div>
     </div>
-  </div>
+  </transition>
 </template>
-
 <script>
-  export default{
-    data(){
+  export default {
+    data() {
       return {}
-    },
-    methods: {},
-    computed: {},
-    mounted(){
-
-    },
+    }
   }
 </script>
-<style>
-#userguide{
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  right:0;
-}
+<style scope lang='stylus'>
+  #userguide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1000;
+    #content {
+      height: 100%;
+      background: #ddd;
+      padding-top: 44px;
+      &.isIOS {
+        padding-top: 64px;
+      }
+    }
+  }
 </style>

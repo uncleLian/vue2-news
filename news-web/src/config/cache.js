@@ -1,21 +1,15 @@
-
-// 获取localStorage
 export const getCache = name => {
-	if (!name) return;
-	return window.sessionStorage.getItem(name);
+    if (!name) return
+    return window.sessionStorage.getItem(name)
 }
-
-//存储localStorage
 export const setCache = (name, content) => {
-    if (!name) return;
+    if (!name) return
     if (typeof content !== 'string') {
-        content = JSON.stringify(content);
+        content = JSON.stringify(content)
     }
-    window.sessionStorage.setItem(name, content);
+    window.sessionStorage.setItem(name, content)
 }
-
-//删除localStorage
 export const removeCache = (name) => {
-    if (!name) return;
-    window.sessionStorage.removeItem(name);
+    if (!name) return
+    window.sessionStorage.removeItem(name)
 }

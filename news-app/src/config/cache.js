@@ -1,21 +1,35 @@
-
-// 获取localStorage
 export const getCache = name => {
-	if (!name) return;
-	return window.localStorage.getItem(name);
+    if (!name) return
+    return window.sessionStorage.getItem(name)
 }
 
-//存储localStorage
 export const setCache = (name, content) => {
-    if (!name) return;
-    if (typeof content != 'string') {
-        content = JSON.stringify(content);
+    if (!name) return
+    if (typeof content !== 'string') {
+        content = JSON.stringify(content)
     }
-    window.localStorage.setItem(name, content);
+    window.sessionStorage.setItem(name, content)
 }
 
-//删除localStorage
 export const removeCache = (name) => {
-    if (!name) return;
-    window.localStorage.removeItem(name);
+    if (!name) return
+    window.sessionStorage.removeItem(name)
+}
+
+export const get_local_cache = name => {
+    if (!name) return
+    return window.localStorage.getItem(name)
+}
+
+export const set_local_cache = (name, content) => {
+    if (!name) return
+    if (typeof content !== 'string') {
+        content = JSON.stringify(content)
+    }
+    window.localStorage.setItem(name, content)
+}
+
+export const remove_local_cache = (name) => {
+    if (!name) return
+    window.localStorage.removeItem(name)
 }

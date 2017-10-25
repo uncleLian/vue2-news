@@ -1,173 +1,293 @@
-<detail-share ref="share" :detailJson='currentArticle'></detail-share>
 <template>
     <div id="detail">
-        <my-header fixed>
-            <a slot="left" @click.stop='$router.go(-1)'><i class="icon-back"></i></a>
-            <a slot="mid" @click.stop='goTop'>{{title}}</a>
-            <a slot="right" @click.stop='$refs.share.toggle()'><i class="icon-menu"></i></a>
+        <!-- header -->
+        <my-header fixed :title='title' v-goTop:click='true'>
+            <a slot="left" class="back-black" @click.stop='$router.go(-1)'></a>
+            <a slot="right" class="menu" @click.stop='$refs.share.toggle()'></a>
         </my-header>
-        
+        <!-- content -->
         <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
-            <div class="container" v-swiper:swiperRight='true'>
+            <div class="container" v-swiper:swiperRight='true' v-swiper:all="'blur'">
                 <!-- 文章 -->
-                <detail-article class='article' :json='currentArticle'></detail-article>
+                <my-article v-if="currentArticle" :json='currentArticle'></my-article>
                 <!-- 标签 -->
-                <detail-tags class='tag' :json='currentArticle.infotags'></detail-tags>
+                <my-tags v-if='currentArticle.infotags' :json='currentArticle.infotags'></my-tags>
+                <!-- 喜欢/收藏 -->
+                <div class="article_favorite">
+                    <like :json="currentArticle"></like>
+                    <collect btn :json="currentArticle"></collect>
+                </div>
+
+                <!-- 分割线 -->
+                <div class="bg_line" v-if='currentArticle.comment'></div>
+                <!-- 热点评论 -->
+                <div class="comment-hot" v-if='currentArticle.comment'>
+                    <div class="comment_title">
+                        <div class="Line">
+                            <div class="title">用户热评</div>
+                        </div>
+                    </div>
+                    <comment-item layout='topFooter' comment='remark' type='all' v-for='(item,index) in currentArticle.comment' :itemJson='item' :key='index' @click.native.stop='$refs.comment.open()'></comment-item>
+                    <div class="comment_more" v-if="currentArticle.plnum > 0 " @click.stop="$refs.comment.open()">全部{{currentArticle.plnum}}条评论<i class="icon-detail"></i></div>
+                </div>
+
+                <!-- 分割线 -->
+                <div class="bg_line"></div>
                 <!--  推荐 -->
-                <detail-recommend class='recommend' :json='recommendJson'></detail-recommend>
-                <!-- 下载 -->
-                <a class="downLoad">翻到底了哦~</a>
+                <my-recommend :json='currentArticle.recommend'></my-recommend>
+                <loading :visible='loading'></loading>
+                <error fixed :visible='error' :method='init'></error>
             </div>
         </div>
+        <!-- 底部工具条 -->
+        <tool icon comment='remark' @publishStatus='publishCallBack'>
+            <template slot='tool_btn'>
+                <a class="comment_btn" @click.stop="$refs.comment.open()">
+                        <span class="comment_num" v-if="currentArticle.plnum > 0">{{currentArticle.plnum}}</span>
+                    </a>
+                <collect icon :json='currentArticle'></collect>
+                <a class="share_btn" @click.stop='$refs.share.toggle()'></a>
+            </template>
+        </tool>
+        <!-- 评论页 -->
+        <comment ref='comment'></comment>
+        <!-- 回复页 -->
+        <reply ref="reply"></reply>
         <!-- 分享 -->
-        <detail-share ref="share"></detail-share>
-        <!-- 加载 -->
-        <loading :show='loading'></loading>
+        <share :detailJson='currentArticle' ref="share"></share>
     </div>
 </template>
 <script>
-import detailArticle from './components/article'
-import detailTags from './components/tags'
-import detailRecommend from './components/recommend'
-import detailShare from './components/share'
-import { mapGetters, mapActions } from 'vuex'
+import myArticle from './components/article'
+import myTags from './components/tags'
+import myRecommend from './components/recommend'
+import share from './components/share'
+import like from './components/like'
+import collect from './components/collect'
+import comment from './components/comment'
+import tool from './components/tool'
+import reply from './components/reply'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
-    name:'detail',
-    components: { detailArticle, detailTags, detailRecommend, detailShare },
+    name: 'detail',
+    components: {
+        myArticle,
+        myTags,
+        myRecommend,
+        share,
+        like,
+        collect,
+        comment,
+        tool,
+        reply
+    },
     data() {
         return {
             id: null,
             classid: null,
+            from: null,
             title: '健康头条',
-            currentArticle: {}, // 文章数据
-            recommendJson: [], // 推荐数据
-            loading: true, // 加载动画
+            enterTime: '',
+            loading: true,
+            error: false,
+            focus: false,
+            inputVal: '',
+            keepInputVal: '',
+            replyJson: {}
         }
     },
     computed: {
-        ...mapGetters('index', [
-            'indexColumn',
+        ...mapGetters([
+            'userid'
         ]),
+        ...mapGetters('index', [
+            'indexColumn'
+        ]),
+        ...mapGetters('detail', [
+            'listArticle',
+            'currentArticle',
+            'historyArticle',
+            'localtion'
+        ])
     },
     methods: {
         ...mapActions('index', [
-            'get_indexColumn_data',
+            'get_indexColumn_data'
+        ]),
+        ...mapMutations('detail', [
+            'set_listArticle',
+            'set_currentArticle',
+            'set_historyArticle',
+            'set_localtion'
         ]),
         ...mapActions('detail', [
             'get_Article_data',
-            'get_Recommend_data',
+            'send_user_data'
         ]),
-        goTop() {
-            $("#detail .container").animate({scrollTop: 0});
-        },
-        async init(){
-            this.classid = this.$route.query.classid;
-            this.id = this.$route.query.id;
-            $("#detail .container").scrollTop(0);
-            if (!(this.indexColumn.length > 1 )) {
-                await this.get_indexColumn_data();
+        async init() {
+            this.classid = this.$route.query.classid
+            this.id = this.$route.query.id
+            this.from = this.$route.query.datafrom
+            $('#detail .container').scrollTop(0)
+            if (!(this.indexColumn.length > 1)) {
+                await this.get_indexColumn_data()
             }
-            let index = this.indexColumn.findIndex(n => n.classid == this.classid);
+            let index = this.indexColumn.findIndex(n => n.classid === this.classid)
             if (index > -1) {
                 this.title = `健康头条 · ${this.indexColumn[index].classname}`
             }
-            this.get_Article(); // 获取 文章数据
-            this.get_Recommend(); // 获取 推荐数据
-            this.visitCollect(); // 浏览数据统计
+            this.get_Article()
         },
         get_Article() {
-            this.loading = true;
-            this.get_Article_data(this.id)
+            this.loading = true
+            this.enterTime = new Date().getTime()
+            this.get_Article_data({ 'id': this.id, 'datafrom': this.from })
             .then(res => {
                 if (res) {
-                    this.currentArticle = res;
-                    this.loading = false;
+                    this.set_currentArticle(res)
+                    this.loading = false
+                    this.handleLocaltion('get')
                 }
+                this.error = false
             })
             .catch(err => {
-                console.log(err);
+                console.log(err)
+                this.error = true
+                this.loading = false
             })
         },
-        get_Recommend() {
-            this.get_Recommend_data({'classid': this.classid, 'id': this.id})
-            .then(res => {
-                if (res) {
-                    this.recommendJson = res;
-                }
-            })
-            .catch(err => {
-                console.log(err);
-            })
+        handleLocaltion(type) {
+            if (type === 'get') {
+                this.$nextTick(() => {
+                    if (this.localtion && this.localtion[this.id]) {
+                        $('#detail .container').scrollTop(this.localtion[this.id])
+                    }
+                })
+            } else if (type === 'set') {
+                let scrollTop = $('#detail .container').scrollTop()
+                this.localtion[this.id] = scrollTop
+                this.set_localtion(this.localtion)
+            }
         },
-        visitCollect() {
-            $.ajax({
-                url: `http://api.toutiaojk.com/public/ViewClick/?classid=${this.classid}&id=${this.id}&addclick=1`,
-                type: 'GET'
-            })
-        },
+        publishCallBack() {
+            this.$refs.comment.open()
+            this.currentArticle.plnum++
+                this.set_historyArticle(this.historyArticle)
+            if (this.listArticle) {
+                this.listArticle.plnum++
+                    this.set_listArticle(this.listArticle)
+            }
+        }
     },
     watch: {
         $route(val) {
-            if (val.path.includes('detail')) {
-                this.init();
+            if (val.query.id) {
+                this.init()
             }
-        },
+        }
     },
     mounted() {
-        this.init();
+        this.init()
+        this.handleLocaltion('get')
+    },
+    beforeRouteUpdate(to, from, next) {
+        this.handleLocaltion('set')
+        this.send_user_data(this.enterTime)
+        next()
+    },
+    beforeRouteLeave(to, from, next) {
+        this.handleLocaltion('set')
+        this.send_user_data(this.enterTime)
+        next()
     }
 }
 </script>
 <style scoped lang='stylus'>
-#detail .content.isIOS{
-    padding-top: 64px;
-}
 #detail {
     width: 100%;
     height: 100%;
     overflow: hidden;
     background: #f8f8f8;
     header {
-        background: #f8f8f8;
+        background: #fff;
         color: #333;
         font-size: 16px;
-        i {
-            font-size: 20px;
-            font-weight: bold;
-            vertical-align: middle;
+        .menu {
+            background: url(../../assets/img/menu.png) no-repeat center center;
+            background-size: 20px;
         }
     }
     .content {
-        width: 100%;
-        height: 100%;
-        padding-top: 44px;
-        position: relative;
-        .container {
-            height: 100%;
-            overflow: auto;
-            position: relative;
-            -webkit-overflow-scrolling: touch;
-        }
-        .article {
-            padding: 0 16px;
-        }
-        .tag {
-            margin: 10px 0;
-        }
-        .recommend {
-            margin-top: 10px;
-        }
-        .downLoad {
-            display: block;
-            width: 100%;
-            height: 36px;
-            line-height: 36px;
-            background: #f67373;
-            color: #fff;
+        padding-bottom: 48px;
+        .article_favorite {
             text-align: center;
-            font-size: 14px;
+            padding: 0.4rem 0;
+        }
+        .comment-hot {
+            padding: 0.533rem 0 0;
+            background: #f9f9f9;
+            .comment_title {
+                margin-bottom: 0.4rem;
+                position: relative;
+                .Line {
+                    position: relative;
+                    width: 2.8rem;
+                    margin: 0 auto;
+                    text-align: center &:before {
+                        content: "";
+                        border-top: 2px solid #aaa;
+                        display: block;
+                        position: absolute;
+                        width: 0.4rem;
+                        top: 50%;
+                        left: 0
+                    }
+                    &:after {
+                        content: "";
+                        border-top: 2px solid #aaa;
+                        display: block;
+                        position: absolute;
+                        width: 0.4rem;
+                        top: 50%;
+                        right: 0
+                    }
+                }
+                .title {
+                    font-size: 14px;
+                    font-weight: bold;
+                }
+            }
+            .comment_more {
+                text-align: center;
+                font-size: 12px;
+                color: #888;
+                padding: 0.533rem 0;
+                vertical-align: middle;
+                i {
+                    display: inline-block;
+                    vertical-align: middle;
+                    margin-left: 2px;
+                    margin-top: -2px;
+                    padding: 0 2px;
+                    font-size: 12px;
+                }
+            }
+        }
+        .bg_line {
+            height: 0.1333rem;
+            background: #eee;
         }
     }
 }
 </style>
+<style scoped>
+.comment_btn {
+    background: url(~@/assets/img/comment.png) no-repeat center center;
+    background-size: 18.5px;
+}
 
+.share_btn {
+    background: url(~@/assets/img/share.png) no-repeat center center;
+    background-size: 18.5px;
+}
+</style>

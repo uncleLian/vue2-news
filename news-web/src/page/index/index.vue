@@ -1,12 +1,10 @@
 <template>
     <div id="index">
-        <!-- header -->
-        <index-header :column='indexColumn'></index-header>
-        <!-- content -->
-        <swiper-container :column='indexColumn'></swiper-container>
-        <!-- footer -->
-        <index-footer></index-footer>
+        <index-header/>
+        <swiper-container/>
+        <index-footer/>
 
+        <!-- 子页面视图 -->
         <keep-alive>
             <router-view></router-view>
         </keep-alive>
@@ -16,42 +14,37 @@
 import indexHeader from './components/index_header'
 import indexFooter from './components/index_footer'
 import swiperContainer from './components/swiperContainer'
-import { mapGetters, mapActions } from 'vuex'
-
+import { mapActions } from 'vuex'
 export default {
     components: {
         indexHeader,
         indexFooter,
         swiperContainer
     },
-    computed: {
-        ...mapGetters('index',[
-          'indexColumn',
-        ]),
-    },
     methods: {
-        ...mapActions('index',[
-            'get_indexActive',
-            'get_indexPage',
-            'get_indexLocation',
+        ...mapActions('index', [
             'get_indexColumn_data',
+            'get_indexActive_cache',
+            'get_indexPage_cache',
+            'get_indexLocation_cache'
         ]),
-        async init(){
-            let res = await this.get_indexColumn_data();
-            await Promise.all([this.get_indexPage(res), this.get_indexLocation(res) , this.get_indexActive() ]);
+        async init() {
+            let res = await this.get_indexColumn_data()
+            this.get_indexLocation_cache(res)
+            this.get_indexPage_cache(res)
+            this.get_indexActive_cache()
         }
     },
-    created(){
-        this.init();
-    },
+    created() {
+        this.init()
+    }
 }
 </script>
-<style scoped>
+<style lang='stylus'>
 #index {
     position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
 }
-
 </style>

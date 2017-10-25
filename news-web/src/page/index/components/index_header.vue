@@ -1,16 +1,23 @@
 <template>
     <div id="indexHeader">
+        <!-- 头部 -->
         <header>
             <div class="top_bar">
                 <div class="abs_l"></div>
-                <div class="abs_m"><a class='title' @click.stop="goTop"></a></div>
-                <div class="abs_r"><a class='search_btn' slot='right' @click.stop="$router.push('/search')"></a></div>
+                <div class="abs_m">
+                    <a class='title' @click.stop="goTop"></a>
+                </div>
+                <div class="abs_r">
+                    <a class='search_btn' slot='right' @click.stop="$router.push('/search')"></a>
+                </div>
             </div>
         </header>
+        <!-- 栏目 -->
         <nav>
             <div class="nav_ul">
-                <a href='javascript:;' v-for="(item,index) in column" :class='{active: indexActive == item.classpath}' @click="navClick(item.classpath)" :key="index">{{item.classname}}</a>
+                <a href='javascript:;' v-for="(item,index) in indexColumn" :class='{active: indexActive == item.classpath}' @click.stop="navClick(item.classpath)" :key="index">{{item.classname}}</a>
             </div>
+            <!-- 更多栏目 -->
             <!-- <div class="nav_menu">
                 <div class="shadow"></div>
                 <a href='javascript:;' class="more_btn" @click="$router.push('/index/channel')"></a>
@@ -19,70 +26,70 @@
     </div>
 </template>
 <script>
-import { mapGetters , mapMutations } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
-    props: ['column'],
     computed: {
         ...mapGetters('index', [
-            'indexActive',
-            'activeIndex',
-        ]),
+            'indexActive', // 当前ative的栏目
+            'activeIndex',  // 当前active的栏目的数组位置
+            'indexColumn'   // 栏目数据
+        ])
     },
     watch: {
         indexActive() {
-            this.slideTo(this.activeIndex);
-        },
+            this.slideTo(this.activeIndex)
+        }
     },
     methods: {
         ...mapMutations('index', [
-            'set_indexActive',
+            'set_indexActive'
         ]),
-        goTop() {
-            $(`.container.${this.indexActive}`).animate({scrollTop: 0});
-        },
+        // 自己实现导航栏滚动
         slideTo(index) {
             this.$nextTick(() => {
-                let $ul = $(".nav_ul");
-                let $activeEle = $('.nav_ul a').eq(index);
-                if ($activeEle.length == 0) {
-                    return
-                } else {
-                    let move;
-                    let ulWitch = $ul.width();
-                    let aWidth = $activeEle.width();
-                    let midWidth = (ulWitch - aWidth) / 2; // 屏幕中心线的宽度
-                    let ullLeft = $ul.scrollLeft(); // ul 滚动条的值
-                    let aLeft = $activeEle.position().left; // $activeEle 距离屏幕左边的距离
-                    if (ullLeft === 0 && aLeft <= midWidth) {
-                        move = 0;
+                let _container = $('.nav_ul')  // 获取滚动容器元素
+                let _column = $('.nav_ul a').eq(index)   // 获取当前active栏目元素
+                if (_column) {
+                    let move    // 最终滚动值
+                    let _container_width = _container.width()   // 容器宽度
+                    let _container_left = _container.scrollLeft()   // 容器当前滚动条的值
+                    let _column_width = _column.width()    // 栏目宽度
+                    let _column_left = _column.position().left     // 栏目距离屏幕左边的距离
+                    let midWidth = (_container_width - _column_width) / 2   // 屏幕中心线的宽度
+                    // 容器滚动为0，并且active栏目位于中间线左边？滚动值为0 ：当前容器滚动值 + （active栏目相对于中间线的值，有正负）
+                    if (_container_left === 0 && _column_left <= midWidth) {
+                        move = 0
                     } else {
-                        move = ullLeft + (aLeft - midWidth);
+                        move = _container_left + (_column_left - midWidth)
                     }
-                    sessionStorage.setItem('navScrollLeft', move);
-                    $ul.animate({
-                        'scrollLeft': move
-                    }, 300);
+                    _container.animate({ 'scrollLeft': move }, 300)
+                    sessionStorage.setItem('navScrollLeft', move) // 存计算后的值
                 }
             })
         },
-        recover() {
-            let move = sessionStorage.getItem('navScrollLeft');
+        // 滚动恢复
+        scrollRecover() {
+            let move = sessionStorage.getItem('navScrollLeft')  // 取计算后的值
             if (move) {
-                this.$nextTick(function() {
-                    $('.nav_ul').scrollLeft(move);
+                this.$nextTick(() => {
+                    $('.nav_ul').scrollLeft(move)
                 })
             }
         },
         navClick(type) {
-            this.set_indexActive(type);
+            this.set_indexActive(type) // 点击栏目需要改变vuex内的indexActive值，这是为了与swiper联动
+        },
+        goTop() {
+            $(`#index .${this.indexActive}`).animate({scrollTop: 0})
         }
     },
     activated() {
-        this.recover();
-    },
+        // activated钩子是要在keep-alive下才能使用
+        this.scrollRecover()
+    }
 }
 </script>
-<style scoped lang='stylus'>
+<style lang='stylus'>
 #indexHeader {
     position: fixed;
     top: 0;
@@ -152,7 +159,8 @@ export default {
         line-height: 36px;
         background-color: #f4f5f6;
         border-bottom: 1px solid #ddd;
-        /*padding-right: 40px;*/
+        /*更多栏目*/
+        /*padding-right: 40px;*/  
         .nav_ul {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -206,21 +214,18 @@ export default {
     }
 }
 </style>
-<style scoped>
-.title {
+<style>
+#indexHeader .title {
     background: url(~@/assets/img/news_logo.png)no-repeat center center;
     background-size: contain;
 }
-
-.search_btn {
+#indexHeader .search_btn {
     background: url(~@/assets/img/search.png)no-repeat center center;
 }
-
-.shadow {
+#indexHeader .shadow {
     background: url(~@/assets/img/shadow.png) no-repeat 100%;
 }
-
-.more_btn {
+#indexHeader .more_btn {
     background: url(~@/assets/img/menu_more.png) no-repeat 50%;
 }
 </style>

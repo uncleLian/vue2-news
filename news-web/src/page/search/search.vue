@@ -1,129 +1,141 @@
 <template>
     <div id="search">
+        <!-- 搜索 -->
         <div class="search_top">
             <my-header class='header'>
                 <a class="back-black" slot='left' @click.stop='$router.go(-1)'></a>
-                <form class='form' slot='mid' >
+                <form class='form' slot='mid' @submit.prevent="get_search">
                     <i class="form_icon icon-search"></i>
                     <input class='form_input' type="search" placeholder="搜头条，知健康" v-model.trim='key'>
                 </form>
-                <a class='search_btn' slot='right' @click.stop='get_search' :class=" !!key? 'on' : '' ">搜索</a>
+                <a class='search_btn' slot='right' @click.stop="get_search" :class="key? 'on' : '' ">搜索</a>
             </my-header>
         </div>
-    
-        <div class="content" :class="{isIOS: $store.state.device == 'ios'}" v-swiper:swiperRight='true'>
 
+        <div class="content" v-swiper:swiperRight='true'>
             <!-- 搜索推荐 -->
-            <div class="search_recommend" v-if="search_state == 'recommend'">
-                <div class="keyword" v-if='keyWords'>
-                    <div class="keyword_wrap">
-                        <span @click.stop="$router.push(`/search?key=${item}`)" v-for='(item,index) in keyWords' :key='index'>{{item}}</span>
+            <template v-if="search_state === 'recommend'">
+                <div class="search_recommend" >
+                    <!-- 关键字 -->
+                    <div class="keyword" v-if='keyWords'>
+                        <div class="keyword_wrap">
+                            <span @click.stop="$router.replace(`/search?key=${item}`)" v-for='(item,index) in keyWords' :key='index'>{{item}}</span>
+                        </div>
+                         <div class="gray_line"></div>
                     </div>
-                     <div class="gray_line"></div>
+                    <!-- 文章 -->
+                    <div class="article">
+                        <h3><i class="hot_icon"></i> <span>今日热点</span></h3>
+                        <ul v-if='hotJson.length > 0'>
+                            <li v-for='(item, index) in hotJson' :key='index'>
+                                <router-link :to="`/detail?classid=${item.classid}&id=${item.id}&datafrom=${item.datafrom}`">
+                                    <span :class="index+1 > 0 &&index+1 < 4? 'hot': ''">{{index + 1}}.</span>
+                                    {{item.title}}
+                                </router-link>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="article">
-                    <h3><i class="hot_icon"></i> <span>今日热点</span></h3>
-                    <ul v-if='hotJson.length > 0'>
-                        <li v-for='(item, index) in hotJson' :key='index'>
-                            <router-link :to='url(item)'>
-                                <span :class="index+1 > 0 &&index+1 < 4? 'hot': ''">{{index + 1}}.</span>
-                                {{item.title}}
-                            </router-link>
-                        </li>
-                    </ul>
-                </div>
-                <loading :visible='hot_loading' type='absolute'></loading>
-                <error :visible='hot_error' type='absolute' :method='get_hot'></error>
-            </div>
-            
+            </template>
+
             <!-- 搜索内容 -->
-            <div class="container" v-infinite-scroll="get_search_more" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false" v-if="search_state == 'search' || search_state == 'empty'">
-                
-                <list-item :itemJson="searchJson" v-if="searchJson.length > 0"></list-item>
-
-                <div class="bottomLoad"  v-if="searchJson.length > 6" >
-                    <div class="loading" v-show="bottomStatus == 'loading'">加载中...</div>
-                    <div class="noData" v-if="bottomStatus =='noData'">没有更多的内容了</div>
+            <template v-if="search_state === 'search'">
+                <div class="container" v-infinite-scroll="get_search_more" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false" >
+                    <list-item :itemJson="searchJson" v-if="searchJson.length > 0"></list-item>
+                    <div class="bottomLoad"  v-if="bottomTip" >
+                        <div class="loading" v-show="bottomStatus == 'loading'">加载中...</div>
+                        <div class="noData" v-if="bottomStatus =='noData'">没有更多的内容了</div>
+                    </div>
                 </div>
+            </template>
 
-                <!-- 没有搜索结果 -->
-                <div class="search_result-empty" v-if="search_state == 'empty' && !(searchJson.length > 0)">
+            <!-- 没有搜索结果 -->
+            <template v-if="search_state == 'empty' && searchJson.length === 0">
+                <div class="search_result-empty" >
                     <p>这个宇宙中搜寻不到</p>
                     <p>换个词试试</p>
                 </div>
-
-                <loading :visible='loading'></loading>
-
-                <error fixed :visible='error' :method='get_search'></error>
-            </div>
+            </template>
         </div>
+
+        <!-- 请求提示 -->
+        <my-loading :visible='loading'></my-loading>
+        <my-error fixed :visible='error' :method='get_search'></my-error>
     </div>
 </template>
 <script>
-import {mapGetters, mapMutations, mapActions} from 'vuex'
+import { mapActions } from 'vuex'
 export default {
-    name: 'search',
     data() {
         return {
-            key: '',
-            page: 1,
-            searchJson: [],
-            hotJson: [],
-            localtion: 0,
-            keyWords: null,
-            search_state: 'recommend',
-            bottomLock: false,
-            bottomStatus: 'loading',
+            key: '',                    // 搜索内容
+            page: 1,                    // 加载更多页数
+            search_state: 'recommend',  // 搜索状态
+            searchJson: [],             // 搜索数据
+            hotJson: [],                // 热点数据
+            keyWords: null,             // 推荐搜索的关键字
+            history: {},                // 搜索历史
+            bottomLock: false,          // 上滑开关
+            bottomStatus: 'loading',    // 上滑底部状态
+            bottomTip: false,           // bottom提示
             error: false,
-            loading: false,
-            hot_loading: false,
-            hot_error: false
+            loading: false
         }
     },
-    computed: {
-        ...mapGetters('search', [
-            'search_history'
-        ])
-    },
-    methods: {
-        ...mapMutations('search', [
-            'set_search_current',
-            'set_search_history',
-            'remove_search_current'
-        ]),
-        ...mapActions('search', [
-            'get_search_data',
-            'get_hot_data'
-        ]),
-        init(type) {
-            if (type === 'ajax') {
-                this.search_state = 'search'
-                $('#search .container').scrollTop(0)
-            } else if (type === 'route') {
+    watch: {
+        $route(to, from) {
+            // 从首页进来，显示热点推荐
+            if (from.name === 'index') {
                 this.key = ''
                 this.search_state = 'recommend'
-                this.bottomLock = false
-                this.loading = false
-                this.remove_search_current()
-                this.get_hot()
             }
-            this.page = 1
-            this.searchJson = []
-            this.bottomStatus = 'loading'
         },
+        key(val) {
+            // 搜索值为空，显示热点推荐
+            if (!val) {
+                this.search_state = 'recommend'
+            }
+        }
+    },
+    methods: {
+        ...mapActions('search', [
+            'get_hot_data',
+            'get_search_data'
+        ]),
+        // 获取热点数据
+        get_hot() {
+            this.loading = true
+            this.get_hot_data()
+            .then(res => {
+                if (res.data) {
+                    this.hotJson = res.data
+                }
+                if (res.keyword) {
+                    this.keyWords = res.keyword
+                }
+                this.loading = false
+            })
+            .catch(err => {
+                console.log(err)
+                this.loading = false
+            })
+        },
+        // 获取搜索数据
         get_search() {
             if (this.key) {
                 this.error = false
-                this.init('ajax')
                 this.loading = true
-                this.$router.push(`/search?key=${this.key}`)
-                this.get_search_data({'key': this.key, 'page': this.page})
+                this.search_state = 'search'
+                $('#search .container').scrollTop(0)
+                this.$router.replace(`/search?key=${this.key}`)
+                this.get_search_data({'key': this.key, 'page': 1})
                 .then(res => {
-                    if (res.code === 0 && res.data) {
+                    if (res.data) {
                         this.searchJson = res.data
                         this.page = 2
                         this.handleLocaltion('get')
                     } else {
+                        this.searchJson = []
                         this.search_state = 'empty'
                     }
                     this.loading = false
@@ -136,99 +148,70 @@ export default {
                 })
             }
         },
+        // 获取更多搜索数据
         get_search_more() {
-            this.bottomLock = true
-            this.get_search_data({'key': this.key, 'page': this.page})
-            .then(res => {
-                if (res.code === 0 && res.data) {
-                    this.searchJson = [...this.searchJson, ...res.data]
-                    this.page++
-                } else {
-                    this.bottomStatus = 'noData'
+            if (this.bottomStatus !== 'noData') {
+                this.bottomLock = true
+                this.get_search_data({'key': this.key, 'page': this.page})
+                .then(res => {
+                    if (res.data) {
+                        this.searchJson.push(...res.data)
+                        this.page++
+                    } else {
+                        this.bottomStatus = 'noData'
+                    }
+                    this.bottomLock = false
+                })
+            }
+        },
+        bottomVisible() {
+            this.$nextTick(() => {
+                if ($('#search .listItem').height() >= $('#search .container').height()) {
+                    this.bottomTip = true
                 }
-                this.bottomLock = false
             })
         },
-        get_hot() {
-            this.hot_error = false
-            this.hot_loading = true
-            this.get_hot_data()
-            .then(res => {
-                if (res.code === 0 && res.data) {
-                    this.hotJson = res.data
-                }
-                if (res.code === 0 && res.keyword) {
-                    this.keyWords = res.keyword
-                }
-                this.hot_loading = false
-            })
-            .catch(err => {
-                console.log(err)
-                this.hot_loading = false
-                this.hot_error = true
-            })
-        },
+        // 记录滚动条位置
         handleLocaltion(type) {
             if (type === 'get') {
                 this.$nextTick(() => {
-                    if (this.localtion > 0) {
-                        $('#search .container').scrollTop(this.localtion)
+                    this.bottomVisible()    // 数据渲染后，判断底部提示是否显示
+                    if (this.history && this.history[this.key]) {
+                        $('#search .container').scrollTop(this.history[this.key].location)
                     }
                 })
             } else if (type === 'set') {
-                let scrollTop = $('#search .container').scrollTop()
-                this.localtion = scrollTop
-            }
-        },
-        url(item) {
-            return `/detail?classid=${item.classid}&id=${item.id}&datafrom=${item.datafrom}`
-        }
-    },
-    watch: {
-        key(val) {
-            if (!val) {
-                this.search_state = 'recommend'
-            }
-        },
-        $route(to, from) {
-            if (this.$route.query.key) {
-                this.key = this.$route.query.key
-                this.get_search()
-            }
-            if (this.$route.fullPath === '/search') {
-                this.key = ''
-                this.search_state = 'recommend'
-                $('#search .container').scrollTop(0)
-            }
-        },
-        searchJson(val) {
-            if (val && val.length > 0) {
-                this.set_search_current({'key': this.key, 'page': this.page, 'data': val})
-                this.set_search_history({...this.search_history, ...{[this.key]: val}})
+                if (this.key) {
+                    this.history[this.key] = {
+                        location: $('#search .container').scrollTop(),
+                        data: this.searchJson
+                    }
+                }
             }
         }
     },
     mounted() {
-        $('.form').on('submit', event => {
-            event.preventDefault()
-            this.get_search()
-        })
         this.get_hot()
     },
     activated() {
-        let routeKey = this.$route.query.key
-        if (routeKey && routeKey !== this.key) {
-            this.key = routeKey
-            this.get_search()
+        if (this.$route.query.key) {
+            this.key = this.$route.query.key
+            // 是否有搜索历史 ? 取缓存 ： 发送请求
+            if (this.history[this.key] && this.history[this.key].data) {
+                this.searchJson = this.history[this.key].data
+                this.search_state = 'search'
+                this.handleLocaltion('get')
+            } else {
+                this.get_search()
+            }
         }
     },
     deactivated() {
         this.handleLocaltion('set')
     }
-
 }
 </script>
-<style scoped lang='stylus'>
+<style lang='stylus'>
 #search {
     position: relative;
     width: 100%;
@@ -356,22 +339,19 @@ export default {
                     }
                 }
             }
-            
         }
-        .container {
-            .search_result-empty {
-                position: absolute;
-                width: 100%;
-                height: 150px;
-                top: 40%;
-                margin-top: -75px;
-                padding: 70px 0 0;
-                background: url(http://s3.pstatp.com/image/toutiao_mobile/noresuiticon_seach.png) no-repeat center top;
-                background-size: 68px;
-                text-align: center;
-                color: #cacaca;
-                font-size: 16px;
-            }
+        .search_result-empty {
+            position: absolute;
+            width: 100%;
+            height: 150px;
+            top: 40%;
+            margin-top: -75px;
+            padding: 70px 0 0;
+            background: url(http://s3.pstatp.com/image/toutiao_mobile/noresuiticon_seach.png) no-repeat center top;
+            background-size: 68px;
+            text-align: center;
+            color: #cacaca;
+            font-size: 16px;
         }
     }
 }

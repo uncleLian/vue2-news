@@ -25,12 +25,11 @@
     </section>
 </template>
 <script>
-// import { Toast, MessageBox } from 'mint-ui'
 export default {
-    props: ['itemJson'],
+    props: ['itemJson']
 }
 </script>
-<style scoped lang='stylus'>
+<style lang='stylus'>
 .comment_item {
     position: relative;
     margin: 0 16px;

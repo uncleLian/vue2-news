@@ -1,29 +1,24 @@
 <template>
-    <div class="tags" v-if='tagsData'>
-        <router-link v-for='(item,index) in tagsData' :to='`/search?key=${item}`' :key='index'>{{item}}</router-link>
+    <div id="tags">
+        <router-link v-for='(item,index) in tagsData' :to="`/search?key=${item}`" :key="index">{{item}}</router-link>
     </div>
 </template>
 <script>
 export default {
     props: ['json'],
-    data () {
-        return {
-            tagsData: ''
-        }
-    },
-    watch: {
-        json (val) {
-            if (val) {
-                this.tagsData = val.match(/[\u4e00-\u9fa5]+/g).slice(0, 4)
+    computed: {
+        tagsData() {
+            if (this.json) {
+                return this.json.match(/[\u4e00-\u9fa5]+/g).slice(0, 4)  // 匹配中文，并且取4个关键词
             } else {
-                this.tagsData = ''
+                return ''
             }
         }
     }
 }
 </script>
-<style scoped lang='stylus'>
-.tags {
+<style lang='stylus'>
+#tags {
     width: 100%;
     position: relative;
     margin: 20px 0;

@@ -15,27 +15,27 @@ export default {
     props: {
         value: {
             type: Boolean,
-            default: false,
+            default: false
         }
     },
     data() {
         return {
-            visible: false,
+            visible: false
         }
     },
     methods: {
         cancel() {
-            this.visible = false;
+            this.visible = false
         }
     },
     watch: {
         value(val) {
-            this.visible = val;
+            this.visible = val
         },
         visible(val) {
-            this.$emit('input', val);
+            this.$emit('input', val)
         }
-    },
+    }
 }
 </script>
 <style scoped>
