@@ -1,7 +1,5 @@
 # vue2-news
 
-### 一个基于Vue2.x 框架开发的移动端单页面新闻类项目
-
 ![image](https://img.shields.io/badge/vue-2.3.3-blue.svg)
 ![image](https://img.shields.io/badge/mint--ui-2.2.5-blue.svg)
 
