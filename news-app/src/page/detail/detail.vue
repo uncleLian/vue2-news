@@ -1,105 +1,91 @@
 <template>
     <div id="detail">
-        <!-- header -->
+        <!-- 头部 -->
         <my-header fixed :title='title' v-goTop:click='true'>
             <a slot="left" class="back-black" @click.stop='$router.go(-1)'></a>
             <a slot="right" class="menu" @click.stop='$refs.share.toggle()'></a>
         </my-header>
-        <!-- content -->
+        <!-- 正文 -->
         <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
             <div class="container" v-swiper:swiperRight='true' v-swiper:all="'blur'">
-                <!-- 文章 -->
+                <!-- 正文 -->
                 <my-article v-if="currentArticle" :json='currentArticle'></my-article>
                 <!-- 标签 -->
                 <my-tags v-if='currentArticle.infotags' :json='currentArticle.infotags'></my-tags>
                 <!-- 喜欢/收藏 -->
                 <div class="article_favorite">
-                    <like :json="currentArticle"></like>
-                    <collect btn :json="currentArticle"></collect>
+                    <my-like :json="currentArticle"></my-like>
+                    <my-collect type='btn' :json="currentArticle"></my-collect>
                 </div>
-
-                <!-- 分割线 -->
-                <div class="bg_line" v-if='currentArticle.comment'></div>
                 <!-- 热点评论 -->
-                <div class="comment-hot" v-if='currentArticle.comment'>
-                    <div class="comment_title">
-                        <div class="Line">
-                            <div class="title">用户热评</div>
+                <template v-if='currentArticle.comment'>
+                    <!-- 分割线 -->
+                    <div class="bg_line" ></div>
+                    <div class="comment-hot">
+                        <div class="comment_title">
+                            <div class="Line">
+                                <div class="title">用户热评</div>
+                            </div>
                         </div>
+                        <!-- 评论列表 -->
+                        <comment-item layout='topFooter' comment='remark' type='all' v-for='(item,index) in currentArticle.comment' :itemJson='item' :key='index' @click.native.stop='$refs.comment.open()'></comment-item>
+                        <!-- 更多评论 -->
+                        <div class="comment_more" v-if="currentArticle.plnum > 0 " @click.stop="$refs.comment.open()">全部{{currentArticle.plnum}}条评论<i class="icon-detail"></i></div>
                     </div>
-                    <comment-item layout='topFooter' comment='remark' type='all' v-for='(item,index) in currentArticle.comment' :itemJson='item' :key='index' @click.native.stop='$refs.comment.open()'></comment-item>
-                    <div class="comment_more" v-if="currentArticle.plnum > 0 " @click.stop="$refs.comment.open()">全部{{currentArticle.plnum}}条评论<i class="icon-detail"></i></div>
-                </div>
-
+                </template>
                 <!-- 分割线 -->
                 <div class="bg_line"></div>
                 <!--  推荐 -->
                 <my-recommend :json='currentArticle.recommend'></my-recommend>
-                <loading :visible='loading'></loading>
-                <error fixed :visible='error' :method='init'></error>
             </div>
         </div>
-        <!-- 底部工具条 -->
-        <tool icon comment='remark' @publishStatus='publishCallBack'>
+        <!-- 底部工具栏 -->
+        <my-tool icon comment='remark' @publish='publishCallBack'>
+            <!-- 按钮栏 -->
             <template slot='tool_btn'>
-                <a class="comment_btn" @click.stop="$refs.comment.open()">
-                        <span class="comment_num" v-if="currentArticle.plnum > 0">{{currentArticle.plnum}}</span>
-                    </a>
-                <collect icon :json='currentArticle'></collect>
+                <!-- 评论按钮 -->
+                <router-link class="comment_btn" :to="{name:'comment'}">
+                    <span class="comment_num" v-if="currentArticle.plnum > 0">{{currentArticle.plnum}}</span>
+                </router-link>
+                <!-- 收藏按钮 -->
+                <my-collect type='icon' :json='currentArticle'></my-collect>
+                <!-- 分享按钮 -->
                 <a class="share_btn" @click.stop='$refs.share.toggle()'></a>
             </template>
-        </tool>
-        <!-- 评论页 -->
-        <comment ref='comment'></comment>
-        <!-- 回复页 -->
-        <reply ref="reply"></reply>
-        <!-- 分享 -->
-        <share :detailJson='currentArticle' ref="share"></share>
+        </my-tool>
+        <!-- 分享组件 -->
+        <my-share :json='currentArticle' ref="share"></my-share>
+        <!-- 提示组件 -->
+        <my-loading :visible='loading'></my-loading>
+        <my-error fixed :visible='error' :method='init'></my-error>
+        <!-- 子页面视图 -->
+        <router-view></router-view>
     </div>
 </template>
 <script>
 import myArticle from './components/article'
 import myTags from './components/tags'
 import myRecommend from './components/recommend'
-import share from './components/share'
-import like from './components/like'
-import collect from './components/collect'
-import comment from './components/comment'
-import tool from './components/tool'
-import reply from './components/reply'
+import myShare from './components/share'
+import myLike from './components/like'
+import myCollect from './components/collect'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
     name: 'detail',
-    components: {
-        myArticle,
-        myTags,
-        myRecommend,
-        share,
-        like,
-        collect,
-        comment,
-        tool,
-        reply
-    },
+    components: { myArticle, myTags, myRecommend, myShare, myLike, myCollect },
     data() {
         return {
-            id: null,
-            classid: null,
-            from: null,
-            title: '健康头条',
-            enterTime: '',
+            title: '健康头条',   // header的title
+            id: '',             // 文章id
+            classid: '',        // 文章classid（分类）
+            datafrom: '',       // 数据来源
+            articleJson: {},    // 文章数据
+            enterTime: '',      // 即进入页面时间
             loading: true,
-            error: false,
-            focus: false,
-            inputVal: '',
-            keepInputVal: '',
-            replyJson: {}
+            error: false
         }
     },
     computed: {
-        ...mapGetters([
-            'userid'
-        ]),
         ...mapGetters('index', [
             'indexColumn'
         ]),
@@ -109,6 +95,13 @@ export default {
             'historyArticle',
             'localtion'
         ])
+    },
+    watch: {
+        $route(val) {
+            if (val.query.id) {
+                this.init() // 自己调用自己，重新初始化
+            }
+        }
     },
     methods: {
         ...mapActions('index', [
@@ -122,13 +115,19 @@ export default {
         ]),
         ...mapActions('detail', [
             'get_Article_data',
-            'send_user_data'
+            'post_user_data'
         ]),
         async init() {
             this.classid = this.$route.query.classid
             this.id = this.$route.query.id
-            this.from = this.$route.query.datafrom
+            this.datafrom = this.$route.query.datafrom
+            this.enterTime = new Date().getTime()
             $('#detail .container').scrollTop(0)
+            await this.handleTitle()
+            this.get_Article()
+        },
+        // 获取title分类
+        async handleTitle() {
             if (!(this.indexColumn.length > 1)) {
                 await this.get_indexColumn_data()
             }
@@ -136,12 +135,14 @@ export default {
             if (index > -1) {
                 this.title = `健康头条 · ${this.indexColumn[index].classname}`
             }
-            this.get_Article()
         },
         get_Article() {
             this.loading = true
-            this.enterTime = new Date().getTime()
-            this.get_Article_data({ 'id': this.id, 'datafrom': this.from })
+            let params = {
+                'id': this.id,
+                'datafrom': this.datafrom
+            }
+            this.get_Article_data(params)
             .then(res => {
                 if (res) {
                     this.set_currentArticle(res)
@@ -170,19 +171,12 @@ export default {
             }
         },
         publishCallBack() {
-            this.$refs.comment.open()
+            this.$router.push({name: 'comment'})
             this.currentArticle.plnum++
-                this.set_historyArticle(this.historyArticle)
+            this.set_historyArticle(this.historyArticle)
             if (this.listArticle) {
                 this.listArticle.plnum++
-                    this.set_listArticle(this.listArticle)
-            }
-        }
-    },
-    watch: {
-        $route(val) {
-            if (val.query.id) {
-                this.init()
+                this.set_listArticle(this.listArticle)
             }
         }
     },
@@ -192,17 +186,23 @@ export default {
     },
     beforeRouteUpdate(to, from, next) {
         this.handleLocaltion('set')
-        this.send_user_data(this.enterTime)
+        if (!to.path.includes('comment')) {
+            this.set_currentArticle({})
+        }
+        this.post_user_data(this.enterTime)
         next()
     },
     beforeRouteLeave(to, from, next) {
         this.handleLocaltion('set')
-        this.send_user_data(this.enterTime)
+        if (to.path.includes('index')) {
+            this.set_currentArticle({})
+        }
+        this.post_user_data(this.enterTime)
         next()
     }
 }
 </script>
-<style scoped lang='stylus'>
+<style lang='stylus'>
 #detail {
     width: 100%;
     height: 100%;
@@ -280,13 +280,12 @@ export default {
     }
 }
 </style>
-<style scoped>
-.comment_btn {
+<style>
+#detail .comment_btn {
     background: url(~@/assets/img/comment.png) no-repeat center center;
     background-size: 18.5px;
 }
-
-.share_btn {
+#detail .share_btn {
     background: url(~@/assets/img/share.png) no-repeat center center;
     background-size: 18.5px;
 }

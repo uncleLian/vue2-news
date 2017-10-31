@@ -8,8 +8,6 @@
     </div>
 </template>
 <script>
-import '@/assets/css/reset.css'
-import '@/assets/css/icon.css'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { Toast } from 'mint-ui'
 export default {
@@ -54,7 +52,6 @@ export default {
         init () {
             this.firstEnterTime()
             this.checkOS()
-            this.baiduCollect()
             this.cache_init()
         },
         cache_init() {
@@ -70,15 +67,6 @@ export default {
             if (/iphone|ipad|ipod/.test(ua)) {
                 this.set_device('ios')
             }
-        },
-        baiduCollect () {
-            var _hmt = _hmt || []
-            ;(function () {
-                var hm = document.createElement('script')
-                hm.src = 'https://hm.baidu.com/hm.js?87e080ee32b19db3f8adcacfb178347a'
-                var s = document.getElementsByTagName('script')[0]
-                s.parentNode.insertBefore(hm, s)
-            })()
         },
         onBackKeyDown() {
             Toast({
@@ -120,26 +108,15 @@ export default {
     }
 }
 </script>
-<style>
+<style lang='stylus'>
 #app {
     width: 100%;
     height: 100%;
     overflow: hidden;
     position: relative;
     background: #f8f8f8;
-}
-
-.child-view {
-    transition: all .3s ease;
-}
-
-.slide-left-enter,
-.slide-right-leave-active {
-    transform: translate3d(100%, 0, 0);
-}
-
-.slide-left-leave-active,
-.slide-right-enter {
-    transform: translate3d(-100%, 0, 0);
+    .child-view {
+        transition: all .3s ease;
+    }
 }
 </style>

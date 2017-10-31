@@ -1,9 +1,11 @@
 <template>
     <div id="index">
+        <!-- 头部 -->
         <index-header/>
+        <!-- 内容区域 -->
         <swiper-container/>
+        <!-- 底部 -->
         <index-footer/>
-
         <!-- 子页面视图 -->
         <keep-alive>
             <router-view></router-view>
@@ -16,27 +18,14 @@ import indexFooter from './components/index_footer'
 import swiperContainer from './components/swiperContainer'
 import { mapActions } from 'vuex'
 export default {
-    components: {
-        indexHeader,
-        indexFooter,
-        swiperContainer
-    },
+    components: { indexHeader, indexFooter, swiperContainer },
     methods: {
         ...mapActions('index', [
-            'get_indexColumn_data',
-            'get_indexActive_cache',
-            'get_indexPage_cache',
-            'get_indexLocation_cache'
-        ]),
-        async init() {
-            let res = await this.get_indexColumn_data()
-            this.get_indexLocation_cache(res)
-            this.get_indexPage_cache(res)
-            this.get_indexActive_cache()
-        }
+            'get_indexColumn_data'
+        ])
     },
     created() {
-        this.init()
+        this.get_indexColumn_data()
     }
 }
 </script>

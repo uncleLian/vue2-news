@@ -4,19 +4,19 @@
         <popup-menu  v-model='contentFrame'>
             <div class="share_container">
                 <span class="wx_friend shareItem" @click="shareItemClick">
-                    <img src="../../../assets/img/wx_friend.png">
+                    <img src="~@/assets/img/wx_friend.png">
                     <label>微信好友</label>
                 </span>
                 <span class="wx_pyq shareItem" @click="shareItemClick">
-                    <img src="../../../assets/img/wx_pyq.png">
+                    <img src="~@/assets/img/wx_pyq.png">
                     <label>微信朋友圈</label>
                 </span>
                 <span class="shareItem" @click="shareItemClick">
-                    <img src="../../../assets/img/qq.png">
+                    <img src="~@/assets/img/qq.png">
                     <label>QQ好友</label>
                 </span>
                 <span class="shareItem" @click="shareItemClick">
-                    <img src="../../../assets/img/qzone.png">
+                    <img src="~@/assets/img/qzone.png">
                     <label>QQ空间</label>
                 </span>
             </div>
@@ -34,9 +34,9 @@
 export default {
     data() {
         return {
-            contentFrame: false,    // 内容模态框
-            shareFrame: false,      // 分享模态框
-            shareUrl: window.location.href // 分享链接
+            contentFrame: false,             // 内容模态框
+            shareFrame: false,               // 分享模态框
+            shareUrl: window.location.href   // 分享链接
         }
     },
     methods: {
@@ -44,6 +44,7 @@ export default {
             this.contentFrame = false
             this.shareFrame = true
         },
+        // 父组件打开此组件的方法
         toggle() {
             this.contentFrame = !this.contentFrame
         }

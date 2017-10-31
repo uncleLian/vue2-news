@@ -1,116 +1,112 @@
 <template>
     <transition name='fadeIn'>
-        <div id='comment' v-show="visible">
+        <div id='comment'>
+            <!-- 头部 -->
             <my-header fixed title='评论'>
-                <a slot="left" class='close-black' @click.stop="visible = false"></a>
+                <a slot="left" class='close-black' @click.stop="$router.go(-1)"></a>
             </my-header>
-
+            <!-- 正文 -->
             <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
                 <div class="container" v-swiper:swiperRight="'close'" v-swiper:all="'blur'">
-
                     <!-- 文章摘要 -->
                     <div class="abstract">
                         <h1 class="title">{{currentArticle.title}}</h1>
                         <span class="befrom">{{currentArticle.befrom}}</span>
                         <span class="newstime">{{currentArticle.newstime}}</span>
                     </div>
-
                     <!-- 我的评论 -->
                     <div class="comment-self" v-if=" myComment.length > 0">
                         <h2 class="comment_title">我的评论({{myComment.length}})</h2>
-                        <comment-item comment='remark' type='userself' v-for='(item,index) in myComment'  :itemJson='item' :key='index' @click.stop.native="$refs.reply.open(item)" @delSuccess='delCallBack'></comment-item>
+                        <comment-item comment='remark' type='userself' v-for="(item,index) in myComment"  :itemJson='item' :key='index' @reply="replyCallBack" @delete="deleteCallBack"></comment-item>
                     </div>
-
                     <!-- 全部评论 -->
-                    <div class="comment-all" v-if="comment.length > 0">
-                        <h2 class="comment_title">全部评论({{comment.length}})</h2>
-                        <comment-item comment='remark' type='all' v-for='(item,index) in comment' :itemJson='item' :key='index' @click.stop.native="$refs.reply.open(item)"></comment-item>
+                    <div class="comment-all" v-if="allComment.length > 0">
+                        <h2 class="comment_title">全部评论({{allComment.length}})</h2>
+                        <comment-item comment='remark' type='all' v-for='(item,index) in allComment' :itemJson='item' :key='index' @reply="replyCallBack"></comment-item>
                     </div>
-
                     <!-- 没有评论 -->
-                    <div class="comment-nothing" v-if="!(comment.length > 0) && !(myComment.length > 0)">
+                    <div class="comment-nothing" v-if="allComment.length === 0 && myComment.length === 0">
                         <h2 class="comment_title">抢先评论！</h2>
                     </div>
-
-                    <tool comment='remark' @publishStatus='publishCallBack'></tool>
                 </div>
             </div>
-
-            <reply ref="reply" @openStatus='replyCallBack'></reply>
+            <!-- 底部工具栏 -->
+            <my-tool comment='remark' @publish='publishCallBack'></my-tool>
+            <!-- 回复页 -->
+            <reply ref="reply"></reply>
         </div>
     </transition>
 </template>
 <script>
 import reply from './reply'
-import tool from './tool'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
-    components: { reply, tool },
+    components: { reply },
     data() {
         return {
-            visible: false,
-            page: 1
+            myComment: [],  // 我的评论
+            allComment: []  // 全部评论
         }
     },
     computed: {
         ...mapGetters('detail', [
-            'listArticle',
             'currentArticle',
-            'myComment',
-            'comment'
+            'listArticle'
         ])
     },
     methods: {
         ...mapMutations('detail', [
-            'set_listArticle',
-            'set_myComment'
+            'set_listArticle'
         ]),
         ...mapActions('detail', [
             'get_Comment_data'
         ]),
-        open() {
-            this.visible = true
+        // 获取我的评论数据
+        get_myComment() {
             this.get_Comment_data({'type': 'userself', 'page': 1})
-            this.get_Comment_data({'type': 'all', 'page': 1})
+            .then(res => {
+                if (res) {
+                    this.myComment = res
+                }
+            })
         },
-        publishCallBack(data) {
-            this.myComment.unshift(data)
-            this.set_myComment(this.myComment)
-            $('#comment .container').scrollTop(0)
-            this.currentArticle.plnum = this.myComment.length + this.comment.length
+        // 获取全部评论数据
+        get_allComment() {
+            this.get_Comment_data({'type': 'all', 'page': 1})
+            .then(res => {
+                if (res) {
+                    this.allComment = res
+                }
+            })
+        },
+        // 发布评论
+        publishCallBack(item) {
+            this.myComment.unshift(item)
+            $('#comment .container').scrollTop(0)   // 滚回顶部
+            this.currentArticle.plnum = this.myComment.length + this.allComment.length  // 更改详情页的评论数量
             if (this.listArticle) {
                 this.listArticle.plnum++
                 this.set_listArticle(this.listArticle)
             }
         },
-        delCallBack() {
-            this.currentArticle.plnum = this.myComment.length + this.comment.length
+        // 回复评论
+        replyCallBack(item) {
+            this.$refs.reply.open(item)
         },
-        commentClose() {
-            if (this.visible) {
-                this.visible = false
-            }
-        },
-        replyCallBack(val) {
-            if (val) {
-                document.removeEventListener('backbutton', this.commentClose, false)
-            } else {
-                document.addEventListener('backbutton', this.commentClose, false)
-            }
+        // 删除评论
+        deleteCallBack(item) {
+            let index = this.myComment.findIndex(n => n.remarkid === item.remarkid)
+            this.myComment.splice(index, 1)
+            this.currentArticle.plnum = this.myComment.length + this.allComment.length
         }
     },
-    watch: {
-        visible(val) {
-            if (val) {
-                document.addEventListener('backbutton', this.commentClose, false)
-            } else {
-                document.removeEventListener('backbutton', this.commentClose, false)
-            }
-        }
+    created() {
+        this.get_myComment()
+        this.get_allComment()
     }
 }
 </script>
-<style scoped lang='stylus'>
+<style lang='stylus'>
 #comment {
     position: absolute;
     top: 0;
@@ -162,10 +158,9 @@ export default {
     }
 }
 
-.flicker-enter-active {
+/*.flicker-enter-active {
     animation: flickerEnter 1.5s linear;
 }
-
 @keyframes flickerEnter {
   0% {
     background: #fff;
@@ -176,5 +171,5 @@ export default {
   100% {
     background: #fff;
   }
-}
+}*/
 </style>

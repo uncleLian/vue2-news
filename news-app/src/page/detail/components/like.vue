@@ -2,22 +2,10 @@
     <span class="like_btn icon-zan" @click.stop='likeClick' :class="{active: json.giveup? true : false }"> {{json.giveupnum}}</span>
 </template>
 <script>
-import {
-    mapGetters,
-    mapMutations,
-    mapActions
-} from 'vuex'
-import {
-    Toast
-} from 'mint-ui'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
     props: {
         json: Object
-    },
-    data() {
-        return {
-            id: this.$route.query.id
-        }
     },
     computed: {
         ...mapGetters('detail', [
@@ -29,17 +17,17 @@ export default {
             'set_historyArticle'
         ]),
         ...mapActions('detail', [
-            'send_favorite_data'
+            'post_favorite_data'
         ]),
         likeClick() {
             if (this.json.giveup) {
-                Toast({message: '你已经赞过', duration: 1000})
+                this.$toast({message: '你已经赞过', duration: 1000})
             } else {
-                this.json.giveup = this.id
+                this.json.giveup = this.json.id
                 this.json.giveupnum++
-                this.set_historyArticle(this.historyArticle)
-                Toast({message: '点赞成功', duration: 1000})
-                this.send_favorite_data('giveup')
+                this.set_historyArticle(this.historyArticle)        // 更新一下缓存
+                this.post_favorite_data('giveup')                   // 提交数据
+                this.$toast({message: '点赞成功', duration: 1000})
             }
         }
     }

@@ -1,66 +1,67 @@
 <template>
     <div id="collect" :class="{edit: editBtn}">
+        <!-- 头部 -->
         <my-header fixed title='收藏' v-goTop:click='true'>
-            <a slot='right' class="edit_btn" :class="[collectArticle.length > 0 ? 'edit-white' : 'edit-black']" @click.stop='editToggle'></a>
+            <a slot='right' class="edit_btn edit-white"  v-if="collectArticle.length > 0" @click.stop='editBtn = !editBtn'></a>
         </my-header>
-        <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
+        <!-- 正文 -->
+        <div class="content" :class="{isIOS: $store.state.device == 'ios'}" @click.stop="editBtn = false">
             <div class="container" v-swiper:swiperRight='true'>
                 <!-- 列表 -->
-                <list-item :itemJson='collectArticle' :visible='editBtn' :checkBoxMethod='checkCollect'></list-item>
+                <list-item :itemJson='collectArticle' :visible='editBtn' :checkBoxMethod='checkItem'></list-item>
                 <!-- 无收藏 -->
                 <div class="noData" v-if='!(collectArticle.length > 0)'>
                     <p>沒有文章哦，</p>
                     <p>赶快去收藏吧！</p>
                 </div>
                 <div class="loadAll" v-if='collectArticle.length > 0'>没有更多了</div>
-                <!-- 错误 -->
-                <loading :visible='loading'></loading>
-
-                <error fixed :visible='error' :method='getCollectAjax'></error>
             </div>
         </div>
+        <!-- 删除 -->
         <div class="delete" v-if='editBtn' :class="{ active: checkedArr.length > 0 }">
-            <span class="delete_btn" @click.stop='deleteCollect'>删除<span>({{checkedArr.length}})</span></span>
+            <span class="delete_btn" @click.stop='deleteItem'>删除<span>({{checkedArr.length}})</span></span>
         </div>
+        <!-- 提示 -->
+        <my-loading :visible='loading'></my-loading>
+        <my-error fixed :visible='error' :method='getCollectAjax'></my-error>
     </div>
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { MessageBox } from 'mint-ui'
 export default {
     name: 'collect',
     data() {
         return {
-            request: false,
-            editBtn: false,
+            checkedArr: [],     // 选中的数组
+            first: true,        // 是否第一次进来
+            request: false,     // 是否同步了云端
+            editBtn: false,     // 编辑按钮
             loading: false,
             error: false,
-            bottomLock: false,
-            first: true,
             localtion: 0
         }
     },
     computed: {
+        ...mapGetters('login', [
+            'login'
+        ]),
         ...mapGetters('detail', [
             'historyArticle'
         ]),
         ...mapGetters('collect', [
-            'collectArticle',
-            'checkedArr'
-        ]),
-        ...mapGetters('login', [
-            'login'
+            'collectArticle'
         ])
     },
     watch: {
-        editBtn(val) {
-            if (!val) {
-                this.set_checkedArr([])
-            }
-        },
         $route(to, from) {
+            // 详情页返回取滚动条位置，其他路由在顶部
             if (from.path.includes('detail')) {
                 this.handleLocaltion('get')
+            }
+        },
+        editBtn(val) {
+            if (!val) {
+                this.checkedArr = []
             }
         }
     },
@@ -69,14 +70,14 @@ export default {
             'set_historyArticle'
         ]),
         ...mapMutations('collect', [
-            'set_collectArticle',
-            'set_checkedArr'
+            'set_collectArticle'
         ]),
         ...mapActions('collect', [
             'get_collect_cache',
             'get_collect_data',
-            'del_collect_data'
+            'post_collect_data'
         ]),
+        // 获取云端收藏数据
         getCollectAjax() {
             if (!this.request) {
                 this.loading = true
@@ -96,12 +97,8 @@ export default {
                 })
             }
         },
-        editToggle() {
-            if (this.collectArticle.length !== 0) {
-                this.editBtn = !this.editBtn
-            }
-        },
-        checkCollect(item) {
+        // 选中列表项
+        checkItem(item) {
             let checkBox = $(`#${item.id}`)[0]
             checkBox.checked = !checkBox.checked
             if (checkBox.checked) {
@@ -116,18 +113,20 @@ export default {
                     this.checkedArr.splice(index, 1)
                 }
             }
-            this.set_checkedArr(this.checkedArr)
         },
-        deleteCollect() {
-            MessageBox.confirm('确定执行此操作?')
+        // 删除列表项
+        deleteItem() {
+            this.$msgBox.confirm('确定执行此操作?')
             .then(action => {
-                this.del_collect_data()
+                this.post_collect_data(this.checkedArr)
                 for (let i = 0; i < this.checkedArr.length; i++) {
+                    // 删除收藏数据缓存
                     for (let j = this.collectArticle.length - 1; j >= 0; j--) {
                         if (this.collectArticle[j].id === this.checkedArr[i].id) {
                             this.collectArticle.splice(j, 1)
                         }
                     }
+                    // 删除文章收藏标识
                     for (let e = 0; e < this.historyArticle.length; e++) {
                         if (this.historyArticle[e].id === this.checkedArr[i].id) {
                             this.historyArticle[e].collect = ''
@@ -137,7 +136,6 @@ export default {
                 this.set_collectArticle(this.collectArticle)
                 this.set_historyArticle(this.historyArticle)
                 this.editBtn = false
-                this.set_checkedArr([])
             })
             .catch(err => {
                 console.log(err)
@@ -149,22 +147,24 @@ export default {
                     $('#collect .container').scrollTop(this.localtion)
                 }
             } else if (type === 'set') {
-                let scrollTop = $('#collect .container').scrollTop()
-                this.localtion = scrollTop
+                this.localtion = $('#collect .container').scrollTop()
             }
         }
     },
     beforeRouteEnter(to, from, next) {
         next(vm => {
+            // 是否登录
             if (vm.login) {
+                // 是否同步过数据
                 if (vm.request) {
                     vm.get_collect_cache()
                 } else {
                     vm.getCollectAjax()
                 }
             } else {
+                // 是否第一次进入页面
                 if (vm.first) {
-                    MessageBox.confirm('登录可以同步云端数据')
+                    this.$msgBox.confirm('登录后可以同步用户数据')
                     .then(action => {
                         vm.$router.push('/login')
                     })
@@ -185,16 +185,16 @@ export default {
     }
 }
 </script>
-<style scoped lang='stylus'>
-#collect.edit {
-    padding-bottom: 88px;
-}
+<style lang='stylus'>
 #collect {
     width: 100%;
     height: 100%;
     overflow: hidden;
     padding-bottom: 48px;
     background: #fff;
+    &.edit{
+        padding-bottom: 88px;
+    }
     header {
         .edit_btn {
             font-size: 20px;

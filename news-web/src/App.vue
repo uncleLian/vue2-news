@@ -26,23 +26,15 @@ export default {
     }
 }
 </script>
-<style>
+<style lang='stylus'>
 #app {
     position: relative;
     width: 100%;
     height: 100%;
     background: #f8f8f8;
     overflow: hidden;
-}
-.child-view {
-    transition: all .3s ease;
-}
-.slide-left-enter,
-.slide-right-leave-active {
-    transform: translate3d(100%, 0, 0);
-}
-.slide-left-leave-active,
-.slide-right-enter {
-    transform: translate3d(-100%, 0, 0);
+    .child-view {
+        transition: all .3s ease;
+    }
 }
 </style>

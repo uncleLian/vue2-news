@@ -3,8 +3,8 @@ import { fetch } from '@/config/fetch'
 export default {
     namespaced: true,
     state: {
-        historyArticle: {},
-        location: {}
+        historyArticle: {},     // 文章历史数据
+        location: {}            // 文章滚动条位置
     },
     getters: {
         historyArticle: state => {
@@ -24,6 +24,7 @@ export default {
         }
     },
     actions: {
+        // 获取文章数据
         async get_Article_data({ commit, state }, { id, datafrom }) {
             let res
             let historyArticle

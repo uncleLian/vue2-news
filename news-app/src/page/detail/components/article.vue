@@ -60,64 +60,65 @@ export default {
             video_fixed: false      // video是否悬浮
         }
     },
-    methods: {
-        videoPlay() {
-            this.video = this.$el.querySelector('video')
-            this.video.play()
-            this.video_playing = true
-            this.video_poster = false
-            this.video_ended = false
-            this.videoEvent()
-            this.videoFixed()
-        },
-        videoEvent() {
-            this.video.oncanplay = () => {
-                this.video_loading = false
-            }
-            this.video.onplay = () => {
-                this.video_playing = true
-            }
-            this.video.onpause = () => {
-                this.video_playing = false
-                this.video_loading = false
-            }
-            this.video.onwaiting = () => {
-                this.video_loading = true
-            }
-            this.video.onended = () => {
-                this.video_ended = true
-            }
-        },
-        videoFixed() {
-            const vm = this
-            let videoTop = $('.video').position().top
-            let videoHeight = $('video').height()
-            $('#detail .container').on('scroll', function(event) {
-                event.preventDefault()
-                if ($('#detail .container').scrollTop() >= videoTop && vm.video_playing) {
-                    $('.article_video').height(videoHeight)
-                    vm.video_fixed = true
-                } else {
-                    vm.video_fixed = false
-                }
-            })
-        },
-        backTo() {
-            document.addEventListener('pause', () => {
-                this.video.pause()
-            }, false)
-        }
-    },
     watch: {
         json(val) {
-            if (this.$el.querySelector) {
-                this.video = this.$el.querySelector('video')
-            }
+            this.video = this.$el.querySelector('video')
             this.video_poster = true
             this.video_playing = false
             this.video_ended = false
             this.video_loading = false
             this.video_fixed = false
+        }
+    },
+    methods: {
+        videoPlay() {
+            this.video = this.$el.querySelector('video')
+            this.video.play()
+            this.videoEvent()
+            this.videoFixed()
+        },
+        videoEvent() {
+            // 播放
+            this.video.onplay = () => {
+                this.video_playing = true
+                this.video_poster = false
+                this.video_ended = false
+            }
+            // 暂停
+            this.video.onpause = () => {
+                this.video_playing = false
+                this.video_loading = false
+            }
+            // 等待
+            this.video.onwaiting = () => {
+                this.video_loading = true
+            }
+            // 可以播放
+            this.video.oncanplay = () => {
+                this.video_loading = false
+            }
+            // 结束
+            this.video.onended = () => {
+                this.video_ended = true
+            }
+        },
+        videoFixed() {
+            let videoTop = $('.video').position().top   // video元素相对于屏幕上方的距离
+            $('#detail .container').on('scroll', (event) => {
+                event.preventDefault()
+                // 滚动到video元素 && video正在播放
+                if ($('#detail .container').scrollTop() >= videoTop && this.video_playing) {
+                    this.video_fixed = true
+                } else {
+                    this.video_fixed = false
+                }
+            })
+        },
+        backTo() {
+            // 监听应用是否回到手机后台，是就暂停播放。（效果可在手机上查看）
+            document.addEventListener('pause', () => {
+                this.video.pause()
+            }, false)
         }
     },
     mounted() {

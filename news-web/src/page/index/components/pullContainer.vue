@@ -2,8 +2,8 @@
     <!-- 加载更多 -->
     <div class="container" :class="type" v-infinite-scroll="loadBottomAjax" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
         <!-- 请求提示 -->
-        <my-loading :visible="loading"></my-loading>
-        <my-error :visible='error' :method='init'></my-error>
+        <my-loading :visible="loading"/>
+        <my-error :visible='error' :method='init'/>
 
         <!-- 顶部提示 -->
         <div class="globalTip">
@@ -21,11 +21,11 @@
                 <span v-show="topStatus == 'loading'"><img class='pullLoading' src="~@/assets/img/loading.gif"> 加载中...</span>
             </div>
             <!-- banner组件 -->
-            <banner :bannerJson="bannerJson" v-if='bannerJson'></banner> 
+            <my-banner :json="bannerJson" v-if='bannerJson'/>
             <!-- 置顶组件 -->
-            <list-item :itemJson="stickJson" v-if='stickJson'></list-item> 
+            <list-item :itemJson="stickJson" v-if='stickJson'/>
             <!-- listItem --> 
-            <list-item :itemJson="contentJson" v-if='contentJson.length > 0'></list-item>
+            <list-item :itemJson="contentJson" v-if='contentJson.length > 0'/>
             <!-- 底部提示 -->
             <div class="bottomLoad" v-if="contentJson.length > 0">
                 <div class="loading" v-show='bottomLoading'>加载中...</div>
@@ -41,7 +41,9 @@ export default {
     data() {
         return {
             classPage: 1,           // 当前栏目的翻页页数
-            contentJson: [],        // 整个列表数据arr
+            stickJson: [],          // 置顶数据
+            bannerJson: [],         // banner数据
+            contentJson: [],        // 整个列表数据
             dataCount: 0,           // 推荐文章数量
             topStatus: '',          // 下拉状态
             bottomLock: false,      // 上滑开关
@@ -53,14 +55,12 @@ export default {
     },
     computed: {
         ...mapGetters('index', [
-          'indexActive',    // active的栏目
-          'indexPage',      // 记录栏目page的对象
-          'indexLocation',  // 记录栏目location的对象
-          'activePage',     // active的page
-          'activeLocation', // active的location
-          'indexSwiper',    // 是否正在swiper的boolean值
-          'stickJson',      // 置顶数据
-          'bannerJson'      // banner数据
+          'indexActive',        // active的栏目
+          'indexPage',          // 记录栏目page的对象
+          'indexLocation',      // 记录栏目location的对象
+          'activePage',         // active的page
+          'activeLocation',     // active的location
+          'indexSwiper'         // 是否正在swiper的boolean值
         ])
     },
     watch: {
@@ -91,8 +91,14 @@ export default {
             // active栏目第一次请求数据
             if (this.indexActive === this.type && this.contentJson.length === 0) {
                 this.classPage = this.activePage
-                this.get_banner_data()      // 获取banner数据
-                this.get_stick_data()       // 获取置顶数据
+                // 获取banner数据
+                this.get_banner_data().then(res => {
+                    this.bannerJson = res
+                })
+                // 获取置顶数据
+                this.get_stick_data().then(res => {
+                    this.stickJson = res
+                })
                 this.get_listItem_cache(this.indexActive)   // 获取active栏目的缓存, 缓存？直接设置 : 发送请求
                 .then(res => {
                     if (res) {
@@ -147,9 +153,6 @@ export default {
                 }
                 this.bottomLock = false
             })
-            .catch(err => {
-                console.log(err)    // 没有做底部请求的错误处理
-            })
         },
         // 创建historyLook元素
         newLookHere() {
@@ -200,11 +203,11 @@ export default {
     },
     activated() {
         this.handleLocaltion('get')
-        window.addEventListener('beforeunload', this.saveScroll) // 为了刷新和窗口关闭之后保持当前滚动条位置，监听方法不能带参数
+        window.addEventListener('beforeunload', this.saveScroll) // 为了刷新之后保持当前滚动条位置，监听方法不能带参数
     },
     deactivated() {
         this.handleLocaltion('set')
-        window.removeEventListener('beforeunload', this.saveScroll) // 为了刷新和窗口关闭之后保持当前滚动条位置，监听方法不能带参数
+        window.removeEventListener('beforeunload', this.saveScroll) // 为了刷新之后保持当前滚动条位置，监听方法不能带参数
     }
 }
 </script>

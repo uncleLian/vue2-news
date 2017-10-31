@@ -1,7 +1,7 @@
 <template>
-    <div class='banner' v-if='bannerJson'>
+    <div class='banner'>
         <swiper :options="swiperOption" class="swiper-box" ref="mySwiper">
-            <swiper-slide v-for='item in bannerJson' :key='item'>
+            <swiper-slide v-for='item in json' :key='item'>
                 <router-link :to="url(item)">
                     <img :src="item.ptitlepic">
                     <div class="banner_title">
@@ -15,7 +15,7 @@
 </template>
 <script>
 export default {
-    props: ['bannerJson'],
+    props: ['json'],
     data() {
         return {
             swiperOption: {

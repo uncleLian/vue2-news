@@ -1,10 +1,10 @@
 <template>
     <div id="home">
-        <!-- header -->
-        <home-header :column='indexColumn'></home-header>
-        <!-- content -->
-        <swiper-container :column='indexColumn'></swiper-container>
-        
+        <!-- 头部 -->
+        <home-header/>
+        <!-- 内容区域 -->
+        <swiper-container></swiper-container>
+        <!-- 子页面视图 -->
         <keep-alive>
             <router-view></router-view>
         </keep-alive>
@@ -13,14 +13,9 @@
 <script>
 import homeHeader from './components/homeHeader'
 import swiperContainer from './components/swiperContainer'
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 export default {
     components: { homeHeader, swiperContainer },
-    computed: {
-        ...mapGetters('index', [
-            'indexColumn'
-        ])
-    },
     methods: {
         ...mapActions('index', [
             'get_indexColumn_data'
@@ -31,7 +26,7 @@ export default {
     }
 }
 </script>
-<style scoped>
+<style lang='stylus'>
 #home {
     position: relative;
     width: 100%;

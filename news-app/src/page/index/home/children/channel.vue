@@ -7,6 +7,7 @@
 
             <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
                 <div class="container" v-swiper:swiperRight='true'>
+                    <!-- 原有的栏目 -->
                     <section class="column">
                         <p class="title">点击删除以下频道</p>
                         <ul>
@@ -15,6 +16,7 @@
                             </li>
                         </ul>
                     </section>
+                    <!-- 可以添加的栏目 -->
                     <section class="column">
                         <p class="title">点击添加以下频道</p>
                         <ul>
@@ -38,12 +40,16 @@ export default {
     },
     computed: {
         ...mapGetters('index', [
-            'indexActive',
             'indexPage',
             'indexLocation',
-            'indexColumn',
-            'channelData'
+            'indexColumn'
         ])
+    },
+    watch: {
+        indexColumn() {
+            this.set_indexColumn(this.indexColumn)
+            this.set_indexActive('news_recommend')
+        }
     },
     methods: {
         ...mapMutations('index', [
@@ -60,9 +66,7 @@ export default {
             this.indexColumn.push(...addEle)
         },
         remove(item, index) {
-            if (item.classpath === 'news_recommend') {
-                return
-            } else {
+            if (item.classpath !== 'news_recommend') {
                 let removeEle = this.indexColumn.splice(index, 1)
                 this.channel.push(...removeEle)
             }
@@ -86,23 +90,17 @@ export default {
             this.set_indexPage(pageObj)
             this.set_indexLocation(locationObj)
         },
-        get_channel_ajax() {
+        get_channel() {
             this.get_channel_data()
-                .then(res => {
-                    if (res) {
-                        this.channel = res
-                    }
-                })
-        }
-    },
-    watch: {
-        indexColumn() {
-            this.set_indexColumn(this.indexColumn)
-            this.set_indexActive('news_recommend')
+            .then(res => {
+                if (res) {
+                    this.channel = res
+                }
+            })
         }
     },
     mounted() {
-        this.get_channel_ajax()
+        this.get_channel()
     },
     deactivated() {
         this.sync()
@@ -110,7 +108,7 @@ export default {
 
 }
 </script>
-<style scoped lang='stylus'>
+<style lang='stylus'>
 #channel {
     position: absolute;
     top: 0;

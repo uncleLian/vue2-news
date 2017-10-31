@@ -3,15 +3,11 @@ import { fetch } from '@/config/fetch'
 export default {
     namespaced: true,
     state: {
-        listArticle: {},
-        currentArticle: {},
-        historyArticle: [],
-        comment: [],
-        reply: [],
-        myComment: [],
-        myReply: [],
-        talkReply: '',
-        localtion: {}
+        listArticle: {},        // 点进去详情页的列表数据（用于改变列表的评论数）
+        currentArticle: {},     // 当前文章数据（用于跨组件数据共用）
+        historyArticle: [],     // 历史文章数据（用于浏览的历史记录功能）
+        talkReply: '',          // 被@的那条数据（用于跨组件获取被@的数据）
+        localtion: {}           // 储存页面滚动条位置
     },
     getters: {
         listArticle: state => {
@@ -22,18 +18,6 @@ export default {
         },
         historyArticle: state => {
             return state.historyArticle
-        },
-        reply: state => {
-            return state.reply
-        },
-        comment: state => {
-            return state.comment
-        },
-        myComment: state => {
-            return state.myComment
-        },
-        myReply: state => {
-            return state.myReply
         },
         talkReply: state => {
             return state.talkReply
@@ -52,18 +36,6 @@ export default {
         set_historyArticle(state, val) {
             state.historyArticle = val
             set_local_cache('history_Article', val)
-        },
-        set_reply(state, val) {
-            state.reply = val
-        },
-        set_comment(state, val) {
-            state.comment = val
-        },
-        set_myComment(state, val) {
-            state.myComment = val
-        },
-        set_myReply(state, val) {
-            state.myReply = val
         },
         set_talkReply(state, val) {
             state.talkReply = val
@@ -101,6 +73,9 @@ export default {
                     commit('set_historyArticle', historyData)
                 })
             }
+            if (res) {
+                commit('set_currentArticle', res)
+            }
             return res
         },
 
@@ -114,22 +89,8 @@ export default {
                 'type': type,
                 'page': page
             }
-            await fetch('post', 'getComment', params)
-                .then(res => {
-                    if (type === 'userself') {
-                        if (res && typeof res === 'object') {
-                            commit('set_myComment', res)
-                        } else {
-                            commit('set_myComment', [])
-                        }
-                    } else if (type === 'all') {
-                        if (res && typeof res === 'object') {
-                            commit('set_comment', res)
-                        } else {
-                            commit('set_comment', [])
-                        }
-                    }
-                })
+            let res = fetch('post', 'getComment', params)
+            return res
         },
 
         // 获取回复数据： 用户/全部
@@ -143,26 +104,12 @@ export default {
                 'remarkid': remarkid,
                 'page': page
             }
-            fetch('post', 'getComment', params)
-                .then(res => {
-                    if (type === 'userself') {
-                        if (res && typeof res === 'object') {
-                            commit('set_myReply', res)
-                        } else {
-                            commit('set_myReply', [])
-                        }
-                    } else if (type === 'all') {
-                        if (res && typeof res === 'object') {
-                            commit('set_reply', res)
-                        } else {
-                            commit('set_reply', [])
-                        }
-                    }
-                })
+            let res = fetch('post', 'getComment', params)
+            return res
         },
 
-        // 发送用户离开页面数据
-        send_user_data({ commit, state, rootState }, entertime) {
+        // 提交用户离开页面时需要收集的数据
+        post_user_data({ state, rootState }, entertime) {
             let params = {
                 'wdata': 'userread',
                 'userid': rootState.userid,
@@ -175,8 +122,8 @@ export default {
             return res
         },
 
-        // 发送喜好数据 喜欢/收藏
-        send_favorite_data({ commit, state, rootState }, type) {
+        // 提交喜好数据 喜欢/收藏
+        post_favorite_data({ state, rootState }, type) {
             let params = {
                 'wdata': type,
                 'userid': rootState.userid,
@@ -187,7 +134,7 @@ export default {
             return res
         },
 
-        // 发送评论数据
+        // 提交评论数据
         post_Comment_data({ state, rootState }, content) {
             let params = {
                 'userid': rootState.userid,
@@ -201,7 +148,7 @@ export default {
             return res
         },
 
-        // 发送回复数据
+        // 提交回复数据
         post_Reply_data({ commit, state, rootState }, { remarkid, content, altUserId }) {
             let params = {
                 'userid': rootState.userid,
@@ -219,7 +166,7 @@ export default {
             return res
         },
 
-        // 发送点赞数据
+        // 提交点赞数据
         post_zan_data({ commit, state, rootState }, { comment, remarkid, replyid }) {
             let params = {
                 'userid': rootState.userid,
@@ -239,7 +186,7 @@ export default {
             return res
         },
 
-        // 发送删除评论数据
+        // 提交删除评论数据
         post_delete_data({ commit, state, rootState }, { type, remarkid, replyid }) {
             let params = {
                 'userid': rootState.userid,

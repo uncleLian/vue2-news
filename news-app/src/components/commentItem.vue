@@ -44,15 +44,10 @@
                 </div>
                 <div class="footer">
                     <span class="time" v-if='itemJson.time'>{{itemJson.time}} · </span>
-                    <span class="reply" v-if="comment === 'reply'" @click.stop="replyComment">
-                        <span>回复TA</span>
-                    </span>
-                    <span class="reply" v-else>
-                        <span>回复TA</span>
-                    </span>
-                    <span class="delete" v-if="type === 'userself'" @click.stop="deleteComment">删除</span >
+                    <span class="reply" @click.stop="replay">回复TA</span>
+                    <span class="delete" v-if="type === 'userself'" @click.stop="deleteItem">删除</span>
                 </div>
-                <div class="reply_all" v-if="comment === 'remark' && itemJson.plnum > 0">
+                <div class="reply_all" v-if="comment === 'remark' && itemJson.plnum > 0" @click.stop="replay">
                     查看全部{{itemJson.plnum}}条回复 >
                 </div>
             </div>
@@ -60,76 +55,59 @@
     </section>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { Toast, MessageBox } from 'mint-ui'
+import { mapActions } from 'vuex'
 export default {
     props: {
-        itemJson: {
-            default: ''
-        },
+        itemJson: null,
         comment: String,
         type: String,
         layout: String
     },
-    computed: {
-        ...mapGetters('detail', [
-            'myComment',
-            'myReply'
-        ])
-    },
     methods: {
-        ...mapMutations('detail', [
-            'set_myComment',
-            'set_myReply',
-            'set_talkReply'
-        ]),
         ...mapActions('detail', [
             'post_zan_data',
             'post_delete_data'
         ]),
+        // 点赞
         addZan() {
             if (!this.itemJson.isdz) {
                 this.itemJson.dznum++
                 this.itemJson.isdz = 1
-                this.post_zan_data({'comment': this.comment, 'remarkid': this.itemJson.remarkid, 'replyid': this.itemJson.replyid})
+                let params = {
+                    'comment': this.comment,
+                    'remarkid': this.itemJson.remarkid,
+                    'replyid': this.itemJson.replyid
+                }
+                this.post_zan_data(params)
             }
         },
-        deleteComment() {
-            MessageBox.confirm('确定删除此评论?')
+        // 回复TA
+        replay() {
+            this.$emit('reply', this.itemJson)
+        },
+        // 删除
+        deleteItem() {
+            this.$msgBox.confirm('确定删除此评论?')
             .then(action => {
-                let type
-                if (this.comment === 'reply') {
-                    type = 'reply'
-                    let index = this.myReply.findIndex(n => n.replyid === this.itemJson.replyid)
-                    this.myReply.splice(index, 1)
-                    this.set_myReply(this.myReply)
-                } else if (this.comment === 'remark') {
-                    type = 'remark'
-                    let index = this.myComment.findIndex(n => n.remarkid === this.itemJson.remarkid)
-                    this.myComment.splice(index, 1)
-                    this.set_myComment(this.myComment)
+                this.$emit('delete', this.itemJson)
+                let params = {
+                    'type': this.comment,
+                    'remarkid': this.itemJson.remarkid,
+                    'replyid': this.itemJson.replyid
                 }
-                this.$emit('delSuccess', this.itemJson)
-                this.post_delete_data({'type': type, 'remarkid': this.itemJson.remarkid, 'replyid': this.itemJson.replyid})
-                .then(res => {
-                    Toast({message: '删除成功', duration: 1500})
+                this.post_delete_data(params).then(res => {
+                    this.$toast({message: '删除成功', duration: 1500})
+                })
+                .catch(err => {
+                    console.log(err)
+                    this.$toast({message: '删除失败', duration: 1500})
                 })
             })
-            .catch(err => {
-                console.log(err)
-                if (err !== 'cancel') {
-                    Toast({message: '删除失败', duration: 1500})
-                }
-            })
-        },
-        replyComment() {
-            this.set_talkReply(this.itemJson)
-            $('#reply #input').focus()
         }
     }
 }
 </script>
-<style scoped lang='stylus'>
+<style lang='stylus'>
 .comment_item {
     position: relative;
     margin: 0 16px;

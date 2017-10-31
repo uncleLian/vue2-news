@@ -35,7 +35,7 @@
 </template>
 <script>
   import {MessageBox} from 'mint-ui'
-  import {autoTextarea} from '@/components/autoTextarea.js'
+  import {autoTextarea} from '@/config/autoTextarea.js'
   import {mapGetters, mapMutations, mapActions} from 'vuex'
   export default {
     name: 'feedback',

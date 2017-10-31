@@ -30,7 +30,7 @@ import { mapGetters, mapMutations } from 'vuex'
 export default {
     computed: {
         ...mapGetters('index', [
-            'indexActive', // 当前ative的栏目
+            'indexActive',  // 当前ative的栏目
             'activeIndex',  // 当前active的栏目的数组位置
             'indexColumn'   // 栏目数据
         ])
@@ -47,14 +47,14 @@ export default {
         // 自己实现导航栏滚动
         slideTo(index) {
             this.$nextTick(() => {
-                let _container = $('.nav_ul')  // 获取滚动容器元素
-                let _column = $('.nav_ul a').eq(index)   // 获取当前active栏目元素
+                let _container = $('.nav_ul')           // 获取滚动容器元素
+                let _column = $('.nav_ul a').eq(index)  // 获取当前active栏目元素
                 if (_column) {
                     let move    // 最终滚动值
-                    let _container_width = _container.width()   // 容器宽度
-                    let _container_left = _container.scrollLeft()   // 容器当前滚动条的值
-                    let _column_width = _column.width()    // 栏目宽度
-                    let _column_left = _column.position().left     // 栏目距离屏幕左边的距离
+                    let _container_width = _container.width()               // 容器宽度
+                    let _container_left = _container.scrollLeft()           // 容器当前滚动条的值
+                    let _column_width = _column.width()                     // 栏目宽度
+                    let _column_left = _column.position().left              // 栏目距离屏幕左边的距离
                     let midWidth = (_container_width - _column_width) / 2   // 屏幕中心线的宽度
                     // 容器滚动为0，并且active栏目位于中间线左边？滚动值为0 ：当前容器滚动值 + （active栏目相对于中间线的值，有正负）
                     if (_container_left === 0 && _column_left <= midWidth) {
@@ -63,13 +63,13 @@ export default {
                         move = _container_left + (_column_left - midWidth)
                     }
                     _container.animate({ 'scrollLeft': move }, 300)
-                    sessionStorage.setItem('navScrollLeft', move) // 存计算后的值
+                    sessionStorage.setItem('navScrollLeft', move)       // 存计算后的值
                 }
             })
         },
         // 滚动恢复
         scrollRecover() {
-            let move = sessionStorage.getItem('navScrollLeft')  // 取计算后的值
+            let move = sessionStorage.getItem('navScrollLeft')          // 取计算后的值
             if (move) {
                 this.$nextTick(() => {
                     $('.nav_ul').scrollLeft(move)
@@ -83,8 +83,8 @@ export default {
             $(`#index .${this.indexActive}`).animate({scrollTop: 0})
         }
     },
+    // activated钩子是要在keep-alive下才能使用
     activated() {
-        // activated钩子是要在keep-alive下才能使用
         this.scrollRecover()
     }
 }

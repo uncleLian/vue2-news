@@ -3,27 +3,21 @@ import { fetch } from '@/config/fetch'
 export default {
     namespaced: true,
     state: {
-        collectArticle: [],
-        checkedArr: []
+        collectArticle: []  // 收藏的文章
     },
     getters: {
         collectArticle: state => {
             return state.collectArticle
-        },
-        checkedArr: state => {
-            return state.checkedArr
         }
     },
     mutations: {
         set_collectArticle(state, val) {
             state.collectArticle = val
             set_local_cache('collect_Article', val)
-        },
-        set_checkedArr(state, val) {
-            state.checkedArr = val
         }
     },
     actions: {
+        // 获取收藏缓存
         get_collect_cache({commit}) {
             let res = JSON.parse(get_local_cache('collect_Article'))
             if (res) {
@@ -32,7 +26,8 @@ export default {
             return res
         },
 
-        async get_collect_data({rootState}, page) {
+        // 获取收藏数据
+        async get_collect_data({rootState, commit}, page) {
             let params = {
                 rdata: 'collect',
                 userid: rootState.userid
@@ -41,11 +36,12 @@ export default {
             return res
         },
 
-        del_collect_data({state, rootState}) {
+        // 提交删除的收藏数据
+        post_collect_data({state, rootState}, data) {
             let params = {
                 del: 'collect',
                 userid: rootState.userid,
-                data: state.checkedArr
+                data: data
             }
             let res = fetch('post', 'userData', params)
             return res

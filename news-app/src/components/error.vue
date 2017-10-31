@@ -13,14 +13,8 @@ export default {
             type: Boolean,
             default: false
         },
-        method: {
-            type: Function
-        },
+        method: Function,
         fixed: Boolean
-    },
-    data() {
-        return {
-        }
     }
 }
 </script>
@@ -31,7 +25,7 @@ export default {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 886;
+    z-index: 559;
     background: #fff;
     overflow: hidden;
     font-size: 18px;

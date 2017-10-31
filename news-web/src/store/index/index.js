@@ -13,8 +13,6 @@ export default {
             classpath: 'news_recommend'
         }],
         currentContent: '', // 当前栏目的数据，为了缓存各个栏目的数据，刷新时不用再次请求
-        stickJson: '',      // 置顶数据
-        bannerJson: '',     // banner数据
         indexSwiper: false  // 是否在滑动
     },
     getters: {
@@ -32,12 +30,6 @@ export default {
         },
         indexSwiper: state => {
             return state.indexSwiper
-        },
-        stickJson: state => {
-            return state.stickJson
-        },
-        bannerJson: state => {
-            return state.bannerJson
         },
         // 以下都是为了方便取到当前active的数据
         activeIndex: state => {
@@ -73,12 +65,6 @@ export default {
         set_currentContent(state, val) {
             state.currentContent = val
             setCache(`${state.indexActive}_json`, val)
-        },
-        set_stickJson(state, val) {
-            state.stickJson = val
-        },
-        set_bannerJson(state, val) {
-            state.bannerJson = val
         },
         set_indexSwiper(state, val) {
             state.indexSwiper = val
@@ -136,7 +122,7 @@ export default {
         },
 
         // 获取栏目数据
-        async get_indexColumn_data({commit, state}) {
+        async get_indexColumn_data({commit, state, dispatch}) {
             let res
             const data = JSON.parse(getCache('index_Column'))
             if (data) {
@@ -146,6 +132,9 @@ export default {
                 res = [...state.indexColumn, ...json]
             }
             commit('set_indexColumn', res)
+            dispatch('get_indexPage_cache', res)
+            dispatch('get_indexLocation_cache', res)
+            dispatch('get_indexActive_cache')
             return res
         },
 
@@ -163,7 +152,6 @@ export default {
         async get_stick_data({ commit, getters }) {
             let params = { 'classid': getters.activeClassid, 'type': 'stick' }
             let res = await fetch('post', 'Stick', params)
-            commit('set_stickJson', res)
             return res
         },
 
@@ -171,7 +159,6 @@ export default {
         async get_banner_data({ commit, getters }) {
             let params = { 'classid': getters.activeClassid, 'type': 'banner' }
             let res = await fetch('post', 'Stick', params)
-            commit('set_bannerJson', res)
             return res
         },
 

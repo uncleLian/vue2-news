@@ -29,20 +29,19 @@ const health = () => import('@/page/index/user/children/health/health')
 const publish = () => import('@/page/index/user/children/health/publish')
 const preview = () => import('@/page/index/user/children/health/preview')
 const detail = () => import('@/page/detail/detail')
+const comment = () => import('@/page/detail/children/comment')
 const search = () => import('@/page/search/search')
 const login = () => import('@/page/login/login')
-const theme = () => import('@/page/theme/theme')
 
 export default new Router({
-    // mode:'history',
     routes: [{
         path: '',
         redirect: '/index/home',
         component: App,
         children: [
         {
-            path: '/index',
             name: 'index',
+            path: '/index',
             redirect: '/index/home',
             component: index,
             children: [
@@ -119,20 +118,26 @@ export default new Router({
             ]
         },
         {
+            name: 'detail',
             path: '/detail',
-            component: detail
+            component: detail,
+            children: [
+                {
+                    name: 'comment',
+                    path: 'comment',
+                    component: comment
+                }
+            ]
         },
         {
+            name: 'search',
             path: '/search',
             component: search
         },
         {
+            name: 'login',
             path: '/login',
             component: login
-        },
-        {
-            path: '/theme',
-            component: theme
         }
         ]
     }]

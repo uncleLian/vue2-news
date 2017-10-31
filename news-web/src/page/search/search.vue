@@ -43,8 +43,8 @@
                 <div class="container" v-infinite-scroll="get_search_more" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false" >
                     <list-item :itemJson="searchJson" v-if="searchJson.length > 0"></list-item>
                     <div class="bottomLoad"  v-if="bottomTip" >
-                        <div class="loading" v-show="bottomStatus == 'loading'">加载中...</div>
-                        <div class="noData" v-if="bottomStatus =='noData'">没有更多的内容了</div>
+                        <div class="loading" v-show="bottomStatus === 'loading'">加载中...</div>
+                        <div class="noData" v-if="bottomStatus === 'noData'">没有更多的内容了</div>
                     </div>
                 </div>
             </template>
@@ -59,8 +59,8 @@
         </div>
 
         <!-- 请求提示 -->
-        <my-loading :visible='loading'></my-loading>
-        <my-error fixed :visible='error' :method='get_search'></my-error>
+        <my-loading :visible='loading'/>
+        <my-error fixed :visible='error' :method='get_search'/>
     </div>
 </template>
 <script>
@@ -78,14 +78,14 @@ export default {
             bottomLock: false,          // 上滑开关
             bottomStatus: 'loading',    // 上滑底部状态
             bottomTip: false,           // bottom提示
-            error: false,
-            loading: false
+            loading: false,
+            error: false
         }
     },
     watch: {
         $route(to, from) {
             // 从首页进来，显示热点推荐
-            if (from.name === 'index') {
+            if (from.path.includes('index')) {
                 this.key = ''
                 this.search_state = 'recommend'
             }

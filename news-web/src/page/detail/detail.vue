@@ -1,5 +1,5 @@
 <template>
-    <div id="detail" :title='title'>
+    <div id="detail">
         <my-header fixed :title='title' v-goTop:click='true'>
             <a slot="left" class="back-black" @click.stop='$router.go(-1)'></a>
             <a slot="right" class="menu" @click.stop='$refs.share.toggle()'></a>
@@ -8,9 +8,9 @@
         <div class="content">
             <div class="container" v-swiper:swiperRight='true'>
                 <!-- 正文 -->
-                <my-article  :json='articleJson'></my-article>
+                <my-article v-if="articleJson" :json='articleJson'/>
                 <!-- 标签 -->
-                <my-tags v-if="articleJson.infotags" :json='articleJson.infotags'></my-tags>
+                <my-tags v-if="articleJson.infotags" :json='articleJson.infotags'/>
                 <!-- 热点评论 -->
                 <template v-if='articleJson.comment'>
                     <!-- 分割线 -->
@@ -27,18 +27,17 @@
                 </template>
                 <!-- 分割线 -->
                 <div class="bg_line"></div>
-
                 <!--  推荐 -->
-                <my-recommend :json='articleJson.recommend'></my-recommend>
+                <my-recommend :json='articleJson.recommend'/>
                 <!-- 下载 -->
                 <a class="downLoad" href='http://m.toutiaojk.com/guide.html'>都翻到这儿了，下载个头条呗~</a>
             </div>
         </div>
         <!-- 分享组件 -->
-        <my-share ref="share"></my-share>
+        <my-share ref="share"/>
         <!-- 请求提示 -->
-        <my-loading :visible='loading'></my-loading>
-        <my-error fixed :visible='error' :method='init'></my-error>
+        <my-loading :visible='loading'/>
+        <my-error fixed :visible='error' :method='init'/>
     </div>
 </template>
 <script>
@@ -48,7 +47,7 @@ import myRecommend from './components/recommend'
 import myShare from './components/share'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
-    name: 'detail',              // 不使用keep-alive时，组件有name属性，就可以方便的exclude排除这个路由组件
+    name: 'detail',
     components: { myArticle, myTags, myRecommend, myShare },
     data() {
         return {
@@ -66,14 +65,13 @@ export default {
             'indexColumn'
         ]),
         ...mapGetters('detail', [
-            'location'          // 记录detail页面滚动位置的location对象
+            'location'
         ])
     },
     watch: {
         $route(val) {
             if (val.query.id) {
-                // 自己调用自己，重新初始化
-                this.init()
+                this.init() // 自己调用自己，重新初始化
             }
         }
     },

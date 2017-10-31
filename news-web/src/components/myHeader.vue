@@ -1,10 +1,10 @@
 <template>
     <!-- 因为mint-ui的header不符合我需求，只能自己封装了 -->
-    <header :class="{ 'fixed': fixed }">
+    <header class="myHeader" :class="{ 'fixed': fixed }">
         <div class="top_bar">
             <div class="abs_l"><slot name="left"></slot></div>
             <div class="abs_m">{{title}}<slot name="mid"></slot></div>
-            <div class="abs_r"><slot name="right"></slot> </div>
+            <div class="abs_r"><slot name="right"></slot></div>
         </div>
     </header>
 </template>
@@ -16,13 +16,13 @@ export default {
     }
 }
 </script>
-<style scoped lang='stylus'>
-header_height = 44px
-header {
+<style lang='stylus'>
+ios_height = 0.535rem
+header_height = 1.335rem
+.myHeader{
     display: block;
     position: relative;
     overflow: hidden;
-    /*background-color: #d43d3d;*/
     background-color: #00939c;
     color: #fff;
     font-size: 16px;
@@ -32,6 +32,10 @@ header {
         left: 0;
         right: 0;
         z-index: 666;
+    }
+    .iosStatus {
+        width: 100%;
+        height: ios_height;
     }
     .top_bar {
         position: relative;

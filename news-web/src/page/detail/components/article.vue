@@ -62,9 +62,21 @@ export default {
             content_more: false
         }
     },
+    watch: {
+        json(val) {
+            this.shrinkArticle()
+            this.video = this.$el.querySelector('video')
+            // 自己调用自己的时候，需要初始化一些数据状态，这是自己调用自己所带来的弊端，使用场景：在详情页打开其他详情页的时候会用到。
+            this.video_poster = true
+            this.video_playing = false
+            this.video_ended = false
+            this.video_loading = false
+            this.video_fixed = false
+        }
+    },
     methods: {
         videoPlay() {
-            this.video = document.querySelector('video')
+            this.video = this.$el.querySelector('video')
             this.video.play()
             this.videoEvent()
             this.videoFixed()
@@ -115,22 +127,10 @@ export default {
             }
         },
         backTo() {
-            // 监听浏览器是否回到手机后台（当前应用不是浏览器或者手机息屏），是就暂停播放。（效果可在手机上查看）
+            // 监听应用是否回到手机后台，是就暂停播放。（效果可在手机上查看）
             document.addEventListener('pause', () => {
                 this.video.pause()
             }, false)
-        }
-    },
-    watch: {
-        json(val) {
-            this.shrinkArticle()
-            this.video = document.querySelector('video')
-            // 自己调用自己的时候，需要初始化一些数据状态，这是自己调用自己所带来的弊端，使用场景：在详情页打开其他详情页的时候会用到。
-            this.video_poster = true
-            this.video_playing = false
-            this.video_ended = false
-            this.video_loading = false
-            this.video_fixed = false
         }
     },
     mounted() {

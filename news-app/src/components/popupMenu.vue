@@ -38,49 +38,38 @@ export default {
     }
 }
 </script>
-<style scoped>
-.toggleSide-enter,
-.toggleSide-leave-active {
-    -webkit-transform: translate3d(0, 100%, 0);
-    transform: translate3d(0, 100%, 0);
-}
-
-.toggleSide-enter-active，.toggleSide-leave {
-    -webkit-transform: translate3d(0, 0%, 0);
-    transform: translate3d(0, 0%, 0);
-}
-
-.functionItem {
-    position: fixed;
-    background: #f8f8f8;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    -webkit-transition: -webkit-transform .3s ease-out;
-    transition: -webkit-transform .3s ease-out;
-    transition: transform .3s ease-out;
-    z-index: 1002;
-}
-
-.cancle {
-    width: 100%;
-    text-align: center;
-    color: rgb(51, 51, 51);
-    font-size: 16px;
-    height: 50px;
-    line-height: 50px;
-    background-color: #f8f8f8;
-    border-top: 1px solid rgb(223, 223, 223);
-}
-
-.black {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    opacity: .5;
-    background: #000;
-    z-index: 1001;
+<style lang='stylus'>
+#popupMenu{
+    .functionItem{
+        position: fixed;
+        background: #f8f8f8;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        -webkit-transition: -webkit-transform .3s ease-out;
+        transition: -webkit-transform .3s ease-out;
+        transition: transform .3s ease-out;
+        z-index: 1002;
+    } 
+    .cancle{
+        width: 100%;
+        text-align: center;
+        color: rgb(51, 51, 51);
+        font-size: 16px;
+        height: 50px;
+        line-height: 50px;
+        background-color:#f8f8f8;
+        border-top: 1px solid rgb(223, 223, 223);
+    }
+    .black{
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: .5;
+        background: #000;
+        z-index: 1001;
+    }
 }
 </style>

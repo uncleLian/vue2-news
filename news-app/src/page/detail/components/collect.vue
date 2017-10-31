@@ -1,51 +1,46 @@
 <template>
-    <span class="collect_btn icon-collect" v-if="btn" @click.stop='collectClick' :class="{active: json.collect? true : false}"> 收藏</span>
-    <a class="collect_icon" v-else-if="icon" @click.stop="collectClick" :class="{active: json.collect? true : false}"></a>
+    <!-- 按钮 -->
+    <span class="collect_btn icon-collect" v-if="type === 'btn'" @click.stop='collect' :class="{active: json.collect? true : false}"> 收藏</span>
+    <!-- 图标 -->
+    <a class="collect_icon" v-else-if="type === 'icon'" @click.stop="collect" :class="{active: json.collect? true : false}"></a>
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { Toast } from 'mint-ui'
 export default {
     props: {
         json: Object,
-        btn: Boolean,
-        icon: Boolean
-    },
-    data() {
-        return {
-            id: this.$route.query.id
-        }
+        type: String
     },
     computed: {
-        ...mapGetters('collect', [
-            'collectArticle'
-        ]),
         ...mapGetters('detail', [
             'listArticle',
             'historyArticle'
+        ]),
+        ...mapGetters('collect', [
+            'collectArticle'
         ])
     },
     methods: {
         ...mapMutations('detail', [
             'set_historyArticle'
         ]),
-        ...mapActions('detail', [
-            'send_favorite_data'
-        ]),
         ...mapMutations('collect', [
             'set_collectArticle'
         ]),
-        collectClick() {
+        ...mapActions('detail', [
+            'post_favorite_data'
+        ]),
+        collect() {
             if (this.json.collect) {
-                Toast({message: '你已经收藏', duration: 1000})
+                this.$toast({message: '你已经收藏', duration: 1000})
             } else {
-                this.json.collect = this.id
-                this.json.collectnum++
-                this.collectArticle.unshift(this.listArticle)
-                this.set_historyArticle(this.historyArticle)
-                this.set_collectArticle(this.collectArticle)
-                this.send_favorite_data('collect')
-                Toast({message: '已收藏', duration: 1000})
+                this.json.collect = this.json.id                // 修改文章收藏标识
+                this.json.collectnum++                          // 修改文章收藏数量
+                this.set_historyArticle(this.historyArticle)    // 更新文章缓存
+                this.collectArticle.unshift(this.listArticle)   // 修改收藏数据
+                this.set_collectArticle(this.collectArticle)    // 设置收藏本地缓存
+                this.post_favorite_data('collect')              // 提交收藏数据
+                this.$toast({message: '已收藏', duration: 1000})
             }
         }
     }

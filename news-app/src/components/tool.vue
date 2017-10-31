@@ -1,13 +1,14 @@
 <template>
     <div class='tool' :class="{'focus': focus}">
-        <!-- 左边输入栏 -->
+         
         <div class="left">
             <div class="text" v-show='!focus'  @click.stop="inputFocus">
                 <a class="icon-write"> 写评论...</a>
             </div>
-            <textarea id='input' :class="{ normal: !focus }" v-model.trim='inputVal' @focus.stop="onFocus" @blur.stop="onBlur" :placeholder="comment === 'reply'? placeholderVal : ''" ><br/></textarea>
+            <textarea id='input' v-if="comment === 'reply'"  :class="{ normal: !focus }" v-model.trim='inputVal' @focus.stop="onFocus" @blur.stop="onBlur" :placeholder="placeholderVal" ><br/></textarea>
+
+            <textarea  id='input' v-else :class="{ normal: !focus }" v-model.trim='inputVal' @focus.stop="onFocus" @blur.stop="onBlur"><br/></textarea>
         </div>
-        <!-- 右边按钮栏 -->
         <div class="right" v-show='!focus' v-if='icon'>
             <slot name='tool_btn'></slot>
         </div>
@@ -16,7 +17,8 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { autoTextarea } from '@/components/autoTextarea.js'
+import { Toast, MessageBox } from 'mint-ui'
+import { autoTextarea } from '@/config/autoTextarea.js'
 export default {
     props: {
         comment: String,
@@ -32,6 +34,14 @@ export default {
             keepInputVal: '',
             placeholderVal: ''
         }
+    },
+    computed: {
+        ...mapGetters('detail', [
+            'talkReply'
+        ]),
+        ...mapGetters('login', [
+            'login'
+        ])
     },
     watch: {
         focus(val) {
@@ -50,14 +60,6 @@ export default {
                 }
             }
         }
-    },
-    computed: {
-        ...mapGetters('detail', [
-            'talkReply'
-        ]),
-        ...mapGetters('login', [
-            'login'
-        ])
     },
     methods: {
         ...mapMutations('detail', [
@@ -91,11 +93,11 @@ export default {
                         this.post_Comment_data(this.inputVal)
                         .then(res => {
                             if (res.err) {
-                                this.$emit('publishStatus', res.data)
+                                this.$emit('publish', res.data)
                                 this.inputVal = ''
                                 this.keepInputVal = ''
                                 this.focus = false
-                                this.$toast({message: '发送成功', duration: 1500})
+                                Toast({message: '发送成功', duration: 1500})
                                 $('.tool #input').blur()
                             }
                         })
@@ -111,15 +113,15 @@ export default {
                                 this.inputVal = ''
                                 this.keepInputVal = ''
                                 this.focus = false
-                                this.$emit('publishStatus', res.data)
-                                this.$toast({message: '发送成功', duration: 1500})
+                                this.$emit('publish', res.data)
+                                Toast({message: '发送成功', duration: 1500})
                                 $('.tool #input').blur()
                             }
                         })
                     }
                 }
             } else {
-                this.$msgBox({
+                MessageBox({
                     title: '提示',
                     message: '你还未登录，跳转到登录页？',
                     showCancelButton: true,
