@@ -164,7 +164,7 @@ export default {
             } else {
                 // 是否第一次进入页面
                 if (vm.first) {
-                    this.$msgBox.confirm('登录后可以同步用户数据')
+                    vm.$msgBox.confirm('登录后可以同步用户数据')
                     .then(action => {
                         vm.$router.push('/login')
                     })

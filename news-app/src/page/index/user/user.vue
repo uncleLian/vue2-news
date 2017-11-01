@@ -29,7 +29,7 @@ export default {
     }
 }
 </script>
-<style scoped>
+<style lang='stylus'>
 #user {
     position: relative;
     width: 100%;

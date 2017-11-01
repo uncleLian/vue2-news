@@ -1,90 +1,62 @@
 <template>
     <div id="profile">
-        <!--<my-header title='个人用户'></my-header>-->
-        <!--<div class="iosStatus" v-if="ios()"></div>-->
-        <div class="userlogobar">
-            <!-- 未登录 登录按钮 -->
-            <template v-if='!login'>
-                <div class="userlogo">
-                    <div class="imgborder" @click="$router.push('/login')">
-                        <div class="img">
-                            <img src="~@/assets/img/myLogin.png">
-                        </div>
-                        <span>点击登录</span>
+        <div class="container">
+            <!-- 登录状态 -->
+            <div class="loginState">
+                <!-- 已登录 -->
+                <template v-if="login">
+                    <div class="wrapper">
+                        <img class="userProfile" :src="userInfo.headimgurl">
+                        <span class="userName">{{userInfo.nickname}}</span>
                     </div>
-                </div>
-            </template>
-            <!--已登录 会员头像 -->
-            <template v-else>
-                <div class="userlogo">
-                    <div class="imgborder">
-                        <div class="img">
-                            <img :src='userInfo.headimgurl' />
-                        </div>
-                        <span>{{userInfo.nickname}}</span>
+                </template>
+                <!-- 未登录 -->
+                <template v-else>
+                    <div class="wrapper">
+                        <img class="userProfile" src="~@/assets/img/myLogin.png">
+                        <span class="userName">点击登录</span>
                     </div>
-                </div>
-            </template>
-        </div>
-        <div class="my_menu_box">
-            <dl>
-                <dd class="myList" @click="goUserCover">
-                    <em>{{appreaduserdata_number.plnum}}</em>评论
-                </dd>
-                <dd class="myList" @click="goCollect">
-                    <em>{{appreaduserdata_number.collectnum}}</em>收藏
-                </dd>
-                <router-link class="myList" to='user/readHistory' tag="dd">
-                    <em>{{this.historyArticle.length}}</em>历史
+                </template>
+            </div>
+            <!-- 菜单 -->
+            <div class="menu">
+                <router-link class="menu-item" tag="a" :to="{name: 'userCover'}">
+                    <p class="menu-value">{{appreaduserdata_number.plnum}}</p>
+                    <p class="menu-title">评论</p>
                 </router-link>
-            </dl>
-        </div>
-        <div class="subhead"></div>
-        <div class="Thelistof">
-            <div class="dd_nav01 ">
-                <div class="myList" @click="goUserCover">
-                    <span>我的评论</span>
-                    <i></i>
-                </div>
-            </div>
-            <div class="dd_nav01 ">
-                <div class="myList" @click='goCollect'>
-                    <span>我的收藏</span>
-                    <i></i>
-                </div>
-            </div>
-            <div class="dd_nav01 ">
-                <router-link class="myList" to='user/readHistory'>
-                    <span>我的历史</span>
-                    <i></i>
+                <router-link class="menu-item" tag="a" :to="{name: 'collect'}">
+                    <p class="menu-value">{{appreaduserdata_number.collectnum}}</p>
+                    <p class="menu-title">收藏</p>
+                </router-link>
+                <router-link class="menu-item" tag="a" :to="{name: 'readHistory'}">
+                    <p class="menu-value">{{historyArticle.length}}</p>
+                    <p class="menu-title">历史</p>
                 </router-link>
             </div>
-            <div class="dd_nav01 dd_nav02" v-if="$store.state.health.isEditor">
-                <router-link to="user/health" class="myList">
-                    <span>作品管理</span>
-                    <i></i>
+            <!-- 用户列表 -->
+            <div class="group">
+                <router-link :to="{name: 'userCover'}">
+                    <mt-cell title="我的评论"><i class="icon-arrow-right"></i></mt-cell>
+                </router-link>
+                <router-link :to="{name: 'collect'}">
+                    <mt-cell title="我的收藏"><i class="icon-arrow-right"></i></mt-cell>
+                </router-link>
+                <router-link :to="{name: 'readHistory'}">
+                    <mt-cell title="我的历史"><i class="icon-arrow-right"></i></mt-cell>
+                </router-link>
+                <router-link :to="{name: 'health'}" v-if="isEditor">
+                    <mt-cell title="作品管理"><i class="icon-arrow-right"></i></mt-cell>
                 </router-link>
             </div>
-        </div>
-        <div class="subhead"></div>
-        <div class="Thelistof">
-            <div class="dd_nav01 ">
-                <router-link class="myList" to='user/QRcode'>
-                    <span>扫码分享</span>
-                    <i></i>
+            <!-- 其他列表 -->
+            <div class="group">
+                <router-link :to="{name: 'QRcode'}">
+                    <mt-cell title="扫码分享"><i class="icon-arrow-right"></i></mt-cell>
                 </router-link>
-            </div>
-            <div class="dd_nav01 ">
-                <router-link class="myList" to='user/feedBack'>
-                    <span>意见反馈</span>
-                    <i></i>
+                <router-link :to="{name: 'feedBack'}">
+                    <mt-cell title="意见反馈"><i class="icon-arrow-right"></i></mt-cell>
                 </router-link>
-            </div>
-            <div class="dd_nav01 dd_nav02">
-                <div class="myList" @click="outLogin">
-                    <span>退出登录</span>
-                    <i></i>
-                </div>
+                <mt-cell title="退出登录" @click.stop.native="outLogin"><i class="icon-arrow-right"></i></mt-cell>
             </div>
         </div>
     </div>
@@ -111,6 +83,9 @@ export default {
         ]),
         ...mapGetters('user', [
             'appreaduserdata_number'
+        ]),
+        ...mapGetters('health', [
+            'isEditor'
         ])
     },
     watch: {
@@ -193,129 +168,85 @@ export default {
     }
 }
 </script>
-<style scoped lang='stylus'>
-.iosStatus {
-    width: 100%;
-    height: 20px;
-    background: #EEEEEE;
-}
-
+<style  lang='stylus'>
 #profile {
     width: 100%;
-    margin: 0 auto;
+    height: 100%;
     font-size: 16px;
-    .userlogobar {
-        width: 100%;
+    overflow: hidden;
+    .loginState{
         position: relative;
-        background-size: 100% 100%;
-        .userlogo {
+        width: 100%;
+        height: 5rem;
+        overflow: hidden;
+        .wrapper{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
             text-align: center;
-            padding-top: 0.5rem;
-            width: 100%;
-            height: 100%;
-            .imgborder {
-                border-radius: 100%;
-                width: 100%;
-                height: 4.8rem;
-                .img {
-                    width: 100%;
-                    height: 3.7rem;
-                    line-height: 3.7rem;
-                    border-radius: 100%;
-                    img {
-                        border-radius: 50%;
-                        width: 2.7rem;
-                        height: 2.7rem;
-                        text-align: center;
-                        vertical-align: middle;
-                        box-shadow: 0 0 20px #000;
-                    }
-                }
-                span {
-                    font-size: 16px;
-                    color: #FFF;
-                }
-            }
-        }
-    }
-    .my_menu_box {
-        background: #FFF;
-        border-bottom: 1px solid #cccccc;
-        border-right: 0;
-        border-left: 0;
-        margin: 0 auto;
-        dl {
-            height: 1.8rem;
-            display: table;
-            width: 100%;
-            dd {
-                display: table-cell;
-                width: 25%;
+            .userProfile{
+                display: block;
+                border-radius: 50%;
+                width: 2.7rem;
+                height: 2.7rem;
                 text-align: center;
                 vertical-align: middle;
+                box-shadow: 0 0 20px #000;
+                margin-bottom: 0.4rem;
+            }
+            .userName{
+                font-size: 0.426rem;
+                color: #fff;
+            }
+        }
+    }
+    .menu{
+        width: 100%;
+        display: flex;
+        background: #fff;
+        border-bottom: 1px solid #ccc;
+        .menu-item{
+            flex: 1;
+            text-align: center;
+            padding: 0.25rem 0;
+            .menu-value{
+                color: #00939c;
+                font-size: 0.533rem;
+                padding-bottom: 0.133rem;
+            }
+            .menu-title{
                 color: #666;
-                font-size: 14px;
-                em {
-                    display: block;
-                    font-size: 20px;
-                    color: #00939c;
-                    padding-bottom: 5px;
-                }
+                font-size: 0.373rem;
             }
         }
     }
-    .subhead {
-        width: 100%;
-        height: 0.2rem;
+    .group{
+        margin: 0.2rem 0;
     }
-    .Thelistof {
-        width: 100%;
-        background: #FFF;
-        border-bottom: 1px solid #cccccc;
-        border-right: 0;
-        border-left: 0;
-        margin: 0 auto;
-        padding-left: 0.5rem;
-        .dd_nav01 {
-            width: 100%;
-            height: 1.2rem;
-            border-bottom: 1px solid #DBDBDC;
-            position: relative;
-            .myList {
-                display: table;
-                vertical-align: middle;
-                height: 1.2rem;
-                width: 100%;
-                color: #333;
-                i {
-                    display: table-cell;
-                    vertical-align: middle;
-                    background-size: 0.5rem;
-                    position: absolute;
-                    right: 0.25rem;
-                    top: 0.42rem;
-                    height: 0.34rem;
-                    width: 0.5rem;
-                }
-                span {
-                    height: 100%;
-                    display: table-cell;
-                    vertical-align: middle;
-                }
-            }
-        }
-        .dd_nav02 {
-            border-bottom: 0 !important;
+    .mint-cell{
+        color: #333;
+        min-height: 1.2rem;
+        .mint-cell-wrapper{
+            font-size: 0.426rem;
+            padding-left: 0.5rem;
+            padding-right: 0.25rem;
+            border-bottom: 1px solid #dbdbdc;
         }
     }
 }
 </style>
-<style scoped>
-.userlogobar {
+<style>
+#profile .loginState{
     background: url('~@/assets/img/myColorp.png') no-repeat 50% 0%;
+    background-size: 100% 100%;
 }
-
-.Thelistof .dd_nav01 .myList i {
-    background: url('~@/assets/img/back_right.png') no-repeat 0 50%;
+#profile .icon-arrow-right {
+    display: table-cell;
+    vertical-align: middle;
+    width: 0.5rem;
+    height: 0.32rem;
+    background: url('~@/assets/img/back_right.png') no-repeat center center;
+    background-size: cover;
 }
 </style>

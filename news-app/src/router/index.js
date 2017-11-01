@@ -76,18 +76,22 @@ export default new Router({
                     component: profile
                 },
                 {
+                    name: 'userGuide',
                     path: 'userGuide',
                     component: userGuide
                 },
                 {
+                    name: 'QRcode',
                     path: 'QRcode',
                     component: QRcode
                 },
                 {
+                    name: 'feedBack',
                     path: 'feedBack',
                     component: feedBack
                 },
                 {
+                    name: 'readHistory',
                     path: 'readHistory',
                     component: readHistory
                 },
@@ -96,10 +100,12 @@ export default new Router({
                     component: myComments
                 },
                 {
+                    name: 'userCover',
                     path: 'userCover',
                     component: userCover
                 },
                 {
+                    name: 'health',
                     path: 'health',
                     component: health
                 },
