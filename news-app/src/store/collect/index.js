@@ -18,9 +18,9 @@ export default {
     },
     actions: {
         // 获取收藏缓存
-        get_collect_cache({commit}) {
+        get_collectArticle_cache({commit}) {
             let res = JSON.parse(get_local_cache('collect_Article'))
-            if (res) {
+            if (res && res.length > 0) {
                 commit('set_collectArticle', res)
             }
             return res

@@ -1,11 +1,14 @@
 <template>
     <transition name='fadeIn'>
         <div id="preview">
-            <my-header fixed :title='$store.state.login.wx.nickname' v-goTop:click='true'>
+            <!-- 头部 -->
+            <my-header fixed :title='userInfo.nickname' v-goTop:click='true'>
                 <a slot="left" class="close-black" @click.stop='$router.go(-1)'></a>
             </my-header>
+            <!-- 正文 -->
             <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
                 <div class="container">
+                    <!-- article组件 -->
                     <my-article :json='json'></my-article>
                 </div>
             </div>
@@ -14,35 +17,43 @@
 </template>
 <script>
 import myArticle from '@/page/detail/components/article'
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
     name: 'preview',
     components: { myArticle },
     data() {
         return {
             id: this.$route.query.id,
-            json: this.$route.query.json
+            json: this.$route.params.json
         }
+    },
+    computed: {
+        ...mapGetters('user', [
+            'userInfo'
+        ])
     },
     methods: {
         ...mapActions('health', [
             'get_article_data'
-        ])
+        ]),
+        get_article() {
+            this.get_article_data(this.id)
+            .then(res => {
+                if (res.data) {
+                    this.json = res.data
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
     },
     created() {
-        this.get_article_data(this.id)
-        .then(res => {
-            if (res.data) {
-                this.json = res.data
-            }
-        })
-        .catch(err => {
-            console.log(err)
-        })
+        this.get_article()
     }
 }
 </script>
-<style scoped lang='stylus'>
+<style lang='stylus'>
 #preview {
     position: fixed;
     width: 100%;

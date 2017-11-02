@@ -40,7 +40,7 @@ export default {
             'talkReply'
         ]),
         ...mapGetters('login', [
-            'login'
+            'isLogin'
         ])
     },
     watch: {
@@ -87,7 +87,7 @@ export default {
             document.removeEventListener('backbutton', this.backButtonFocus, false)
         },
         sendComment() {
-            if (this.login) {
+            if (this.isLogin) {
                 if (this.inputVal) {
                     if (this.comment === 'remark') {
                         this.post_Comment_data(this.inputVal)

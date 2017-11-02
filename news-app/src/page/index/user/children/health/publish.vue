@@ -1,9 +1,11 @@
 <template>
     <transition name='fadeIn'>
         <div id='publish'>
-            <my-header fixed :title='$store.state.login.wx.nickname' v-goTop:click='true'>
+            <!-- 头部 -->
+            <my-header fixed :title='userInfo.nickname' v-goTop:click='true'>
                 <a slot="left" class="back-black" @click.stop.prevent='$router.go(-1)'></a>
             </my-header>
+            <!-- content -->
             <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
                 <div class="container">
                     <!-- 标题 -->
@@ -48,23 +50,24 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 子页面视图 -->
             <router-view></router-view>
         </div>
     </transition>
 </template>
 <script>
-import { Toast, Indicator, MessageBox } from 'mint-ui'
 import axios from 'axios'
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import myPreview from './preview'
 export default {
     name: 'publish',
     components: { myPreview },
     data() {
         return {
-            title: '', // 标题
-            content: '', // 正文
-            classid: '', // 标签
+            title: '',              // 标题
+            content: '',            // 正文
+            classid: '',            // 标签
             labelOptions: [
                 {
                     label: '女性',
@@ -99,9 +102,9 @@ export default {
                     value: '0'
                 }
             ],
-            contentImages: [], // 正文图片
-            coverImages: [], // 封面图片
-            editorOption: { // 富文本编辑器配置
+            contentImages: [],      // 正文图片
+            coverImages: [],        // 封面图片
+            editorOption: {         // 富文本编辑器配置
                 modules: {
                     toolbar: [ { 'list': 'ordered' }, { 'list': 'bullet' }, 'image' ],
                     history: {
@@ -111,28 +114,35 @@ export default {
                     }
                 },
                 placeholder: ' ',
-                imageHandler: this.imageHandler
+                imageHandler: this.imageHandler     // 自定义图片处理
             },
-            json: null, // 修改获取的数据
+            json: null,     // 修改获取的数据
             ajax: false,
             edit: false
         }
     },
+    computed: {
+        ...mapGetters('user', [
+            'userInfo'
+        ]),
+        // 富文本对象
+        editor() {
+            return this.$refs.myQuillEditor.quill
+        },
+        // 全部内容
+        isChange() {
+            return this.title + this.content + this.classid
+        }
+    },
     watch: {
-        isChange (val, old) {
+        // 是否改变了内容
+        isChange(val, old) {
             this.edit = true
+            // 如果是请求数据导致发生改变，则忽略
             if (this.ajax) {
                 this.edit = false
                 this.ajax = false
             }
-        }
-    },
-    computed: {
-        editor() {
-            return this.$refs.myQuillEditor.quill
-        },
-        isChange() {
-            return this.title + this.content + this.classid
         }
     },
     methods: {
@@ -140,6 +150,7 @@ export default {
             'get_article_data',
             'post_article_data'
         ]),
+        // 初始化
         init() {
             let id = this.$route.query.id
             if (id) {
@@ -158,6 +169,24 @@ export default {
                 })
             }
         },
+        // 上传图片处理
+        imageHandler(image, callback) {
+            const input = document.createElement('input')
+            input.setAttribute('type', 'file')
+            input.click()
+            input.onchange = () => {
+                const file = input.files[0]
+                if (/^image\//.test(file.type)) {
+                    let fd = new FormData()
+                    fd.append('file', file)
+                    this.upLoadToServer(fd) // 上传图片
+                } else {
+                    this.$toast('只能上传图片')
+                    console.warn('上传格图片式错误')
+                }
+            }
+        },
+        // 上传图片到服务器
         upLoadToServer(params) {
             axios.post('http://api.toutiaojk.com/e/extend/jkh/upload_file.php', params, {
                 headers: {'Content-Type': 'multipart/form-data'},
@@ -173,31 +202,15 @@ export default {
             })
             .catch(err => {
                 console.log(err)
-                Toast({
+                this.$toast({
                     message: '操作失败',
                     iconClass: 'icon-close'
                 })
             })
         },
-        imageHandler(image, callback) {
-            const input = document.createElement('input')
-            input.setAttribute('type', 'file')
-            input.click()
-            input.onchange = () => {
-                const file = input.files[0]
-                if (/^image\//.test(file.type)) {
-                    let fd = new FormData()
-                    fd.append('file', file)
-                    this.upLoadToServer(fd) // 上传图片
-                } else {
-                    Toast('只能上传图片')
-                    console.warn('上传格图片式错误')
-                }
-            }
-        },
+        // 发表
         publish(type, state, goback) {
             this.title = this.title.replace(/\s/gi, '')
-            this.content = this.content.replace(/\s/gi, '')
             let params = {
                 'type': type,
                 'state': state,
@@ -205,6 +218,7 @@ export default {
                 'newstext': this.content,
                 'classid': this.classid
             }
+            // 获取正文图片作为列表封面图
             if (this.coverImages[0]) {
                 params.titlepic = this.coverImages[0].src
             }
@@ -215,13 +229,13 @@ export default {
             if (this.json) {
                 params.id = this.json.id
             }
-            Indicator.open()
+            this.$indicator.open()
             this.post_article_data(params)
                 .then(res => {
-                    Indicator.close()
+                    this.$indicator.close()
                     if (res && res.data) {
                         this.edit = false
-                        Toast({
+                        this.$toast({
                             message: '操作成功',
                             iconClass: 'icon-dui'
                         })
@@ -229,7 +243,7 @@ export default {
                             this.$router.push('/index/user/health')
                         }
                     } else {
-                        Toast({
+                        this.$toast({
                             message: '操作失败',
                             iconClass: 'icon-close'
                         })
@@ -237,18 +251,20 @@ export default {
                 })
                 .catch(err => {
                     console.log(err)
-                    Indicator.close()
-                    Toast({
+                    this.$indicator.close()
+                    this.$toast({
                             message: '操作失败',
                             iconClass: 'icon-close'
                         })
                 })
         },
+        // 验证
         verify(type, state, goback) {
+            // 回去正文所有图片
             this.coverImages = this.editor.container.querySelectorAll('img')
             if (state === '3') {
                 if (this.allRule()) {
-                    MessageBox.confirm('确定执行此操作?')
+                    this.$msgBox.confirm('确定执行此操作?')
                     .then(() => {
                         this.publish(type, state, goback)
                     })
@@ -259,32 +275,36 @@ export default {
                 }
             }
         },
+        // 所有规则
         allRule() {
             if (!this.title) {
-                Toast('标题不能为空')
+                this.$toast('标题不能为空')
             } else if (this.title.length < 5) {
-                Toast('标题长度不能低于5个字')
+                this.$toast('标题长度不能低于5个字')
             } else if (this.title.length > 30) {
-                Toast('标题长度不能超过30个字')
+                this.$toast('标题长度不能超过30个字')
             } else if (!this.content) {
-                Toast('正文不能为空')
+                this.$toast('正文不能为空')
             } else if (!this.coverImages.length > 0) {
-                Toast('正文不能没有图片')
+                this.$toast('正文不能没有图片')
             } else if (!this.classid) {
-                Toast('标签不能为空')
+                this.$toast('标签不能为空')
             } else {
                 return true
             }
         },
+        // 只有title规则
         onlyTitleRule() {
             if (!this.title) {
-                Toast('标题不能为空')
+                this.$toast('标题不能为空')
             } else {
                 return true
             }
         },
+        // 预览文章
         openPreview() {
             if (this.onlyTitleRule()) {
+                // 时间处理
                 let d = new Date()
                 const Year = d.getFullYear()
                 const Month = d.getMonth() + 1
@@ -295,9 +315,9 @@ export default {
                     newstext: this.content,
                     classid: this.classid,
                     newstime: nowTime,
-                    befrom: this.$store.state.login.wx.nickname
+                    befrom: this.userInfo.nickname
                 }
-                this.$router.push({ path: '/index/user/publish/preview', query: {json: previewJson} })
+                this.$router.push({ name: 'preview', params: {json: previewJson} })
             }
         }
     },
@@ -305,11 +325,12 @@ export default {
         this.init()
     },
     mounted() {
+        // 加载自定义图片处理方法
         this.editor.getModule('toolbar').addHandler('image', this.imageHandler)
     },
     beforeRouteLeave (to, from, next) {
         if (this.edit) {
-            MessageBox.confirm('离开将不会保留修改内容，是否确定？')
+            this.$msgBox.confirm('离开将不会保留修改内容，是否确定？')
             .then(() => {
                 next()
             })
@@ -415,12 +436,12 @@ export default {
         .label {
             .mint-cell {
                 display: inline-block;
-                border: none;
                 background: none;
                 .mint-cell-wrapper {
                     font-size: 13px;
                     background: none;
                     padding: 0 0.55rem 0 0;
+                    border: none;
                 }
                 .mint-radiolist-label {
                     padding: 0;

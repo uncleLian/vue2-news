@@ -43,7 +43,7 @@ export default {
     },
     computed: {
         ...mapGetters('login', [
-            'login'
+            'isLogin'
         ]),
         ...mapGetters('detail', [
             'historyArticle'
@@ -73,7 +73,7 @@ export default {
             'set_collectArticle'
         ]),
         ...mapActions('collect', [
-            'get_collect_cache',
+            'get_collectArticle_cache',
             'get_collect_data',
             'post_collect_data'
         ]),
@@ -154,10 +154,10 @@ export default {
     beforeRouteEnter(to, from, next) {
         next(vm => {
             // 是否登录
-            if (vm.login) {
+            if (vm.isLogin) {
                 // 是否同步过数据
                 if (vm.request) {
-                    vm.get_collect_cache()
+                    vm.get_collectArticle_cache()
                 } else {
                     vm.getCollectAjax()
                 }
@@ -170,11 +170,11 @@ export default {
                     })
                     .catch(err => {
                         console.log(err)
-                        vm.get_collect_cache()
+                        vm.get_collectArticle_cache()
                     })
                     vm.first = false
                 } else {
-                    vm.get_collect_cache()
+                    vm.get_collectArticle_cache()
                 }
             }
         })

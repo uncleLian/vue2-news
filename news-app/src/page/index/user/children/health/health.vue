@@ -1,17 +1,21 @@
 <template>
     <transition name='fadeIn'>
         <div id="health">
-            <my-header fixed :title='$store.state.login.wx.nickname' v-goTop:click='true'>
+            <!-- 头部 -->
+            <my-header fixed :title='userInfo.nickname' v-goTop:click='true'>
                 <a slot="left" class="back-black" @click='$router.go(-1)'></a>
             </my-header>
+            <!-- 正文 -->
             <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
                 <div class="container">
+                    <!-- tabbar -->
                     <mt-tabbar v-model="selected">
                         <mt-tab-item id="作品">作品</mt-tab-item>
                         <mt-tab-item id="公告">公告</mt-tab-item>
                         <mt-tab-item id="数据">数据</mt-tab-item>
                         <router-link  class="publish" to="publish"><span>发表</span></router-link>
                     </mt-tabbar>
+                    <!-- tabContainer -->
                     <mt-tab-container v-model="selected">
                         <mt-tab-container-item id="作品" v-infinite-scroll="get_article" infinite-scroll-disabled="lock" infinite-scroll-distance="10">
                             <publish-item :itemJson="itemJson"></publish-item>
@@ -27,14 +31,13 @@
                             数据
                         </mt-tab-container-item>
                     </mt-tab-container>
-
                 </div>
             </div>
         </div>
     </transition>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
     name: 'health',
     data() {
@@ -46,6 +49,11 @@ export default {
             loading: false,
             nothing: false
         }
+    },
+    computed: {
+        ...mapGetters('user', [
+            'userInfo'
+        ])
     },
     methods: {
         ...mapActions('health', [

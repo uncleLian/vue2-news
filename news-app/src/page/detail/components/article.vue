@@ -1,5 +1,5 @@
 <template>
-    <article id="article">
+    <article id="article" v-if="json">
         <!-- 信息 -->
         <div class="article_info">
             <h1 class="title">{{json.title}}</h1>
@@ -62,12 +62,14 @@ export default {
     },
     watch: {
         json(val) {
-            this.video = this.$el.querySelector('video')
-            this.video_poster = true
-            this.video_playing = false
-            this.video_ended = false
-            this.video_loading = false
-            this.video_fixed = false
+            this.$nextTick(() => {
+                this.video = this.$el.querySelector('video')
+                this.video_poster = true
+                this.video_playing = false
+                this.video_ended = false
+                this.video_loading = false
+                this.video_fixed = false
+            })
         }
     },
     methods: {

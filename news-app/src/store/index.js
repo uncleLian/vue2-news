@@ -14,7 +14,7 @@ Vue.use(Vuex)
 
 const state = {
     device: 'android',
-    userid: 'oqKkTvySObkOpp6L2z__GjacVFN8', // oqKkTv6XI_iDnYha-1VYKbtsvbYw //oqKkTvySObkOpp6L2z__GjacVFN8
+    userid: 'oqKkTvySObkOpp6L2z__GjacVFN8',  // oqKkTvySObkOpp6L2z__GjacVFN8
     firstTime: '',
     deviceUa: ''
 }

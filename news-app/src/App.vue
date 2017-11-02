@@ -9,7 +9,7 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { Toast } from 'mint-ui'
+import { get_local_cache } from '@/config/cache'
 export default {
     data () {
         return {
@@ -33,8 +33,19 @@ export default {
     },
     computed: {
         ...mapGetters('login', [
-            'login'
+            'isLogin'
         ])
+    },
+    watch: {
+        $route (val) {
+            if (this.$route.name === 'home' || this.$route.name === 'video' || this.$route.name === 'collect' || this.$route.path === '/index/user') {
+                document.addEventListener('backbutton', this.onBackKeyDown, false)
+                document.removeEventListener('backbutton', this.exitApp, false)
+            } else {
+                document.removeEventListener('backbutton', this.onBackKeyDown, false)
+                document.removeEventListener('backbutton', this.exitApp, false)
+            }
+        }
     },
     methods: {
         ...mapMutations([
@@ -43,24 +54,24 @@ export default {
             'set_firstTime',
             'set_deviceUa'
         ]),
-        ...mapActions('login', [
-            'get_user'
+        ...mapMutations('login', [
+            'set_isLogin'
+        ]),
+        ...mapMutations('user', [
+            'set_userInfo'
         ]),
         ...mapActions('detail', [
             'get_historyArticle_cache'
         ]),
-        init () {
-            this.firstEnterTime()
-            this.checkOS()
-            this.cache_init()
-        },
-        cache_init() {
-            this.get_historyArticle_cache()
-        },
+        ...mapActions('collect', [
+            'get_collectArticle_cache'
+        ]),
+        // 记录打开APP时间
         firstEnterTime () {
             let time = new Date().getTime()
             this.set_firstTime(time)
         },
+        // 判断设备系统
         checkOS () {
             var ua = navigator.userAgent.toLowerCase()
             this.set_deviceUa(ua)
@@ -68,8 +79,27 @@ export default {
                 this.set_device('ios')
             }
         },
+        // 获取登录状态
+        get_loginState_cache() {
+            if (!this.isLogin) {
+                let isLogin = get_local_cache('isLogin')
+                if (isLogin) {
+                    this.set_isLogin(isLogin)
+                    if (isLogin === 'wx') {
+                        let userInfo = JSON.parse(get_local_cache('userInfo'))
+                        this.set_userInfo(userInfo)
+                        this.set_userid(userInfo.unionid)
+                    }
+                } else {
+                    document.addEventListener('deviceready', () => {
+                        this.set_userid(device.uuid)
+                    }, false)
+                }
+            }
+        },
+        // 监听物理返回键
         onBackKeyDown() {
-            Toast({
+            this.$toast({
                 message: '再点击一次退出程序',
                 position: 'bottom',
                 duration: 2000
@@ -84,27 +114,20 @@ export default {
         },
         exitApp() {
             navigator.app.exitApp()
+        },
+        app_init () {
+            this.firstEnterTime()
+            this.checkOS()
+        },
+        cache_init() {
+            this.get_loginState_cache()
+            this.get_historyArticle_cache()
+            this.get_collectArticle_cache()
         }
     },
     created () {
-        this.get_user()
-        document.addEventListener('deviceready', () => {
-            if (!this.login) {
-                this.set_userid(device.uuid)
-            }
-        }, false)
-        this.init()
-    },
-    watch: {
-        $route (val) {
-            if (this.$route.name === 'home' || this.$route.name === 'video' || this.$route.name === 'collect' || this.$route.path === '/index/user') {
-                document.addEventListener('backbutton', this.onBackKeyDown, false)
-                document.removeEventListener('backbutton', this.exitApp, false)
-            } else {
-                document.removeEventListener('backbutton', this.onBackKeyDown, false)
-                document.removeEventListener('backbutton', this.exitApp, false)
-            }
-        }
+        this.app_init()
+        this.cache_init()
     }
 }
 </script>
