@@ -31,13 +31,13 @@
 </template>
 <script>
 import { mapMutations, mapActions } from 'vuex'
-// import { Toast } from 'mint-ui'
+import { get_iosLocation, get_androidLocation } from '@/config/cordova'
 export default {
     data() {
         return {
             userName: '',
             passWord: '',
-            cordova_location: {}
+            GPSLocation: {}
         }
     },
     methods: {
@@ -53,90 +53,16 @@ export default {
         ...mapActions('health', [
             'get_userPower_data'
         ]),
-        ...mapActions('cordova', [
-            'cordova_baidu_location',
-            'cordova_getGeolocation'
-        ]),
-        // toUserInfo(val){
-        //    this.GET_USERINFO(val);
-        // },
+        // ...mapActions('cordova', [
+        //     'cordova_baidu_location',
+        //     'cordova_getGeolocation'
+        // ]),
+        // 第三方登录
         login(loginType) {
-            // var that = this
             if (loginType === 1) {
                 var scope = 'snsapi_userinfo'
                 document.addEventListener('deviceready', () => {
                     cordova.exec(this.onSuccess, this.onError, 'Wechat', 'sendAuthRequest', [scope])
-                    // function successCallback(response) {
-                    //     const code = response.code
-                    //     const appidA = 'wxab47f0260fabea40'
-                    //     // const appidB = 'wx13b05ceac5e7a654'
-                    //     const secretA = '24950a2a032720541e0e952954dd6248'
-                    //     // const secretB = '9c96f15b353dc26658def855f9b04ce0'
-                    //     $.ajax({
-                    //             type: 'GET',
-                    //             url: `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${appidA}&secret=${secretA}&code=${code}&grant_type=authorization_code`
-                    //         })
-                    //         .then(
-                    //             function(res1) {
-                    //                 var data1 = JSON.parse(res1)
-                    //                 console.log(data1)
-                    //                 var refresh_token = data1.refresh_token
-                    //                 $.ajax({
-                    //                     type: 'GET',
-                    //                     url: `https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=${appidA}&grant_type=refresh_token&refresh_token=${refresh_token}`
-                    //                 }).then(
-                    //                     function(res2) {
-                    //                         var data2 = JSON.parse(res2)
-                    //                         console.log(data2)
-                    //                         var access_token = data2.access_token
-                    //                         var openid = data2.openid
-                    //                         $.ajax({
-                    //                             type: 'GET',
-                    //                             url: `https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}`
-                    //                         }).then(
-                    //                             function(res3) {
-                    //                                 var data3 = JSON.parse(res3)
-                    //                                 console.log(data3)
-                    //                                 that.set_login('wx')
-                    //                                 that.set_wx(data3)
-                    //                                 that.set_userid(data3.unionid)
-                    //                                 that.get_userPower_data(data3.unionid) // 获取用户权限
-                    //                                 that.$router.go(-1)
-                    //                             },
-                    //                             function() {
-                    //                                 Toast({ message: '登录失败', duration: 2000 })
-                    //                             }
-                    //                         )
-                    //                     },
-                    //                     function() {
-                    //                         Toast({ message: '登录失败', duration: 2000 })
-                    //                     }
-                    //                 )
-                    //             },
-                    //             function() {
-                    //                 Toast({ message: '登录失败', duration: 2000 })
-                    //             }
-                    //         )
-                    //     //              $.ajax({
-                    //     //                type: 'GET',
-                    //     //                data: that.cordova_location,
-                    //     //                url: `http://app.toutiaojk.com/e/extend/list/appuser.php?code=${code}`
-                    //     //              })
-                    //     //                .then(res => {
-                    //     //                  var ress = JSON.parse(res)
-                    //     //                  if (ress.err !== 1) {
-                    //     //                    that.set_login('wx')
-                    //     //                    that.set_wx(ress.data)
-                    //     //                    that.set_userid(ress.data.unionid)
-                    //     //                    that.$router.go(-1)
-                    //     //                  } else {
-                    //     //                    alert(ress.errMsg)
-                    //     //                  }
-                    //     //                })
-                    // }
-                    // function errorCallBack() {
-                    //     Toast({ message: '授权失败', duration: 2000 })
-                    // }
                 }, false)
             } else {
                 this.$toast({ message: '暂不支持QQ登录', duration: 2000 })
@@ -174,25 +100,27 @@ export default {
             .catch(() => {
                 this.$toast({ message: '登录失败', duration: 2000 })
             })
+
+            // 发送定位
+            this.$http.get(`http://app.toutiaojk.com/e/extend/list/appuser.php?code=${code}`, {params: this.GPSLocation})
+            .then(res => {
+                console.log(res)
+            })
         },
         onError() {
             this.$toast({ message: '授权失败', duration: 2000 })
         },
-        location() {
-            var that = this
+        get_location() {
             if (this.$store.state.device === 'ios') {
-                navigator.geolocation.getCurrentPosition(function(result) {
-                    that.cordova_location = result.coords
-                })
+                var res = get_iosLocation()
+                this.GPSLocation = res.coords
             } else {
-                baidumap_location.getCurrentPosition(function(result) {
-                    that.cordova_location = result
-                })
+                this.GPSLocation = get_androidLocation()
             }
         }
     },
     mounted() {
-        this.location()
+        this.get_location()
     }
 }
 </script>

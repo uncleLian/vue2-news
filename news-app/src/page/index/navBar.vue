@@ -1,6 +1,6 @@
 <template>
-    <div class="navBar">
-        <div class='nav_item' v-for='item in navData' @click.stop='route_change(item)' :class="{active: selected == item.route}">
+    <div id="navBar">
+        <div class='nav_item' v-for='item in navData' @click.stop='itemClick(item)' :class="{active: selected == item.route}">
             <div class='nav_icon' :class='item.class'></div>
             <p class='nav_name'>{{item.name}}</p>
         </div>
@@ -19,28 +19,26 @@ export default {
             selected: 'home'
         }
     },
-    methods: {
-        route_change (item) {
-            this.$router.push(item.route)
-            this.selected = item.route
-        },
-        init () {
-            if (this.$route.name) {
-                this.selected = this.$route.name
-            } else if (this.$route.path.includes('user')) {
-                this.selected = 'user'
-            }
-        }
-    },
     watch: {
         $route (val) {
             this.init()
         }
+    },
+    methods: {
+        init () {
+            if (this.$route.name === 'home' || this.$route.name === 'video' || this.$route.name === 'collect' || this.$route.name === 'user') {
+                this.selected = this.$route.name
+            }
+        },
+        itemClick(item) {
+            this.$router.push({name: item.route})
+            this.selected = item.route
+        }
     }
 }
 </script>
-<style scoped lang='stylus'>
-.navBar {
+<style lang='stylus'>
+#navBar {
     position: fixed;
     left: 0;
     right: 0;

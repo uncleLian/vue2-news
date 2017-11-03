@@ -1,3 +1,4 @@
+// textarea自动增加高度
 export function autoTextarea(elem, extra, maxHeight) {
     extra = extra || 0
     var isFirefox = !!document.getBoxObjectFor || 'mozInnerScreenX' in window

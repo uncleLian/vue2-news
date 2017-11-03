@@ -153,8 +153,13 @@ export default {
         },
 
         //  广告页
-        async get_coverImg_data({ commit, rootState, state }) {
-            let params = { 'userid': rootState.userid, 'starttime': '', 'type': 'ad', 'deviceUa': rootState.deviceUa }
+        async get_coverImg_data({ rootState }) {
+            let params = {
+                'userid': rootState.userid,
+                'starttime': '',
+                'type': 'ad',
+                'deviceUa': rootState.deviceUa
+            }
             let res = await fetch('post', 'addata', params)
             return res
         }

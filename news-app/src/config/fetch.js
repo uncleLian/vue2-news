@@ -2,6 +2,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import qs from 'qs'
 Vue.prototype.$http = axios
+// 应用数据和后台富文本数据的地址不同，只能这样咯
 let baseUrl = 'http://app.toutiaojk.com/e/extend/list/'
 let publishURL = 'http://api.toutiaojk.com/e/extend/jkh/'
 const ajaxURL = {

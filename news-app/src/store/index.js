@@ -6,7 +6,6 @@ import search_module from './search/index'
 import login_module from './login/index'
 import collect_module from './collect/index'
 import video_module from './video/index'
-import cordova_module from './cordova/index'
 import user_module from './user/index'
 import health_module from './health/index'
 
@@ -64,7 +63,6 @@ export default new Vuex.Store({
         login: login_module,
         collect: collect_module,
         video: video_module,
-        cordova: cordova_module,
         user: user_module,
         health: health_module
     }
