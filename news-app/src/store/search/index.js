@@ -23,6 +23,7 @@ export default {
             return res
         },
 
+        // 获取热点标题数据
         async get_topic_data() {
             let res = await fetch('post', 'Search', {type: 'topic'})
             return res

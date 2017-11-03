@@ -1,17 +1,19 @@
 <template>
     <div class='tool' :class="{'focus': focus}">
-         
+        <!-- 左边 -->
         <div class="left">
             <div class="text" v-show='!focus'  @click.stop="inputFocus">
                 <a class="icon-write"> 写评论...</a>
             </div>
-            <textarea id='input' v-if="comment === 'reply'"  :class="{ normal: !focus }" v-model.trim='inputVal' @focus.stop="onFocus" @blur.stop="onBlur" :placeholder="placeholderVal" ><br/></textarea>
-
-            <textarea  id='input' v-else :class="{ normal: !focus }" v-model.trim='inputVal' @focus.stop="onFocus" @blur.stop="onBlur"><br/></textarea>
+            <!-- 回复可以@功能，加上placeholder属性 -->
+            <textarea id='input'  :class="{ normal: !focus }" v-model.trim='inputVal' @focus.stop="onFocus" @blur.stop="onBlur" :placeholder="placeholderVal"><br/></textarea>
         </div>
+        <!-- 右边 -->
         <div class="right" v-show='!focus' v-if='icon'>
+            <!-- 内容分发 -->
             <slot name='tool_btn'></slot>
         </div>
+        <!-- 发送按钮 -->
         <span v-show='focus' class="publish_btn" :class="{ hasVal: inputVal.length > 0 ? true : false }">发送</span>
     </div>
 </template>
@@ -21,31 +23,33 @@ import { Toast, MessageBox } from 'mint-ui'
 import { autoTextarea } from '@/config/autoTextarea.js'
 export default {
     props: {
-        comment: String,
-        icon: Boolean,
-        remarkid: {
+        comment: String,    // 评论类型
+        icon: Boolean,      // 是否icon布局
+        remarkid: {         // 评论数据的id，回复需要知道是哪条评论
             default: ''
         }
     },
     data() {
         return {
-            focus: false,
-            inputVal: '',
-            keepInputVal: '',
-            placeholderVal: ''
+            focus: false,       // input是否聚焦
+            inputVal: '',       // input的内容
+            keepInputVal: '',   // 失焦持久的input内容
+            placeholderVal: ''  // @的内容
         }
     },
     computed: {
         ...mapGetters('detail', [
-            'talkReply'
+            'talkReply'         // @的数据
         ]),
         ...mapGetters('login', [
-            'isLogin'
+            'isLogin'           // 是否登录
         ])
     },
     watch: {
         focus(val) {
+            // 聚焦
             if (val) {
+                // 是否有持久内容
                 if (this.keepInputVal) {
                     this.inputVal = this.keepInputVal
                 }
@@ -63,29 +67,13 @@ export default {
     },
     methods: {
         ...mapMutations('detail', [
-            'set_talkReply'
+            'set_talkReply'     // 设置被@的数据
         ]),
         ...mapActions('detail', [
-            'post_Comment_data',
-            'post_Reply_data'
+            'post_Comment_data',    // 提交评论数据
+            'post_Reply_data'       // 提交回复数据
         ]),
-        inputFocus() {
-            $('.tool #input').focus()
-        },
-        onFocus() {
-            this.focus = true
-            setTimeout(() => {
-                this.$el.scrollIntoView(true)
-            }, 100)
-            if (this.comment === 'reply' && this.talkReply) {
-                this.placeholderVal = `回复 ${this.talkReply.nickname}`
-            }
-            document.addEventListener('backbutton', this.backButtonFocus, false)
-        },
-        onBlur() {
-            this.focus = false
-            document.removeEventListener('backbutton', this.backButtonFocus, false)
-        },
+        // 发送评论
         sendComment() {
             if (this.isLogin) {
                 if (this.inputVal) {
@@ -135,6 +123,30 @@ export default {
                 })
             }
         },
+        // 聚焦
+        inputFocus() {
+            $('.tool #input').focus()
+        },
+        // 聚焦时候的钩子
+        onFocus() {
+            this.focus = true
+            setTimeout(() => {
+                // 移动端聚焦打开键盘的时候，让tool元素位于视图中。ios系统下会被盖住。
+                this.$el.scrollIntoView(true)
+            }, 100)
+            if (this.comment === 'reply' && this.talkReply) {
+                this.placeholderVal = `回复 ${this.talkReply.nickname}`
+            }
+            // 聚焦的时候，监听物理返回键，让input可以按物理键隐藏键盘
+            document.addEventListener('backbutton', this.backButtonFocus, false)
+        },
+        // 失焦时候的钩子
+        onBlur() {
+            this.focus = false
+            // 失焦的时候，移除监听物理返回键
+            document.removeEventListener('backbutton', this.backButtonFocus, false)
+        },
+        // 隐藏键盘
         backButtonFocus() {
             let isFocus = $('.tool #input').is(':focus')
             if (isFocus) {
@@ -145,7 +157,8 @@ export default {
     mounted() {
         let text = this.$el.querySelector('.tool #input')
         autoTextarea(text, 0, 80)
-        $(this.$el.querySelector('.tool .publish_btn')).on('touchend', () => {
+        // 用touched来代替click，是为了解决click事件和blur事件的冲突，blur事件触发顺序比click事件早
+        $(this.$el.querySelector('.tool .publish_btn')).on('touched', (e) => {
             this.sendComment()
         })
     }

@@ -2,7 +2,7 @@ import { set_local_cache } from '@/config/cache'
 export default {
     namespaced: true,
     state: {
-        isLogin: 'wx'
+        isLogin: 'wx'       // 是否登录，空为未登录
     },
     getters: {
         isLogin: state => {

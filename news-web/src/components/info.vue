@@ -15,6 +15,7 @@
 export default {
     props: ['json'],
     filters: {
+        // 阅读量不够，自己加点戏哈哈哈
         watchFilter(val) {
             let randomVal = Math.floor(Math.random() * 101 + 100)   // 取100 ~ 200的随机数
             if (val) {

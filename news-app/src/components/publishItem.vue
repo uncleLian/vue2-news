@@ -1,7 +1,6 @@
 <template>
     <ul class="list">
         <li class="list-item" v-for="(item,index) in itemJson" :key='index'>
-
             <!-- 草稿 -->
                 <a class="draft" v-if="item.state === '2'">
                     <div class="item-title" :class="item.titlepic?'':'text'">
@@ -13,7 +12,6 @@
                         </div>
                     </div>
                 </a>
-                
             <!-- 其他 -->
                 <a v-else>
                     <div class="item-title" :class="item.titlepic?'':'text'">
@@ -45,14 +43,13 @@
                     </ul>
                     <div class="unpass-reason" v-else>理由:内容不适合收录</div>
                 </a>
-
         </li>
         <mt-actionsheet :actions="actions" v-model="actionsheet"></mt-actionsheet>
     </ul>
 </template>
 <script>
+// @state => 0： 已推荐 1： 已发表 2：草稿 3：审核中 4：未通过 5：已撤回
 import { mapActions } from 'vuex'
-import { Toast, Indicator, MessageBox } from 'mint-ui'
 export default {
     props: ['itemJson'],
     data() {
@@ -63,14 +60,13 @@ export default {
         }
     },
     computed: {
+        // 根据state状态码，生成对应功能，如：草稿状态只有删除和修改，没有撤回功能
         actions() {
             if (this.item) {
-                let data = [
-                    {
-                        name: '删除',
-                        method: this.delete
-                    }
-                ]
+                let data = [{
+                    name: '删除',
+                    method: this.delete
+                }]
                 if (this.item.state !== '4') {
                     data[data.length] = { name: '修改', method: this.edit }
                     if (this.item.state !== '2') {
@@ -83,48 +79,27 @@ export default {
     },
     methods: {
         ...mapActions('health', [
-            'post_article_data'
+            'post_article_data'     // 提交文章数据
         ]),
         url(item) {
+            // 根据状态码，返回对应的路由地址。已推荐和已发表打开详情页，其他打开预览页
             if (item.state === '0' || item.state === '1') {
                 return `/detail?classid=${item.classid}&id=${item.id}&datafrom=${item.datafrom}`
             } else {
                 return `/index/user/publish/preview?id=${item.id}`
             }
         },
+        // 打开sheet
         openSheet(item, index) {
             this.item = item
             this.index = index
             this.actionsheet = true
         },
-        actionConfirm(text, params, methods) {
-            MessageBox.confirm(text)  // 提示text
-            .then(() => {
-                Indicator.open()
-                this.post_article_data(params) // 参数
-                .then(res => {
-                    Indicator.close()
-                    if (methods) {
-                        methods()   // 执行方法
-                    }
-                    Toast({
-                        message: '操作成功',
-                        iconClass: 'icon-dui'
-                    })
-                })
-                .catch(err => {
-                    console.log('操作失败', err)
-                    Indicator.close()
-                    TToast({
-                        message: '操作失败',
-                        iconClass: 'icon-close'
-                    })
-                })
-            })
-        },
+        // 编辑功能
         edit() {
             this.$router.push(`publish?id=${this.item.id}`)
         },
+        // 删除功能
         delete() {
             let params = {
                 type: 'del',
@@ -135,6 +110,7 @@ export default {
                 this.itemJson.splice(this.index, 1)
             })
         },
+        // 撤回功能
         recall() {
             let params = {
                 type: 'recall',
@@ -144,11 +120,37 @@ export default {
             this.actionConfirm('确定从主页上撤回？', params, () => {
                 this.item.state = '5'
             })
+        },
+        // 封装的confirm方法，为了优化下代码
+        actionConfirm(text, params, methods) {
+            this.msgBox.confirm(text)  // 提示text
+            .then(() => {
+                this.indicator.open()
+                this.post_article_data(params) // 参数
+                .then(res => {
+                    this.indicator.close()
+                    if (methods) {
+                        methods()   // 执行方法
+                    }
+                    this.$toast({
+                        message: '操作成功',
+                        iconClass: 'icon-dui'
+                    })
+                })
+                .catch(err => {
+                    console.log('操作失败', err)
+                    this.indicator.close()
+                    this.$toast({
+                        message: '操作失败',
+                        iconClass: 'icon-close'
+                    })
+                })
+            })
         }
     }
 }
 </script>
-<style scoped lang='stylus'>
+<style lang='stylus'>
 .list {
     .list-item {
         padding: 15px 16px;

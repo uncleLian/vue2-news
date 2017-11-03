@@ -3,17 +3,17 @@ import { fetch } from '@/config/fetch'
 export default {
     namespaced: true,
     state: {
-        indexActive: 'news_recommend', // active的栏目
-        indexPage: { news_recommend: 1 }, // 记录各个栏目page的对象
-        indexLocation: { news_recommend: 0 }, // 各个栏目location的对象
+        indexActive: 'news_recommend',          // active的栏目
+        indexPage: { news_recommend: 1 },       // 记录各个栏目page的对象
+        indexLocation: { news_recommend: 0 },   // 各个栏目location的对象
         // 栏目数据
         indexColumn: [{
             classname: '推荐',
             classid: 0,
             classpath: 'news_recommend'
         }],
-        currentContent: '', // 当前栏目的数据，为了缓存各个栏目的数据，刷新时不用再次请求
-        indexSwiper: false // 是否在滑动
+        currentContent: '',     // 当前栏目的数据，为了缓存各个栏目的数据，刷新时不用再次请求
+        indexSwiper: false      // 是否在滑动
     },
     getters: {
         indexActive: state => {
@@ -157,8 +157,7 @@ export default {
             let params = {
                 'userid': rootState.userid,
                 'starttime': '',
-                'type': 'ad',
-                'deviceUa': rootState.deviceUa
+                'type': 'ad'
             }
             let res = await fetch('post', 'addata', params)
             return res

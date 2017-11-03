@@ -9,6 +9,7 @@ Router.prototype.go = function() {
     window.history.go(-1)
 }
 
+// 路由懒加载
 const index = () => import('@/page/index/index')
 const channel = () => import('@/page/index/children/channel')
 const detail = () => import('@/page/detail/detail')
@@ -21,20 +22,26 @@ export default new Router({
             redirect: '/index',
             component: App,
             children: [
+                // index页面
                 {
                     name: 'index',
                     path: '/index',
                     component: index,
-                    children: [{
-                        path: 'channel',
-                        component: channel
-                    }]
+                    children: [
+                        // channel页面
+                        {
+                            path: 'channel',
+                            component: channel
+                        }
+                    ]
                 },
+                // detail页面
                 {
                     name: 'detail',
                     path: '/detail',
                     component: detail
                 },
+                // search页面
                 {
                     name: 'search',
                     path: '/search',

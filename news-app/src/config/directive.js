@@ -2,7 +2,7 @@ function GetSlideDirection(startX, startY, endX, endY, move) {
     let dy = startY - endY
     let dx = endX - startX
     let result
-        // 如果滑动距离太短
+    // 如果滑动距离太短
     if (Math.abs(dx) < move && Math.abs(dy) < move) {
         return
     }
@@ -19,6 +19,7 @@ function GetSlideDirection(startX, startY, endX, endY, move) {
     return result
 }
 
+// 根据触摸方向做相应需求
 export function swiper(el, direction, type, vm) {
     if (!el || !direction) {
         return
@@ -36,6 +37,7 @@ export function swiper(el, direction, type, vm) {
         endX = ev.changedTouches[0].pageX
         endY = ev.changedTouches[0].pageY
         res = GetSlideDirection(startX, startY, endX, endY, 50)
+        // 如果组件传的类型为blur，找到当前组件的input元素失去焦点
         if (type === 'blur') {
             let input = $(vm.$el.querySelector('#input'))
             if (input.is(':focus')) {
@@ -45,14 +47,14 @@ export function swiper(el, direction, type, vm) {
     }, false)
 
     el.addEventListener('touchend', function(ev) {
-        if (direction === res && type === 'close') {
-            vm.visible = false
-        } else if (direction === res) {
+        // 触摸滑动的方向和组件传的方向相等，则返回上一页
+        if (direction === res) {
             vm.$router.go(-1)
         }
     }, false)
 }
 
+// 点击滚动到顶部
 export function goTop(el, eventType, vm) {
     if (eventType === 'click') {
         $(el).on('click', () => {

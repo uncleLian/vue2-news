@@ -1,5 +1,6 @@
 <template>
     <div id="popupMenu">
+        <!-- mint-ui的模态框不符合需求，自己封装一个 -->
         <transition name="toggleSide">
             <div class="functionItem" v-show='visible'>
                 <slot></slot>

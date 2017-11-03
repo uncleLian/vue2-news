@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+
 import index_module from './index/index'
 import detail_module from './detail/index'
 import search_module from './search/index'
@@ -12,16 +13,12 @@ import health_module from './health/index'
 Vue.use(Vuex)
 
 const state = {
-    device: 'android',
-    userid: 'oqKkTvySObkOpp6L2z__GjacVFN8',  // oqKkTvySObkOpp6L2z__GjacVFN8
-    firstTime: '',
-    deviceUa: ''
+    device: 'android',                       // 设备
+    userid: 'oqKkTvySObkOpp6L2z__GjacVFN8',  // 我微信的id: oqKkTvySObkOpp6L2z__GjacVFN8
+    firstTime: ''                            // 第一次进入app时间
 }
 
 const getters = {
-    deviceUa: state => {
-        return state.deviceUa
-    },
     device: state => {
         return state.device
     },
@@ -34,9 +31,6 @@ const getters = {
 }
 
 const mutations = {
-    set_deviceUa(state, val) {
-        state.deviceUa = val
-    },
     set_device(state, val) {
         state.device = val
     },

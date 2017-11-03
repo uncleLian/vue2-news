@@ -9,6 +9,7 @@ Router.prototype.go = function() {
     window.history.go(-1)
 }
 
+// 路由懒加载
 const index = () => import('@/page/index/index')
 const home = () => import('@/page/index/home/home')
 const channel = () => import('@/page/index/home/children/channel')
@@ -35,107 +36,125 @@ export default new Router({
             redirect: '/index/home',
             component: App,
             children: [
-            {
-                name: 'index',
-                path: '/index',
-                redirect: '/index/home',
-                component: index,
-                children: [
+                // index页面
                 {
-                    name: 'home',
-                    path: 'home',
-                    component: home,
+                    name: 'index',
+                    path: '/index',
+                    redirect: '/index/home',
+                    component: index,
                     children: [
+                    // home页面
                     {
-                        name: 'channel',
-                        path: 'channel',
-                        component: channel
-                    }
-                    ]
-                },
-                {
-                    name: 'video',
-                    path: 'video',
-                    component: video
-                },
-                {
-                    name: 'collect',
-                    path: 'collect',
-                    component: collect
-                },
-                {
-                    name: 'user',
-                    path: 'user',
-                    component: user,
-                    children: [
-                    {
-                        name: 'userGuide',
-                        path: 'userGuide',
-                        component: userGuide
-                    },
-                    {
-                        name: 'QRcode',
-                        path: 'QRcode',
-                        component: QRcode
-                    },
-                    {
-                        name: 'feedBack',
-                        path: 'feedBack',
-                        component: feedBack
-                    },
-                    {
-                        name: 'myHistory',
-                        path: 'myHistory',
-                        component: myHistory
-                    },
-                    {
-                        name: 'myComment',
-                        path: 'myComment',
-                        component: myComment
-                    },
-                    {
-                        name: 'health',
-                        path: 'health',
-                        component: health
-                    },
-                    {
-                        name: 'publish',
-                        path: 'publish',
-                        component: publish,
+                        name: 'home',
+                        path: 'home',
+                        component: home,
                         children: [
+                            // channel页面
                             {
-                                name: 'preview',
-                                path: 'preview',
-                                component: preview
+                                name: 'channel',
+                                path: 'channel',
+                                component: channel
+                            }
+                        ]
+                    },
+                    // video页面
+                    {
+                        name: 'video',
+                        path: 'video',
+                        component: video
+                    },
+                    // collect页面
+                    {
+                        name: 'collect',
+                        path: 'collect',
+                        component: collect
+                    },
+                    // user页面
+                    {
+                        name: 'user',
+                        path: 'user',
+                        component: user,
+                        children: [
+                            // userGuide页面
+                            {
+                                name: 'userGuide',
+                                path: 'userGuide',
+                                component: userGuide
+                            },
+                                // QRcode页面
+                            {
+                                name: 'QRcode',
+                                path: 'QRcode',
+                                component: QRcode
+                            },
+                                // feedBack页面
+                            {
+                                name: 'feedBack',
+                                path: 'feedBack',
+                                component: feedBack
+                            },
+                            // myHistory页面
+                            {
+                                name: 'myHistory',
+                                path: 'myHistory',
+                                component: myHistory
+                            },
+                            // myComment页面
+                            {
+                                name: 'myComment',
+                                path: 'myComment',
+                                component: myComment
+                            },
+                            // health页面
+                            {
+                                name: 'health',
+                                path: 'health',
+                                component: health
+                            },
+                            // publish页面
+                            {
+                                name: 'publish',
+                                path: 'publish',
+                                component: publish,
+                                children: [
+                                    // preview页面
+                                    {
+                                        name: 'preview',
+                                        path: 'preview',
+                                        component: preview
+                                    }
+                                ]
                             }
                         ]
                     }
                     ]
+                },
+                // detail页面
+                {
+                    name: 'detail',
+                    path: '/detail',
+                    component: detail,
+                    children: [
+                        // comment页面
+                        {
+                            name: 'comment',
+                            path: 'comment',
+                            component: comment
+                        }
+                    ]
+                },
+                // search页面
+                {
+                    name: 'search',
+                    path: '/search',
+                    component: search
+                },
+                // login 页面
+                {
+                    name: 'login',
+                    path: '/login',
+                    component: login
                 }
-                ]
-            },
-            {
-                name: 'detail',
-                path: '/detail',
-                component: detail,
-                children: [
-                    {
-                        name: 'comment',
-                        path: 'comment',
-                        component: comment
-                    }
-                ]
-            },
-            {
-                name: 'search',
-                path: '/search',
-                component: search
-            },
-            {
-                name: 'login',
-                path: '/login',
-                component: login
-            }
             ]
         }
     ]

@@ -1,5 +1,6 @@
 <template>
     <section class='comment_item'>
+        <!-- topLeft布局的评论样式 -->
         <div class='topFooter'>
             <div class="top">
                 <div class="portrait">

@@ -8,9 +8,9 @@
     </div>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { get_local_cache } from '@/config/cache'
 import { get_uuid, onBackKeyDown, exitApp } from '@/config/cordova'
+import { get_local_cache } from '@/config/cache'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
     data () {
         return {
@@ -37,8 +37,7 @@ export default {
         ...mapMutations([
             'set_device',
             'set_userid',
-            'set_firstTime',
-            'set_deviceUa'
+            'set_firstTime'
         ]),
         ...mapMutations('login', [
             'set_isLogin'
@@ -71,7 +70,6 @@ export default {
         // 判断设备系统
         checkOS () {
             var ua = navigator.userAgent.toLowerCase()
-            this.set_deviceUa(ua)
             if (/iphone|ipad|ipod/.test(ua)) {
                 this.set_device('ios')
             }

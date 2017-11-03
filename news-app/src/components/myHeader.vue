@@ -1,5 +1,7 @@
 <template>
+    <!-- 因为mint-ui的header不符合我需求，只能自己封装了 -->
     <header class="myHeader" :class="{ 'fixed': fixed }">
+        <!-- 这里是为了打包后，native在IOS上有沉浸式状态栏的效果而预留的空间 -->
         <div class="iosStatus" v-if="ios()"></div>
         <div class="top_bar">
             <div class="abs_l"><slot name="left"></slot></div>

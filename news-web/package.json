@@ -2,7 +2,7 @@
   "name": "news-web",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "uncleLian <771674109@qq.com>",
+  "author": "uncleLian <771674109@qq.com> https://github.com/uncleLian",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",

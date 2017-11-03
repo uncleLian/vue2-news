@@ -1,5 +1,6 @@
 <template>
     <section class='comment_item'>
+        <!-- topFooter布局的评论样式 -->
         <div class='topFooter' v-if="layout === 'topFooter'">
             <div class="top">
                 <div class="portrait">
@@ -22,6 +23,7 @@
                 <span class="time" v-if='itemJson.time'>{{itemJson.time}}</span>
             </div>
         </div>
+        <!-- leftRight布局的评论样式 -->
         <div class='leftRight' v-else>
             <div class="left">
                 <img :src="itemJson.headimgurl">

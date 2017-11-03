@@ -4,7 +4,7 @@ export default {
     namespaced: true,
     state: {
         historyArticle: {},     // 文章历史数据
-        location: {}            // 文章滚动条位置
+        location: {}            // 储存页面滚动条位置
     },
     getters: {
         historyArticle: state => {
@@ -32,7 +32,11 @@ export default {
             if (historyArticle && historyArticle[id]) {
                 res = historyArticle[id]
             } else {
-                await fetch('post', 'Artilce', {'id': id, 'datafrom': datafrom})
+                let params = {
+                    'id': id,
+                    'datafrom': datafrom
+                }
+                await fetch('post', 'Artilce', params)
                 .then(json => {
                     res = json.data
                     state.historyArticle[id] = res

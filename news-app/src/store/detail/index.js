@@ -65,7 +65,11 @@ export default {
                 }
             }
             if (!res) {
-                let params = {'userid': rootState.userid, 'id': id, 'datafrom': datafrom}
+                let params = {
+                    'userid': rootState.userid,
+                    'id': id,
+                    'datafrom': datafrom
+                }
                 await fetch('post', 'Artilce', params)
                 .then(json => {
                     res = json.data
@@ -94,7 +98,7 @@ export default {
         },
 
         // 获取回复数据： 用户/全部
-        async get_Reply_data({ commit, state, rootState }, { page, type, remarkid }) {
+        async get_Reply_data({ state, rootState }, { page, type, remarkid }) {
             let params = {
                 'userid': rootState.userid,
                 'id': state.currentArticle.id,
@@ -149,7 +153,7 @@ export default {
         },
 
         // 提交回复数据
-        post_Reply_data({ commit, state, rootState }, { remarkid, content, altUserId }) {
+        post_Reply_data({ state, rootState }, { remarkid, content, altUserId }) {
             let params = {
                 'userid': rootState.userid,
                 'id': state.currentArticle.id,
@@ -167,7 +171,7 @@ export default {
         },
 
         // 提交点赞数据
-        post_zan_data({ commit, state, rootState }, { comment, remarkid, replyid }) {
+        post_zan_data({ state, rootState }, { comment, remarkid, replyid }) {
             let params = {
                 'userid': rootState.userid,
                 'id': state.currentArticle.id,
@@ -187,7 +191,7 @@ export default {
         },
 
         // 提交删除评论数据
-        post_delete_data({ commit, state, rootState }, { type, remarkid, replyid }) {
+        post_delete_data({ state, rootState }, { type, remarkid, replyid }) {
             let params = {
                 'userid': rootState.userid,
                 'id': state.currentArticle.id,

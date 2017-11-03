@@ -10,7 +10,7 @@ import router from './router'
 import store from './store'
 
 // 第三方库
-import MintUI from 'mint-ui'    // 饿了么移动端UI组件
+import MintUI, { MessageBox, Toast, Indicator } from 'mint-ui'     // 饿了么移动端UI组件
 import 'mint-ui/lib/style.css'
 import VueAwesomeSwiper from 'vue-awesome-swiper'   // swiper滑动组件
 import 'swiper/dist/css/swiper.css'
@@ -29,6 +29,9 @@ import { swiper, goTop } from '@/config/directive.js'   // 指令
 
 Vue.config.productionTip = false
 Vue.use(MintUI)
+Vue.prototype.$toast = Toast
+Vue.prototype.$msgBox = MessageBox
+Vue.prototype.$indicator = Indicator
 Vue.use(VueAwesomeSwiper)
 
 // 注册全局组件
