@@ -1,6 +1,6 @@
 # vue2-news
 
-![image](https://img.shields.io/badge/vue-2.3.3-blue.svg)
+![image](https://img.shields.io/badge/vue-2.5.2-blue.svg)
 ![image](https://img.shields.io/badge/mint--ui-2.2.5-blue.svg)
 
 #### 还在完善，敬请期待！
