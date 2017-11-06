@@ -8,9 +8,9 @@
     </div>
 </template>
 <script>
-import { get_uuid, onBackKeyDown, exitApp } from '@/config/cordova'
-import { get_local_cache } from '@/config/cache'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { get_local_cache } from '@/config/cache'
+import { get_uuid, onBackKeyDown, exitApp } from '@/config/cordova'
 export default {
     data () {
         return {
