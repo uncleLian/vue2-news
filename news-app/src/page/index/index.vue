@@ -64,28 +64,12 @@ export default {
             } else {
                 this.advertisement = false
             }
-        },
-        // 消息推送（极光推送，不弄了，自行研究。。。）
-        // newsPush() {
-        //     document.addEventListener('deviceready', () => {
-        //         window.plugins.jPushPlugin.init()
-        //         window.plugins.jPushPlugin.setDebugMode(true)
-        //         window.plugins.jPushPlugin.openNotificationInAndroidCallback = (data) => {
-        //             this.$router.push(`/detail?classid=${data.extras.classid}&id=${data.extras.id}&datafrom=${data.extras.datafrom}`)
-        //             window.plugins.jPushPlugin.resetBadge()
-        //             window.plugins.jPushPlugin.setBadge(0)
-        //             window.plugins.jPushPlugin.setApplicationIconBadgeNumber(0)
-        //         }
-        //         window.plugins.jPushPlugin.resetBadge()
-        //         window.plugins.jPushPlugin.setBadge(0)
-        //         window.plugins.jPushPlugin.setApplicationIconBadgeNumber(0)
-        //         window.plugins.jPushPlugin.clearLocalNotifications()
-        //     }, false)
-        // }
+        }
     },
     created() {
         this.addvertisement_init()   // 广告初始化
         versionUpdate()              // 版本更新
+        this.newsPush()              // 消息推送（极光推送）
     }
 }
 </script>
