@@ -31,9 +31,10 @@ export default {
                 userid: userid
             }
             fetch('POST', 'power', params).then(res => {
-                if (res.data) {
-                    commit('set_isEditor', res.data)
-                }
+                // if (res.data) {
+                    // commit('set_isEditor', res.data)
+                    commit('set_isEditor', 2)
+                // }
             })
         }
     }
