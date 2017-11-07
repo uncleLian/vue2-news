@@ -1,97 +1,100 @@
 <template>
-  <transition name='fadeIn'>
-    <div id="feedback">
-      <my-header fixed title='意见反馈'>
-        <a class="back-white" slot='left' @click='$router.go(-1)'></a>
-      </my-header>
-
-      <div class="content" :class="{isIOS: $store.state.device == 'ios'}" v-swiper:swiperRight='true'>
-        <div class="automatic">
-          <div class="am_img">
-            <img src="~@/assets/img/myColorp.png">
-          </div>
-          <div class="am_span">
-            <span>{{advice}}</span>
-          </div>
+    <transition name='fadeIn'>
+        <div id="feedback">
+            <!-- 头部 -->
+            <my-header fixed title='意见反馈'>
+                <a class="back-white" slot='left' @click='$router.go(-1)'></a>
+            </my-header>
+            <!-- 正文 -->
+            <div class="content" :class="{isIOS: $store.state.device == 'ios'}" v-swiper:swiperRight='true'>
+                <div class="container">
+                    <div class="list">
+                        <template v-for="(item,index) in json">
+                             <!-- 机器人 -->
+                            <div class="item robot" v-if="item.type === 'robot'">
+                                <img src="~@/assets/img/myColorp.png">
+                                <span>{{item.text}}</span>
+                            </div>
+                            <!-- 用户 -->
+                            <div class="item user" v-if="item.type === 'user'">
+                                <span>{{item.text}}</span>
+                                <img src="~@/assets/img/myColorp.png">
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+            <div class="fb_tool">
+                <textarea id='input' v-model.trim='inputVal' placeholder="请填写反馈意见"></textarea>
+                <span class="publish_btn" :class="{ hasVal: inputVal.length > 0 ? true : false }">发送</span>
+            </div>
         </div>
-
-        <div class="user_fk" v-for="fb in fb_histoty">
-          <div class="fk_span">
-            <span>{{fb.info}}</span>
-          </div>
-          <div class="fk_img">
-            <img src="~@/assets/img/myColorp.png">
-          </div>
-          <div style="clear:both;"></div>
-        </div>
-      </div>
-
-      <div class="fk_tool">
-        <textarea id='input' v-model.trim='inputVal' :placeholder="placeholderVal"></textarea>
-        <span class="publish_btn">发送</span>
-      </div>
-    </div>
-  </transition>
+    </transition>
 </template>
 <script>
-  import {MessageBox} from 'mint-ui'
-  import {autoTextarea} from '@/config/autoTextarea.js'
-  import {mapGetters, mapMutations, mapActions} from 'vuex'
-  export default {
+import { autoTextarea } from '@/config/autoTextarea.js'
+import { get_local_cache, set_local_cache } from '@/config/cache.js'
+// 后台没有做接口，这里只是模拟一下
+export default {
     name: 'feedback',
     data() {
-      return {
-        advice: '你好，欢迎反馈！请填写你对我们的意见，指出我们的不足。我们会根据用户的要求尽快改正！',
-        placeholderVal: '请填写反馈意见',
-        inputVal: ''
-      }
-    },
-    computed: {
-      ...mapGetters('user', [
-        'fb_histoty'
-      ])
+        return {
+            json: [
+                {
+                    type: 'robot',
+                    text: '您好，欢迎反馈！请填写你对我们的建议，我们会根据用户的需求做出修改'
+                }
+            ],
+            feebBack: '您的反馈我们已经收到了，我们会尽快处理',
+            inputVal: ''
+        }
     },
     methods: {
-      ...mapMutations('user', [
-        'set_fb_histoty'
-      ]),
-      ...mapActions('user', [
-        'get_fb_histoty'
-      ]),
-
-      sendComment () {
-        if (this.inputVal) {
-          var formData = {}
-          formData.info = this.inputVal
-          this.fb_histoty.push(formData)
-          this.inputVal = ''
-        } else {
-          MessageBox.alert('请输入内容')
-        }
-        this.set_fb_histoty(this.fb_histoty)
-      },
-
-      oneSend() {
-        this.get_fb_histoty()
-          .then(res => {
-              this.set_fb_histoty(res)
+        // 获取反馈信息
+        get_feedBack_data() {
+            let data = JSON.parse(get_local_cache('feedBack'))
+            if (data) {
+                this.json = data
             }
-          )
-      }
-
+        },
+        // 提交反馈信息
+        post_feedBack_data() {
+            set_local_cache('feedBack', this.json)
+        },
+        // 发表
+        publish() {
+            if (this.inputVal) {
+                let user = {
+                    type: 'user',
+                    text: this.inputVal
+                }
+                let robot = {
+                    type: 'robot',
+                    text: this.feebBack
+                }
+                this.json.push(user)
+                this.json.push(robot)
+                this.inputVal = ''
+                this.post_feedBack_data()
+                this.$toast({message: '发送成功', duration: 1500})
+                this.$nextTick(() => {
+                    $('#feedback .container').scrollTop($('#feedback .list').height())
+                })
+            }
+        }
     },
     mounted() {
-      let text = this.$el.querySelector('.fk_tool #input')
-      autoTextarea(text, 0, 80)
-      $(this.$el.querySelector('.fk_tool .publish_btn')).on('touchend', () => {
-        this.sendComment()
-      })
-      this.oneSend()
+        let text = this.$el.querySelector('.fb_tool #input')
+        autoTextarea(text, 0, 80)
+        this.$el.querySelector('.fb_tool .publish_btn').addEventListener('touchend', () => {
+            this.publish()
+        })
+        this.get_feedBack_data()
     }
-  }
+}
 </script>
-<style scope lang='stylus'>
-  #feedback {
+<style lang='stylus'>
+#feedback {
     position: absolute;
     top: 0;
     left: 0;
@@ -101,111 +104,98 @@
     background: #fff;
     overflow: hidden;
     .content {
-      width: 100%;
-      height: 100%;
-      padding-top: 44px;
-      padding-bottom: 48px;
-      overflow: auto;
-      &.isIOS {
-        padding-top: 64px;
-      }
-      .automatic {
-        width: 100%;
-        height: 15%;
-        margin-top: 20px;
-        display: flex;
-        justify-content: space-between;
-        .am_img {
-          width: 10%;
-          margin: 0 10px;
-          img {
-            width: 34px;
-            height: 34px;
-          }
-        }
-        .am_span {
-          width: 80%;
-          background: #2DA8F8;
-          margin-right: 10px;
-          padding: 10px 0;
-          span {
-            font-size: 16px;
-          }
-        }
-      }
-      .user_fk {
-        width: auto;
-        height: auto;
-        margin: 20px 20px 20px 0;
-        display: flex;
-        justify-content: flex-end;
-        .fk_span {
-          width: auto;
-          background: #2DA8F8;
-          margin-right: 10px;
-          padding: 10px 0;
-          text-align: right;
-          span {
+        padding-bottom: 48px;
+        background: #eee;
+        .item{
+            position: relative;
             width: auto;
-            display: block;
-            font-size: 16px;
-            word-wrap: break-word;
+            margin: 20px 10px;
+            img{
+                position: absolute;
+                top: 0;
+                width: 36px;
+                height: 36px;
+            }
+            span{
+                display: inline-block;
+                font-size: 16px;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                text-align: justify;
+            }
+            &.robot{
+                text-align: left;
+                img{
+                    left: 0;
+                }
+                span{
+                    margin-left: 50px;
+                    margin-right: 20px;
+                    background: #fff;
+                }
+            }
+            &.user{
+                text-align: right;
+                img{
+                    right: 0;
+                }
+                span{
+                    margin-right: 50px;
+                    margin-left: 20px;
+                    background: #b5e648;
+                }
+           }
+        }
+    }
+    .fb_tool {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 48px;
+        z-index: 999;
+        display: flex;
+        background: #d9d9d9;
+        border-top: 1px solid #ddd;
+        #input {
+            width: 84%;
+            height: 40px !important;
+            line-height: 40px;
+            font-size: 14px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            -webkit-appearance: none;
+            outline: none;
+            resize: none;
+            overflow-y: auto !important;
             word-break: break-all;
-          }
+            margin: 3px;
+            padding: 0 6px;
+            text-align: center;
+            &::-webkit-scrollbar {
+                width: 0;
+                height: 0;
+                display: none;
+            }
         }
-        .fk_img {
-          width: 10%;
-          margin: 0 10px;
-          float: right;
-          img {
-            width: 34px;
-            height: 34px;
-          }
+        .publish_btn {
+            display: table-cell;
+            padding-left: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #aaa;
+            user-select: none;
+            vertical-align: middle;
+            &.hasVal {
+                color: #00939c;
+            }
         }
-      }
+        span {
+            height: 47px;
+            line-height: 47px;
+            color: #00939c;
+        }
     }
-    .fk_tool {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 48px;
-      z-index: 999;
-      display: flex;
-      background: #d9d9d9;
-      border-top: 1px solid #ddd;
-      textarea {
-        width: 84%;
-        height: 40px !important;
-        line-height: 40px;
-        font-size: 14px;
-        border-radius: 10px;
-        border: 1px solid #ddd;
-        -webkit-appearance: none;
-        outline: none;
-        resize: none;
-        overflow-y: auto !important;
-        word-break: break-all;
-        margin: 3px;
-        text-align: center;
-      }
-      .publish_btn {
-        display: table-cell;
-        padding-left: 15px;
-        font-size: 16px;
-        font-weight: bold;
-        color: #aaa;
-        user-select: none;
-        vertical-align: middle;
-        &.hasVal {
-          color: #007aff
-        }
-      }
-      span {
-        height: 47px;
-        line-height: 47px;
-        color: #00939c;
-      }
-    }
-  }
+}
 </style>

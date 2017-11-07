@@ -97,7 +97,7 @@ export default {
         ...mapGetters('collect', [
             'collectArticle'
         ]),
-        ...mapGetters('health', [
+        ...mapGetters('login', [
             'isEditor'
         ])
     },
@@ -114,7 +114,7 @@ export default {
         ...mapActions('user', [
             'get_userInfoNum_data'
         ]),
-        ...mapActions('health', [
+        ...mapActions('login', [
             'get_userPower_data'
         ]),
         init() {

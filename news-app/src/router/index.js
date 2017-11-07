@@ -16,7 +16,6 @@ const channel = () => import('@/page/index/home/children/channel')
 const video = () => import('@/page/index/video/video')
 const collect = () => import('@/page/index/collect/collect')
 const user = () => import('@/page/index/user/user')
-const userGuide = () => import('@/page/index/user/children/userGuide')
 const QRcode = () => import('@/page/index/user/children/QRcode')
 const feedBack = () => import('@/page/index/user/children/feedBack')
 const myHistory = () => import('@/page/index/user/children/myHistory')
@@ -26,6 +25,7 @@ const publish = () => import('@/page/index/user/children/health/publish')
 const preview = () => import('@/page/index/user/children/health/preview')
 const detail = () => import('@/page/detail/detail')
 const comment = () => import('@/page/detail/children/comment')
+const reply = () => import('@/page/detail/children/reply')
 const search = () => import('@/page/search/search')
 const login = () => import('@/page/login/login')
 
@@ -75,19 +75,13 @@ export default new Router({
                         path: 'user',
                         component: user,
                         children: [
-                            // userGuide页面
-                            {
-                                name: 'userGuide',
-                                path: 'userGuide',
-                                component: userGuide
-                            },
-                                // QRcode页面
+                            // QRcode页面
                             {
                                 name: 'QRcode',
                                 path: 'QRcode',
                                 component: QRcode
                             },
-                                // feedBack页面
+                            // feedBack页面
                             {
                                 name: 'feedBack',
                                 path: 'feedBack',
@@ -139,7 +133,14 @@ export default new Router({
                         {
                             name: 'comment',
                             path: 'comment',
-                            component: comment
+                            component: comment,
+                            children: [
+                                {
+                                    name: 'reply',
+                                    path: 'reply',
+                                    component: reply
+                                }
+                            ]
                         }
                     ]
                 },

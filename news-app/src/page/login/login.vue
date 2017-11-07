@@ -50,13 +50,9 @@ export default {
         ...mapMutations('user', [
             'set_userInfo'
         ]),
-        ...mapActions('health', [
+        ...mapActions('login', [
             'get_userPower_data'
         ]),
-        // ...mapActions('cordova', [
-        //     'cordova_baidu_location',
-        //     'cordova_getGeolocation'
-        // ]),
         // 第三方登录
         login(loginType) {
             if (loginType === 1) {

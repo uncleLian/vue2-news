@@ -1,9 +1,9 @@
 <template>
     <transition name='fadeIn'>
-        <div id='reply' v-show='visible'>
+        <div id='reply'>
             <!-- 头部 -->
             <my-header fixed title='回复'>
-                <a slot='left' class='close-black' @click.stop="visible = false"></a>
+                <a slot='left' class='close-black' @click.stop="$router.go(-1)"></a>
             </my-header>
             <!-- 正文 -->
             <div class="content" :class="{isIOS: $store.state.device == 'ios'}">
@@ -38,10 +38,9 @@ import { mapMutations, mapActions } from 'vuex'
 export default {
     data() {
         return {
+            json: '',       // 回复的评论数据
             myReply: [],    // 我的回复
-            allReply: [],   // 全部回复
-            visible: false, // 是否显示
-            json: ''        // 回复的评论数据
+            allReply: []    // 全部回复
         }
     },
     methods: {
@@ -51,12 +50,6 @@ export default {
         ...mapActions('detail', [
             'get_Reply_data'
         ]),
-        open(item) {
-            this.visible = true
-            this.json = item
-            this.get_myReply()
-            this.get_allReply()
-        },
         // 获取我的回复数据
         get_myReply() {
             let params = {
@@ -104,6 +97,11 @@ export default {
             this.myReply.splice(index, 1)
             this.json.plnum = this.myReply.length
         }
+    },
+    created() {
+        this.json = this.$route.params.json
+        this.get_myReply()
+        this.get_allReply()
     }
 }
 </script>

@@ -69,7 +69,6 @@ export default {
     created() {
         this.addvertisement_init()   // 广告初始化
         versionUpdate()              // 版本更新
-        this.newsPush()              // 消息推送（极光推送）
     }
 }
 </script>

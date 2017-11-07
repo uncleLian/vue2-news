@@ -30,7 +30,7 @@
                         <!-- 评论列表 -->
                         <comment-item layout='topFooter' comment='remark' type='all' v-for='(item,index) in currentArticle.comment' :itemJson='item' :key='index' @click.native.stop='$refs.comment.open()'></comment-item>
                         <!-- 更多评论 -->
-                        <div class="comment_more" v-if="currentArticle.plnum > 0 " @click.stop="$refs.comment.open()">全部{{currentArticle.plnum}}条评论<i class="icon-detail"></i></div>
+                        <router-link class="comment_more" v-if="currentArticle.plnum > 0 " tag='div' :to="{name: 'comment'}">全部{{currentArticle.plnum}}条评论<i class="icon-detail"></i></router-link>
                     </div>
                 </template>
                 <!-- 分割线 -->
@@ -136,6 +136,7 @@ export default {
                 this.title = `健康头条 · ${this.indexColumn[index].classname}`
             }
         },
+        // 获取文章
         get_Article() {
             this.loading = true
             let params = {
@@ -170,6 +171,7 @@ export default {
                 this.set_localtion(this.localtion)
             }
         },
+        // 发表回调
         publishCallBack() {
             this.$router.push({name: 'comment'})
             this.currentArticle.plnum++

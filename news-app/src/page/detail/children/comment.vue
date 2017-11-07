@@ -32,16 +32,14 @@
             </div>
             <!-- 底部工具栏 -->
             <my-tool comment='remark' @publish='publishCallBack'></my-tool>
-            <!-- 回复页 -->
-            <reply ref="reply"></reply>
+            <!-- 子页面视图 -->
+            <router-view></router-view>
         </div>
     </transition>
 </template>
 <script>
-import reply from './reply'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
-    components: { reply },
     data() {
         return {
             myComment: [],  // 我的评论
@@ -91,7 +89,7 @@ export default {
         },
         // 回复评论
         replyCallBack(item) {
-            this.$refs.reply.open(item)
+            this.$router.push({name: 'reply', params: {json: item}})
         },
         // 删除评论
         deleteCallBack(item) {

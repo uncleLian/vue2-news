@@ -17,7 +17,6 @@ export default {
 }
 </script>
 <style lang='stylus'>
-ios_height = 0.535rem
 header_height = 1.335rem
 .myHeader{
     display: block;
@@ -32,10 +31,6 @@ header_height = 1.335rem
         left: 0;
         right: 0;
         z-index: 666;
-    }
-    .iosStatus {
-        width: 100%;
-        height: ios_height;
     }
     .top_bar {
         position: relative;

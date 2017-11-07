@@ -19,7 +19,6 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { Toast, MessageBox } from 'mint-ui'
 import { autoTextarea } from '@/config/autoTextarea.js'
 export default {
     props: {
@@ -81,11 +80,11 @@ export default {
                         this.post_Comment_data(this.inputVal)
                         .then(res => {
                             if (res.err) {
-                                this.$emit('publish', res.data)
                                 this.inputVal = ''
                                 this.keepInputVal = ''
                                 this.focus = false
-                                Toast({message: '发送成功', duration: 1500})
+                                this.$emit('publish', res.data)
+                                this.$toast({message: '发送成功', duration: 1500})
                                 $('.tool #input').blur()
                             }
                         })
@@ -102,14 +101,14 @@ export default {
                                 this.keepInputVal = ''
                                 this.focus = false
                                 this.$emit('publish', res.data)
-                                Toast({message: '发送成功', duration: 1500})
+                                this.$toast({message: '发送成功', duration: 1500})
                                 $('.tool #input').blur()
                             }
                         })
                     }
                 }
             } else {
-                MessageBox({
+                this.msgBox({
                     title: '提示',
                     message: '你还未登录，跳转到登录页？',
                     showCancelButton: true,
@@ -158,7 +157,7 @@ export default {
         let text = this.$el.querySelector('.tool #input')
         autoTextarea(text, 0, 80)
         // 用touched来代替click，是为了解决click事件和blur事件的冲突，blur事件触发顺序比click事件早
-        $(this.$el.querySelector('.tool .publish_btn')).on('touched', (e) => {
+        this.$el.querySelector('.tool .publish_btn').addEventListener('touchend', (e) => {
             this.sendComment()
         })
     }
