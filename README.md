@@ -65,13 +65,13 @@
 ## 部分截图
 
 #### 移动端
-<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_index.png" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_detail.gif" width="365" height="619"/>
-<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_search.png" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_search2.gif" width="365" height="619"/>
+<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_index.png" width="280" height="580"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_detail.png" width="280" height="580"/>
+<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_search.png" width="280" height="580"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_search2.gif" width="280" height="580"/>
 
 #### native端
-<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_index.png" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_detail.gif" width="365" height="619"/>
-<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_channel.png" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_user.gif" width="365" height="619"/>
-<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_health.png" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_ad.gif" width="365" height="619"/>
+<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_index.png" width="280" height="580"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_detail.gif" width="280" height="580"/>
+<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_channel.png" width="280" height="580"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_user.gif" width="280" height="580"/>
+<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_health.png" width="280" height="580"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_ad.gif" width="280" height="580"/>
 
 ## 最终目标
 
