@@ -25,10 +25,10 @@
                             </div>
                         </mt-tab-container-item>
                         <mt-tab-container-item id="公告">
-                            公告
+                            <p>暂无公告</p>
                         </mt-tab-container-item>
                         <mt-tab-container-item id="数据">
-                            数据
+                            <p>暂无数据</p>
                         </mt-tab-container-item>
                     </mt-tab-container>
                 </div>
@@ -142,6 +142,14 @@ export default {
                 color: #222;
                 text-align: center;
             }
+        }
+    }
+    .mint-tab-container-item{
+        p{
+            text-align: center;
+            font-size: 14px;
+            color: #999;
+            margin-top: 15px;
         }
     }
 }

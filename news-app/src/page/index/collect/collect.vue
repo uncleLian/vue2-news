@@ -136,6 +136,7 @@ export default {
                 this.set_collectArticle(this.collectArticle)
                 this.set_historyArticle(this.historyArticle)
                 this.editBtn = false
+                this.$toast({message: '删除成功', duration: 1500})
             })
             .catch(err => {
                 console.log(err)
