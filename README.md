@@ -38,9 +38,14 @@
 ##### 注：此系列只关注前端项目的实现，后端等知识不是此系列的范围，但会告知一二。
 
 ## 注意
-```
 
-```
+> 1、请把项目里的mint-ui.common.js文件替换掉 node_modules/minit-ui/lib/mint-ui.common.js文件。详细细节请查看文章 [饿了么mint-ui库loadmore组件的下拉问题](http://liansixin.win/2017/08/01/mint-ui/)
+
+> 2、该项目使用vue-router的hash模式，项目里写了许多用来记录页面滚动条位置的代码，有点不优雅，其最终原因都是为了实现首页左右滑动切换栏目的功能。如需history模式的实例。请参考第一阶段和第三阶段的项目vue2-echo、vue2-health
+
+> 3、native端某些代码在浏览器里是不能生效的，这些是用于手机app的，如：获取设备uuid、微信客户端登录等。技术是利用cordova打包成Android和IOS的安装包和使用cordova的一些插件。具体请查看[cordova官网](http://cordova.axuer.com/)
+
+
 
 ## 效果演示 
 
@@ -85,7 +90,7 @@
 - [x] 启动广告页
 - [x] 热更新、版本更新
 - [x] GPS定位
-- [ ] 消息推送（极光推送：没调通。。。不弄了。。。）
+- [ ] 消息推送（极光推送：没调通，不弄了。。。）
 
 ## 部分截图
 
@@ -98,6 +103,10 @@
 - 搜索页
 
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_search.png" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_search2.png" width="365" height="619"/>
+
+- GIF
+
+<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_1.gif" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_2.gif" width="365" height="619"/>
 
 #### native端：
 
@@ -112,6 +121,10 @@
 - 后台文章管理页、广告页
 
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_health.png" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_ad.png" width="365" height="619"/>
+
+- GIF
+
+<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_1.gif" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_2.gif" width="365" height="619"/>
 
 ## 目录结构
 
@@ -145,33 +158,33 @@
 │   │   ├── cache.js                             // 缓存方法
 │   │   ├── directive.js                         // 指令方法
 │   │   ├── fetch.js                             // 请求方法
-│   ├── page                                     
-│   │   ├── detail                  
-│   │   |   ├── components                       
+│   ├── page
+│   │   ├── detail
+│   │   |   ├── components
 │   │   |   |   ├── article.vue                  // 文章组件
 │   │   |   |   ├── recommend.vue                // 推荐组件
 │   │   |   |   ├── share.vue                    // 分享组件
 │   │   |   |   ├── tags.vue                     // 标签组件
 │   │   |   ├── detail.vue                       // 详情页
-│   │   ├── index                   
-│   │   |   ├── children                         
+│   │   ├── index
+│   │   |   ├── children
 │   │   |   |   ├── channel.vue                  // 栏目页
-│   │   |   ├── components                       
+│   │   |   ├── components
 │   │   |   |   ├── index_footer.vue             // 首页底部组件
 │   │   |   |   ├── index_header.vue             // 首页头部组件
 │   │   |   |   ├── pullContainer.vue            // 下拉容器组件
 │   │   |   |   ├── swiperContainer.vue          // 滑动容器组件
 │   │   |   ├── index.vue                        // 首页
-│   │   ├── search               
+│   │   ├── search
 │   │   |   ├── search.vue                       // 搜索页
-│   ├── router                 
+│   ├── router
 │   │   ├── index.js                             // 路由配置       
-│   ├── store                  
-│   │   ├── detail           
+│   ├── store
+│   │   ├── detail
 │   │   |   ├── index.js                         // 详情页store
-│   │   ├── index            
+│   │   ├── index
 │   │   |   ├── index.js                         // 首页store
-│   │   ├── search            
+│   │   ├── search
 │   │   |   ├── index.js                         // 搜索页store
 │   │   ├── index.js                             // 全局store
 │   ├── App.vue                                  // 页面入口
@@ -208,12 +221,12 @@
 │   │   ├── cordova.js                           // cordova插件方法
 │   │   ├── directive.js                         // 指令方法
 │   │   ├── fetch.js                             // 请求方法
-│   ├── page                                     
-│   │   ├── detail                  
-│   │   |   ├── children                         
+│   ├── page
+│   │   ├── detail
+│   │   |   ├── children
 │   │   |   |   ├── comment.vue                  // 评论页
 │   │   |   |   ├── reply.vue                    // 回复页
-│   │   |   ├── components                       
+│   │   |   ├── components
 │   │   |   |   ├── article.vue                  // 文章组件
 │   │   |   |   ├── collect.vue                  // 收藏组件
 │   │   |   |   ├── like.vue                     // 点赞组件
@@ -221,20 +234,20 @@
 │   │   |   |   ├── share.vue                    // 分享组件
 │   │   |   |   ├── tags.vue                     // 标签组件
 │   │   |   ├── detail.vue                       // 详情页
-│   │   ├── index                   
-│   │   |   ├── collect                         
+│   │   ├── index
+│   │   |   ├── collect
 │   │   |   |   ├── collect.vue                  // 收藏页
-│   │   |   ├── home                         
-│   │   |   |   ├── children                     
+│   │   |   ├── home
+│   │   |   |   ├── children
 │   │   |   |   |   ├── channel.vue              // 栏目页
-│   │   |   |   ├── components                   
+│   │   |   |   ├── components
 │   │   |   |   |   ├── homeHeader.vue           // 首页头部组件
 │   │   |   |   |   ├── pullContainer.vue        // 下拉容器组件
 │   │   |   |   |   ├── swiperContainer.vue      // 滑动容器组件
 │   │   |   |   ├── home.vue                     // 主页
-│   │   |   ├── user                         
-│   │   |   |   ├── children                     
-│   │   |   |   |   ├── health                  
+│   │   |   ├── user
+│   │   |   |   ├── children
+│   │   |   |   |   ├── health
 │   │   |   |   |   |   ├── health.vue           // 文章管理页
 │   │   |   |   |   |   ├── preview.vue          // 文章预览页
 │   │   |   |   |   |   ├── publish.vue          // 文章编辑页
@@ -243,17 +256,17 @@
 │   │   |   |   |   ├── myHistory.vue            // 我的历史页
 │   │   |   |   |   ├── QRcode.vue               // 应用分享页
 │   │   |   |   ├── user.vue                     // 用户页
-│   │   |   ├── video                         
+│   │   |   ├── video
 │   │   |   |   ├── video.vue                    // 视频页
 │   │   |   ├── index.vue                        // 首页
 │   │   |   ├── navBar.vue                       // 底部导航组件
-│   │   ├── login               
+│   │   ├── login
 │   │   |   ├── login.vue                        // 登录页
-│   │   ├── search               
+│   │   ├── search
 │   │   |   ├── search.vue                       // 搜索页
-│   ├── router                 
+│   ├── router
 │   │   ├── index.js                             // 路由配置       
-│   ├── store                  
+│   ├── store
 │   │   ├── collect                              // 收藏页store
 │   │   ├── detail                               // 详情页store
 │   │   ├── health                               // 文章管理store
@@ -298,4 +311,5 @@ npm run build
 [MIT](http://opensource.org/licenses/MIT)
 
 Copyright (c) 2017-present，uncleLian
+
 

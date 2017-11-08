@@ -123,12 +123,12 @@ export default {
         },
         // 封装的confirm方法，为了优化下代码
         actionConfirm(text, params, methods) {
-            this.msgBox.confirm(text)  // 提示text
+            this.$msgBox.confirm(text)  // 提示text
             .then(() => {
-                this.indicator.open()
+                this.$indicator.open()
                 this.post_article_data(params) // 参数
                 .then(res => {
-                    this.indicator.close()
+                    this.$indicator.close()
                     if (methods) {
                         methods()   // 执行方法
                     }
@@ -139,7 +139,7 @@ export default {
                 })
                 .catch(err => {
                     console.log('操作失败', err)
-                    this.indicator.close()
+                    this.$indicator.close()
                     this.$toast({
                         message: '操作失败',
                         iconClass: 'icon-close'
