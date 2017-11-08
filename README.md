@@ -16,6 +16,31 @@
 
 > ES6/7、Stylus、ESlint、webpack、
 
+## 说明
+> 如果对您有帮助，您可以点右上角 "Star"一下， 您的支持是我最大的动力！非常感谢！^_^ 🌹
+
+> 或者您可以 "follow" 一下，我会不断开源更多的有趣实用的项目
+
+> 开发环境 macOS 10.12.6、Chrome 61、 nodejs 8.4.0
+
+> 如有问题请直接在 Issues 中提，或者您发现问题并有非常好的解决方案，欢迎 PR 👍
+
+> 该项目是此开源系列的其中一个阶段，更多内容查看下方的最终目标
+
+## 最终目标
+
+- 第一阶段：echo回声（移动端，难度：简单 ~ 中等） —— [仓库地址](https://github.com/uncleLian/vue2-echo) —— [项目演示地址](http://echo.liansixin.win)
+
+- 第二阶段：今日头条（移动端 & native，难度：困难） —— [仓库地址](https://github.com/uncleLian/vue2-news) —— [移动端演示地址](http://toutiao.liansixin.win)， [native端演示地址](http://native.liansixin.win)
+
+- 第三阶段：头条号（pc端，难度：中等 ~ 困难） —— [仓库地址](https://github.com/uncleLian/vue2-health) —— 还在开发，敬请期待！（已实现核心功能）
+
+##### 注：此系列只关注前端项目的实现，后端等知识不是此系列的范围，但会告知一二。
+
+## 注意
+```
+
+```
 
 ## 效果演示 
 
@@ -23,7 +48,7 @@
 
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_QRcode.png" width="250" height="250"/>
 
-[native端demo请戳这里](http://toutiao.liansixin.win)（请使用chrome手机模式预览）
+[native端demo请戳这里](http://native.liansixin.win)（请使用chrome手机模式预览）
 
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_QRcode.png" width="250" height="250"/>
 
@@ -41,10 +66,10 @@
 - [x] 视频播放的加载、重播指示以及悬浮等功能
 - [x] 热点文章和搜索推荐（后台算法）
 - [x] 文章标签（后台算法）
-- [x] 分享功能（web分享网址，native微信分享）
+- [x] 分享功能（移动端分享网址，native端微信分享）
 - [x] 搜索功能
 
-#### web端
+#### 移动端
 - [x] 刷新保持页面的数据和状态
 - [x] 展开全文
 - [x] 下载页
@@ -64,33 +89,33 @@
 
 ## 部分截图
 
-#### 移动端
+### 移动端
+
+- 首页、详情页
+
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_index.png" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_detail.png" width="365" height="619"/>
+
+- 搜索页
 
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_search.png" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_search2.png" width="365" height="619"/>
 
-#### native端
+#### native端：
+
+- 首页、详情页
+
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_index.png" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_detail.png" width="365" height="619"/>
+
+- 频道页、用户页
 
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_channel.png" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_user.png" width="365" height="619"/>
 
+- 后台文章管理页、广告页
+
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_health.png" width="365" height="619"/> <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_ad.png" width="365" height="619"/>
-
-## 最终目标
-
-- 第一阶段：echo回声（移动端） —— [仓库地址](https://github.com/uncleLian/vue2-echo) —— [项目演示请戳这里](http://echo.liansixin.win)
-
-- 第二阶段：今日头条（移动端 & native） —— [仓库地址](https://github.com/uncleLian/vue2-news) —— [移动端演示请戳这里](http://toutiao.liansixin.win)， [native端演示请戳这里](http://native.liansixin.win)
-
-- 第三阶段：头条号（pc端） —— [仓库地址](https://github.com/uncleLian/vue2-health) —— 还在开发，敬请期待！（已实现核心功能）
-
-##### 注：此系列只关注前端项目的实现，后端等知识不是此系列的范围，但会告知一二。
-
-> 如果对您有帮助，您可以点右上角 "Star"一下， 您的支持是我最大的动力！非常感谢！^_^ 🌹
 
 ## 目录结构
 
-#### 总目录：
+#### 总目录
 
 ``` bash
 ├── news-app                                     // native端项目  
@@ -100,7 +125,7 @@
 ├── README.md                                    // 项目介绍
 ```
 
-#### 移动端目录：
+#### 移动端目录
 
 ``` bash
 ├── build                                        // 构建相关  
@@ -120,19 +145,19 @@
 │   │   ├── cache.js                             // 缓存方法
 │   │   ├── directive.js                         // 指令方法
 │   │   ├── fetch.js                             // 请求方法
-│   ├── page                                     // 页面
+│   ├── page                                     
 │   │   ├── detail                  
-│   │   |   ├── components                       // 子组件
+│   │   |   ├── components                       
 │   │   |   |   ├── article.vue                  // 文章组件
 │   │   |   |   ├── recommend.vue                // 推荐组件
 │   │   |   |   ├── share.vue                    // 分享组件
 │   │   |   |   ├── tags.vue                     // 标签组件
 │   │   |   ├── detail.vue                       // 详情页
 │   │   ├── index                   
-│   │   |   ├── children                         // 子页面
+│   │   |   ├── children                         
 │   │   |   |   ├── channel.vue                  // 栏目页
-│   │   |   ├── components                       // 子组件
-│   │   |   |   ├── index_footer.vue             // 首页底部组件 文章组件
+│   │   |   ├── components                       
+│   │   |   |   ├── index_footer.vue             // 首页底部组件
 │   │   |   |   ├── index_header.vue             // 首页头部组件
 │   │   |   |   ├── pullContainer.vue            // 下拉容器组件
 │   │   |   |   ├── swiperContainer.vue          // 滑动容器组件
@@ -159,9 +184,93 @@
 └── package.json                                 // package.json
 ```
 
-#### native端目录：
+#### native端目录
 
 ``` bash
+├── build                                        // 构建相关  
+├── config                                       // 配置相关
+├── src                                          // 项目代码
+│   ├── assets                                   // 样式、图标等静态资源
+│   ├── components                               // 全局公用组件
+│   │   ├── banner.vue                           // banner组件
+│   │   ├── commentItem.vue                      // 评论Item组件
+│   │   ├── error.vue                            // 错误提示组件
+│   │   ├── info.vue                             // listItem的列表信息组件
+│   │   ├── listItem.vue                         // 文章List组件
+│   │   ├── loading.vue                          // 加载提示组件
+│   │   ├── myHeader.vue                         // 头部组件
+│   │   ├── popuMenu.vue                         // 模态框组件
+│   │   ├── publishItem.vue                      // 后台文章列表组件
+│   │   ├── tool.vue                             // 评论工具栏组件
+│   ├── config                                   // 全局公用方法
+│   │   ├── autoTextarea.js                      // textarea自动增加高度方法
+│   │   ├── cache.js                             // 缓存方法
+│   │   ├── cordova.js                           // cordova插件方法
+│   │   ├── directive.js                         // 指令方法
+│   │   ├── fetch.js                             // 请求方法
+│   ├── page                                     
+│   │   ├── detail                  
+│   │   |   ├── children                         
+│   │   |   |   ├── comment.vue                  // 评论页
+│   │   |   |   ├── reply.vue                    // 回复页
+│   │   |   ├── components                       
+│   │   |   |   ├── article.vue                  // 文章组件
+│   │   |   |   ├── collect.vue                  // 收藏组件
+│   │   |   |   ├── like.vue                     // 点赞组件
+│   │   |   |   ├── recommend.vue                // 推荐组件
+│   │   |   |   ├── share.vue                    // 分享组件
+│   │   |   |   ├── tags.vue                     // 标签组件
+│   │   |   ├── detail.vue                       // 详情页
+│   │   ├── index                   
+│   │   |   ├── collect                         
+│   │   |   |   ├── collect.vue                  // 收藏页
+│   │   |   ├── home                         
+│   │   |   |   ├── children                     
+│   │   |   |   |   ├── channel.vue              // 栏目页
+│   │   |   |   ├── components                   
+│   │   |   |   |   ├── homeHeader.vue           // 首页头部组件
+│   │   |   |   |   ├── pullContainer.vue        // 下拉容器组件
+│   │   |   |   |   ├── swiperContainer.vue      // 滑动容器组件
+│   │   |   |   ├── home.vue                     // 主页
+│   │   |   ├── user                         
+│   │   |   |   ├── children                     
+│   │   |   |   |   ├── health                  
+│   │   |   |   |   |   ├── health.vue           // 文章管理页
+│   │   |   |   |   |   ├── preview.vue          // 文章预览页
+│   │   |   |   |   |   ├── publish.vue          // 文章编辑页
+│   │   |   |   |   ├── feedBack.vue             // 用户反馈页
+│   │   |   |   |   ├── myComment.vue            // 我的评论页
+│   │   |   |   |   ├── myHistory.vue            // 我的历史页
+│   │   |   |   |   ├── QRcode.vue               // 应用分享页
+│   │   |   |   ├── user.vue                     // 用户页
+│   │   |   ├── video                         
+│   │   |   |   ├── video.vue                    // 视频页
+│   │   |   ├── index.vue                        // 首页
+│   │   |   ├── navBar.vue                       // 底部导航组件
+│   │   ├── login               
+│   │   |   ├── login.vue                        // 登录页
+│   │   ├── search               
+│   │   |   ├── search.vue                       // 搜索页
+│   ├── router                 
+│   │   ├── index.js                             // 路由配置       
+│   ├── store                  
+│   │   ├── collect                              // 收藏页store
+│   │   ├── detail                               // 详情页store
+│   │   ├── health                               // 文章管理store
+│   │   ├── index                                // 首页store
+│   │   ├── login                                // 登录store
+│   │   ├── search                               // 搜索页store
+│   │   ├── user                                 // 用户store
+│   │   ├── video                                // 视频页store
+│   │   ├── index.js                             // 全局store
+│   ├── App.vue                                  // 页面入口
+│   └── main.js                                  // 程序入口
+├── static                                       // 空文件夹，只作为github保留
+├── .babelrc                                     // babel-loader 配置
+├── .eslintrc.js                                 // eslint 配置项
+├── .gitignore                                   // git 忽略项
+├── index.html                                   // 入口html文件
+└── package.json                                 // package.json
 ```
 
 ## 安装运行
