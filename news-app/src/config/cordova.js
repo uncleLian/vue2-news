@@ -3,7 +3,7 @@ import { Toast, MessageBox } from 'mint-ui'
 // IOS定位
 export const get_iosLocation = () => {
     let latitude = {}
-    var onSuccess = function(position) {
+    let onSuccess = (position) => {
         // Toast('纬度: '          + position.coords.latitude          + '\n' +
         // '经度: '         + position.coords.longitude       + '\n' +
         // '海拔: '          + position.coords.altitude          + '\n' +
@@ -15,7 +15,7 @@ export const get_iosLocation = () => {
         latitude = position
     }
     // 定位数据获取失败响应
-    function onError() {
+    let onError = () => {
         Toast('打开定位失败！！')
     }
     // 开始获取定位数据
