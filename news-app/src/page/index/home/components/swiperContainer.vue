@@ -31,7 +31,7 @@ export default {
     },
     watch: {
         indexActive() {
-            this.$refs.mySwiper.swiper.slideTo(this.activeIndex, 300, true) // 让swiper滚动到index位置
+            this.slideTo()
         }
     },
     methods: {
@@ -39,6 +39,9 @@ export default {
             'set_indexActive',
             'set_indexSwiper'
         ]),
+        slideTo() {
+            this.$refs.mySwiper.swiper.slideTo(this.activeIndex, 300, true) // 让swiper滚动到index位置
+        },
         slideChangeCallBack (swiper) {
             let index = swiper.activeIndex
             this.set_indexActive(this.indexColumn[index].classpath) // 滚动完swiper需要改变vuex里面的indexActive，这是为了与栏目联动

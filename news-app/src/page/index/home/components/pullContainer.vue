@@ -21,9 +21,9 @@
                 <span v-show="topStatus ==='loading'"><img class='pullLoading' src="~@/assets/img/loading.gif"> 加载中...</span>
             </div>
             <!-- banner组件 -->
-            <my-banner :json="bannerJson" v-if='bannerJson'></my-banner>
+            <my-banner :json="bannerJson" v-if='bannerJson.length > 0'></my-banner>
             <!-- 置顶组件 -->
-            <list-item :itemJson="stickJson" v-if='stickJson'></list-item>
+            <list-item :itemJson="stickJson" v-if='stickJson.length > 0'></list-item>
             <!-- listItem --> 
             <list-item :itemJson="contentJson" v-if='contentJson.length > 0'></list-item>
             <!-- 底部提示 -->
@@ -92,13 +92,19 @@ export default {
                 this.classPage = this.activePage
                 this.error = false
                 this.loading = true
+                // 获取banner数据
                 this.get_banner_data()
                 .then(res => {
-                    this.bannerJson = res
+                    if (res) {
+                        this.bannerJson = res
+                    }
                 })
+                // 获取置顶数据
                 this.get_stick_data()
                 .then(res => {
-                    this.stickJson = res
+                    if (res) {
+                        this.stickJson = res
+                    }
                 })
                 this.loadTopAjax()
             }

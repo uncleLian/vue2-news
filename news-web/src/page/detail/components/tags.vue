@@ -25,7 +25,7 @@ export default {
     a {
         display: inline-block;
         text-align: center;
-        color: rgb(102, 102, 102);
+        color: #333;
         border: 1px solid rgb(238, 238, 238);
         border-radius: 5px;
         font-size: 12px;

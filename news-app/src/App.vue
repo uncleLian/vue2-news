@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <transition :name='transitionName'>
-            <keep-alive exclude='detail'>
+            <keep-alive exclude='detail,login'>
                 <router-view class='child-view'></router-view>
             </keep-alive>
         </transition>
@@ -87,7 +87,11 @@ export default {
                     }
                 } else {
                     let uuid = get_uuid()   // 获取设备uuid
-                    this.set_userid(uuid)
+                    if (uuid) {
+                        this.set_userid(uuid)
+                    } else {
+                        this.set_userid('1')
+                    }
                 }
             }
         }
@@ -98,11 +102,11 @@ export default {
     },
     // 开发环境下不要打开，因为没有cordova的监听事件，页面不能next
     // 线上环境需要打开，保证cordova插件在cordova加载完成之后开始运行
-    // beforeRouteEnter(to, from, next) {
-    //     document.addEventListener('deviceready', () => {
-    //         next()
-    //     }, false)
-    // },
+    beforeRouteEnter(to, from, next) {
+        document.addEventListener('deviceready', () => {
+            next()
+        }, false)
+    },
     beforeRouteUpdate (to, from, next) {
         let isBack = this.$router.isBack
         if (isBack) {

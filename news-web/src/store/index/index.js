@@ -116,7 +116,7 @@ export default {
         },
 
         // 获取列表数据缓存
-        get_listItem_cache({ commit, state }) {
+        get_listItem_cache({ commit, state }, activeType) {
             let data = JSON.parse(getCache(`${state.indexActive}_json`))
             return data
         },

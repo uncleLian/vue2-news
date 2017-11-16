@@ -42,7 +42,7 @@
 
 ## 注意
 
-> 1、请把项目里的mint-ui.common.js文件替换掉 node_modules/minit-ui/lib/mint-ui.common.js文件。详细细节请查看文章 [饿了么mint-ui库loadmore组件的下拉问题](http://liansixin.win/2017/08/01/mint-ui/)
+> 1、请把项目里的mint-ui.common.js文件替换掉 node_modules/minit-ui/lib/mint-ui.common.js文件。详细请查看文章 [饿了么mint-ui库loadmore组件的下拉问题](http://liansixin.win/2017/08/01/mint-ui/)
 
 > 2、该项目使用vue-router的hash模式，项目里写了许多用来记录页面滚动条位置的代码，有点不优雅，其最终原因都是为了实现首页左右滑动切换栏目的功能。如需history模式的实例。请参考第一阶段和第三阶段的项目vue2-echo、vue2-health
 
@@ -60,9 +60,9 @@
 
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_QRcode.png" width="250" height="250"/>
 
-<!-- [安装包请戳这里](http://toutiao.liansixin.win)（只支持 Android 和 IOS 系统）
+<!--[安装包请戳这里](http://toutiao.liansixin.win)（只支持 Android 和 IOS 系统）-->
 
-<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_QRcode.png" width="250" height="250"/> -->
+<!--<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_QRcode.png" width="250" height="250"/>-->
 
 ## 功能
 

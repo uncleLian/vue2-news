@@ -108,14 +108,13 @@ export default {
                     }
                 }
             } else {
-                this.msgBox({
+                this.$msgBox({
                     title: '提示',
                     message: '你还未登录，跳转到登录页？',
                     showCancelButton: true,
                     closeOnClickModal: false
                 })
                 .then(action => {
-                    console.log(action)
                     if (action !== 'cancel') {
                         this.$router.push('/login')
                     }

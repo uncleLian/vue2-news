@@ -119,7 +119,9 @@ export default {
         backTo() {
             // 监听应用是否回到手机后台，是就暂停播放。（效果可在手机上查看）
             document.addEventListener('pause', () => {
-                this.video.pause()
+                if (this.video) {
+                    this.video.pause()
+                }
             }, false)
         }
     },

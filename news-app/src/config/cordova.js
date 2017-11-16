@@ -1,4 +1,4 @@
-import { Toast, MessageBox } from 'mint-ui'
+import { Toast } from 'mint-ui'
 
 // IOS定位
 export const get_iosLocation = () => {
@@ -56,19 +56,19 @@ export const hotUpdate = () => {
 }
 
 // 版本更新
-export const versionUpdate = () => {
-    document.addEventListener('chcp_updateLoadFailed', (eventData) => {
-        let error
-        error = eventData.detail.error
-        if (error.code === -2) {
-            MessageBox.confirm('有新的版本，点击确认前往更新').then(action => {
-                document.addEventListener('deviceready', () => {
-                    window.open('http://m.toutiaojk.com/download.html', '_system', 'location=yes')
-                }, false)
-            })
-        }
-    }, false)
-}
+// export const versionUpdate = () => {
+//     document.addEventListener('chcp_updateLoadFailed', (eventData) => {
+//         let error
+//         error = eventData.detail.error
+//         if (error.code === -2) {
+//             MessageBox.confirm('有新的版本，点击确认前往更新').then(action => {
+//                 document.addEventListener('deviceready', () => {
+//                     window.open('http://m.toutiaojk.com/download.html', '_system', 'location=yes')
+//                 }, false)
+//             })
+//         }
+//     }, false)
+// }
 
 // 监听物理返回键
 export const onBackKeyDown = () => {

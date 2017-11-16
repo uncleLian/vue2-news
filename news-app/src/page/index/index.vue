@@ -1,7 +1,6 @@
 <template>
     <transition name='slideIn' mode='in-out'>
         <div id="index">
-
             <template v-if="!advertisement">
                 <!-- 视图 -->
                 <transition name='fade'>
@@ -21,20 +20,18 @@
                     <span>跳过</span>
                 </button>
             </div>
-
         </div>
     </transition>
 </template>
 <script>
 import navBar from './navBar'
 import { mapActions } from 'vuex'
-import { versionUpdate } from '@/config/cordova'
 export default {
     components: { navBar },
     data() {
         return {
-            advertisement: false,   // 广告
-            time: 3,                // 广告倒计时
+            advertisement: false,   // 广告状态
+            time: 3000,             // 广告倒计时
             coverImg: ''            // 广告图片
         }
     },
@@ -42,6 +39,7 @@ export default {
         ...mapActions('index', [
             'get_coverImg_data'     // 获取广告图片
         ]),
+
         // 广告初始化
         addvertisement_init() {
             // 如果网络畅通，请求广告图片，否则直接进入主页
@@ -52,23 +50,54 @@ export default {
                     if (res) {
                         this.coverImg = res.data
                     }
+                    let timer = setTimeout(() => {
+                        this.advertisement = false
+                        clearTimeout(timer)
+                    }, this.time)
                 })
-                // 广告计时器
-                let timeOut = setInterval(() => {
-                        this.time--
-                        if (this.time < 0) {
-                            this.advertisement = false
-                            clearInterval(timeOut)
-                        }
-                }, 1000)
+                .catch(() => {
+                    console.log('请求图片数据错误')
+                    this.advertisement = false
+                })
             } else {
                 this.advertisement = false
             }
+        },
+        // 极光推送
+        // newsPush() {
+        //     document.addEventListener('deviceready', () => {
+        //         window.plugins.jPushPlugin.init()
+        //         window.plugins.jPushPlugin.setDebugMode(true)
+        //         window.plugins.jPushPlugin.openNotificationInAndroidCallback = (data) => {
+        //             this.$router.push(`/detail?classid=${data.extras.classid}&id=${data.extras.id}&datafrom=${data.extras.datafrom}`)
+        //             window.plugins.jPushPlugin.resetBadge()
+        //             window.plugins.jPushPlugin.setBadge(0)
+        //             window.plugins.jPushPlugin.setApplicationIconBadgeNumber(0)
+        //         }
+        //         window.plugins.jPushPlugin.resetBadge()
+        //         window.plugins.jPushPlugin.setBadge(0)
+        //         window.plugins.jPushPlugin.setApplicationIconBadgeNumber(0)
+        //         window.plugins.jPushPlugin.clearLocalNotifications()
+        //     }, false)
+        // },
+        // 版本更新
+        versionUpdate() {
+            document.addEventListener('chcp_updateLoadFailed', (eventData) => {
+                let error
+                error = eventData.detail.error
+                if (error.code === -2) {
+                    MessageBox.confirm('有新的版本，点击确认前往更新').then(action => {
+                        document.addEventListener('deviceready', () => {
+                            window.open('http://m.toutiaojk.com/download.html', '_system', 'location=yes')
+                        }, false)
+                    })
+                }
+            }, false)
         }
     },
     created() {
         this.addvertisement_init()   // 广告初始化
-        versionUpdate()              // 版本更新
+        this.versionUpdate()         // 版本更新
     }
 }
 </script>

@@ -33,10 +33,9 @@
 import { mapMutations, mapActions } from 'vuex'
 import { get_iosLocation, get_androidLocation } from '@/config/cordova'
 export default {
+    name: 'login',
     data() {
         return {
-            userName: '',
-            passWord: '',
             GPSLocation: {}
         }
     },
@@ -74,17 +73,14 @@ export default {
             // 获取refresh_token
             this.$http.get(`https://api.weixin.qq.com/sns/oauth2/access_token?appid=${appidA}&secret=${secretA}&code=${code}&grant_type=authorization_code`)
             .then(res1 => {
-                let data1 = JSON.parse(res1)
-                let refresh_token = data1.refresh_token
+                let refresh_token = res1.refresh_token
                 this.$http.get(`https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=${appidA}&grant_type=refresh_token&refresh_token=${refresh_token}`)
                 .then(res2 => {
-                    let data2 = JSON.parse(res2)
-                    let access_token = data2.access_token
+                    let access_token = res2.access_token
                     let openid = data2.openid
                     this.$http.get(`https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}`)
                     .then(res3 => {
-                        let data3 = JSON.parse(res3)
-                        let unionid = data3.unionid
+                        let unionid = res3.unionid
                         this.set_isLogin('wx')              // 设置登录
                         this.set_userInfo(data3)            // 设置用户数据
                         this.set_userid(unionid)            // 设置userid
@@ -110,8 +106,10 @@ export default {
             if (this.$store.state.device === 'ios') {
                 var res = get_iosLocation()
                 this.GPSLocation = res.coords
+                 console.log('IOS定位', this.GPSLocation)
             } else {
                 this.GPSLocation = get_androidLocation()
+                 console.log('安卓定位', this.GPSLocation)
             }
         }
     },

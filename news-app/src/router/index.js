@@ -20,6 +20,7 @@ const QRcode = () => import('@/page/index/user/children/QRcode')
 const feedBack = () => import('@/page/index/user/children/feedBack')
 const myHistory = () => import('@/page/index/user/children/myHistory')
 const myComment = () => import('@/page/index/user/children/myComment')
+const smallTools = () => import('@/page/index/user/children/smallTools')
 const health = () => import('@/page/index/user/children/health/health')
 const publish = () => import('@/page/index/user/children/health/publish')
 const preview = () => import('@/page/index/user/children/health/preview')
@@ -98,6 +99,11 @@ export default new Router({
                                 name: 'myComment',
                                 path: 'myComment',
                                 component: myComment
+                            },
+                            {
+                                name: 'smallTools',
+                                path: 'smallTools',
+                                component: smallTools
                             },
                             // health页面
                             {

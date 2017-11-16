@@ -3,7 +3,7 @@ import { fetch } from '@/config/fetch'
 export default {
     namespaced: true,
     state: {
-        isLogin: 'wx',    // 是否登录，空为未登录
+        isLogin: '',    // 是否登录，空为未登录
         isEditor: ''      // 是否编辑
     },
     getters: {

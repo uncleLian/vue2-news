@@ -28,7 +28,7 @@
                             </div>
                         </div>
                         <!-- 评论列表 -->
-                        <comment-item layout='topFooter' comment='remark' type='all' v-for='(item,index) in currentArticle.comment' :itemJson='item' :key='index' @click.native.stop='$refs.comment.open()'></comment-item>
+                        <comment-item layout='topFooter' comment='remark' type='all' v-for='(item,index) in currentArticle.comment' :itemJson='item' :key='index'></comment-item>
                         <!-- 更多评论 -->
                         <router-link class="comment_more" v-if="currentArticle.plnum > 0 " tag='div' :to="{name: 'comment'}">全部{{currentArticle.plnum}}条评论<i class="icon-detail"></i></router-link>
                     </div>

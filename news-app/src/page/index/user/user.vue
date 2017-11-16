@@ -62,6 +62,10 @@
                 <router-link :to="{name: 'feedBack'}">
                     <mt-cell title="意见反馈"><i class="icon-arrow-right"></i></mt-cell>
                 </router-link>
+                <!-- 小工具箱 -->
+                <router-link :to="{name: 'smallTools'}">
+                    <mt-cell title="小工具箱"><i class="icon-arrow-right"></i></mt-cell>
+                </router-link>
                 <!-- 退出登录 -->
                 <mt-cell title="退出登录" @click.stop.native="outLogin"><i class="icon-arrow-right"></i></mt-cell>
             </div>
