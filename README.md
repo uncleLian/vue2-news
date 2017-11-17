@@ -42,13 +42,15 @@
 
 ## 注意
 
-> 1、请把项目里的mint-ui.common.js文件替换掉 node_modules/minit-ui/lib/mint-ui.common.js文件。详细请查看文章 [饿了么mint-ui库loadmore组件的下拉问题](http://liansixin.win/2017/08/01/mint-ui/)
+> 1、请把项目里的mint-ui.common.js文件替换掉 node_modules/minit-ui/lib/mint-ui.common.js文件。主要优化下拉动作和左右滑动的体验。详细查看文章 [饿了么mint-ui库loadmore组件的下拉问题](http://liansixin.win/2017/08/01/mint-ui/)
 
-> 2、该项目使用vue-router的hash模式，项目里写了许多用来记录页面滚动条位置的代码，有点不优雅，其最终原因都是为了实现首页左右滑动切换栏目的功能。如需history模式的实例。请参考第一阶段和第三阶段的项目vue2-echo、vue2-health
+> 2、该项目使用vue-router的hash模式，项目里写了许多用来记录页面滚动条位置的代码，有点不优雅，其最终原因都是为了能实现首页下拉和左右滑动切换栏目的功能。如需history模式的实例。请参考第一阶段和第三阶段的项目vue2-echo、vue2-health
 
-> 3、native端某些代码在浏览器里是不能生效的，这些是用于手机app的，如：获取设备uuid、微信客户端登录等。技术是利用cordova打包成Android和IOS的安装包和使用cordova的一些插件。具体请查看[cordova官网](http://cordova.axuer.com/)
+> 3、native端某些代码在浏览器里是不能生效的，这些是用于手机app的，如：获取设备uuid、微信客户端登录等。技术是利用cordova打包成app和使用cordova的一些插件。具体请查看[cordova官网](http://cordova.axuer.com/)
 
-> 安装包和下载页还不能使用，正在完善
+> 4、如果运行项目是灰屏，那可能是打开了app.vue文件beforeRouteEnter钩子的代码。这个主要是用于app需要保证加载完cordova插件才能进入项目。浏览器打开这段代码是进不到项目的。
+
+> 5、关于后台文章管理，操作的都是真实后台数据，虽然没什么价值，但为了大家都能查看一个很真的数据信息，请勿随意捣乱原有的数据哈，可以新建任务去操作查看效果，谢谢啦。
 
 ## 效果演示 
 
@@ -60,9 +62,9 @@
 
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_QRcode.png" width="250" height="250"/>
 
-<!--[安装包请戳这里](http://toutiao.liansixin.win)（只支持 Android 和 IOS 系统）-->
+[安装包请戳这里](http://toutiao.liansixin.win)（目前只支持 Android）
 
-<!--<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_QRcode.png" width="250" height="250"/>-->
+<img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/downLoad_QRcode.png" width="250" height="250"/>
 
 ## 功能
 
@@ -80,12 +82,12 @@
 #### 移动端
 - [x] 刷新保持页面的数据和状态
 - [x] 展开全文
-- [x] 下载页
+- [x] 下载页（目前只支持下载Android包）
 
 #### native端
 - [x] 增减栏目
 - [x] 浏览历史
-- [x] 微信登录
+- [x] 微信客户端登录
 - [x] 点赞、收藏、评论
 - [x] 删除浏览历史、收藏、评论
 - [x] 持久保存用户的登录状态、浏览历史、收藏等数据

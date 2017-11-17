@@ -13,13 +13,13 @@
             </template>
 
             <!-- 广告页 -->
-            <!-- <div class="coverAd" v-if="advertisement">
+            <div class="coverAd" v-if="advertisement">
                 <img class="coverOne"  v-if="coverImg" :src="coverImg">
                 <img src="~@/assets/icon/1.png">
                 <button @click.stop="advertisement = false">
                     <span>跳过</span>
                 </button>
-            </div> -->
+            </div>
         </div>
     </transition>
 </template>
@@ -97,8 +97,8 @@ export default {
         }
     },
     created() {
-        // this.addvertisement_init()   // 广告初始化
-        // this.versionUpdate()         // 版本更新
+        this.addvertisement_init()   // 广告初始化
+        this.versionUpdate()         // 版本更新
     }
 }
 </script>
