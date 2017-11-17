@@ -102,11 +102,11 @@ export default {
     },
     // 开发环境下不要打开，因为没有cordova的监听事件，页面不能next
     // 线上环境需要打开，保证cordova插件在cordova加载完成之后开始运行
-    beforeRouteEnter(to, from, next) {
-        document.addEventListener('deviceready', () => {
-            next()
-        }, false)
-    },
+    // beforeRouteEnter(to, from, next) {
+    //     document.addEventListener('deviceready', () => {
+    //         next()
+    //     }, false)
+    // },
     beforeRouteUpdate (to, from, next) {
         let isBack = this.$router.isBack
         if (isBack) {
