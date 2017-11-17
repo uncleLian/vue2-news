@@ -62,7 +62,7 @@
 
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/native_QRcode.png" width="250" height="250"/>
 
-[安装包请戳这里](http://toutiao.liansixin.win)（目前只支持 Android）
+[安装包请戳这里](http://m.toutiaojk.com/guide.html)（目前只支持 Android）
 
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/downLoad_QRcode.png" width="250" height="250"/>
 
