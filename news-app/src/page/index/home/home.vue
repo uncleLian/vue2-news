@@ -15,6 +15,7 @@ import homeHeader from './components/homeHeader'
 import swiperContainer from './components/swiperContainer'
 import { mapActions } from 'vuex'
 export default {
+    name: 'home',
     components: { homeHeader, swiperContainer },
     methods: {
         ...mapActions('index', [

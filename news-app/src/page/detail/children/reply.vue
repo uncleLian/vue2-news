@@ -36,6 +36,7 @@
 <script>
 import { mapMutations, mapActions } from 'vuex'
 export default {
+    name: 'reply',
     data() {
         return {
             json: '',       // 回复的评论数据

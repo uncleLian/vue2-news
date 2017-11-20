@@ -1,7 +1,9 @@
 # vue2-news
-
 ![image](https://img.shields.io/badge/vue-2.5.2-blue.svg)
-![image](https://img.shields.io/badge/mint--ui-2.2.5-blue.svg)
+![image](https://img.shields.io/badge/vue--routet-3.0.1-blue.svg)
+![image](https://img.shields.io/badge/vuex-3.0.1-blue.svg)
+![image](https://img.shields.io/badge/vue-2.5.2-blue.svg)
+![image](https://img.shields.io/badge/mint--ui-2.2.10-blue.svg)
 ![image](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ## 前言
@@ -12,11 +14,11 @@
 
 ## 技术栈
 
-> vue2、vuex、vue-router、vue-awesome-swiper、vue-quill-editor
+> vue2、vuex3、vue-router3、vue-awesome-swiper、vue-quill-editor
 
 > axios、mint-ui、flexible.js、IconFont
 
-> ES6/7、Stylus、ESlint、webpack、
+> ES6/7、Stylus、ESlint、webpack3、
 
 ## 说明
 

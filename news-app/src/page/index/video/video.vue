@@ -38,6 +38,7 @@
 <script>
 import { mapActions } from 'vuex'
 export default {
+    name: 'video',
     data() {
         return {
             classPage: 1,           // 当前栏目的翻页页数

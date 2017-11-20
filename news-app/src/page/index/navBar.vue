@@ -8,6 +8,7 @@
 </template>
 <script>
 export default {
+    name: 'navBar',
     data () {
         return {
             navData: [

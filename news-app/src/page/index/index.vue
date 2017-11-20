@@ -27,6 +27,7 @@
 import navBar from './navBar'
 import { mapActions } from 'vuex'
 export default {
+    name: 'index',
     components: { navBar },
     data() {
         return {

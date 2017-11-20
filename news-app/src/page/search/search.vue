@@ -66,6 +66,7 @@
 <script>
 import { mapActions } from 'vuex'
 export default {
+    name: 'search',
     data() {
         return {
             key: '',                    // 搜索内容

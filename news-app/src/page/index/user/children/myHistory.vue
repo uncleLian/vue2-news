@@ -18,6 +18,7 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 export default {
+    name: 'myHistory',
     computed: {
         ...mapGetters('detail', [
             'historyArticle'

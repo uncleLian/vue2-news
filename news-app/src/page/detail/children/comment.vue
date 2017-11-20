@@ -40,6 +40,7 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
+    name: 'comment',
     data() {
         return {
             myComment: [],  // 我的评论
