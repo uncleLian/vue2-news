@@ -5,8 +5,8 @@ export default {
     state: {
         // 用户信息，这里是我微信登录的信息
         userInfo: {
-            headimgurl: 'http://wx.qlogo.cn/mmopen/8IqTY9nvCLT3w8UibMQCorTs5kc7ZIrMvSTaAgvcNO9dxwNQGy7xjgdJKhYXoOZ5Nib1mlfUg1vicViaKCZYWXe5zfq6vrkmDv2R/0',
-            nickname: '小鑫',
+            headimgurl: 'http://wx.qlogo.cn/mmopen/vi_32/kAPpoX9tk40ZdeV9lyaJ9FjicsHJamL6MRsNicObcr1ejXkh00qtoG56NIiaWjLia5wd9lrGuWVlnXWxOu1icjkbHhQ/0',
+            nickname: '思鑫',
             city: '广州'
         }
         // userInfo: ''
