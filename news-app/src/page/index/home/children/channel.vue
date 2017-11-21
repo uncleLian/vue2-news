@@ -20,7 +20,12 @@
                     <section class="column">
                         <p class="title">点击添加以下频道</p>
                         <ul>
-                            <li v-for='(item,index) in channel' @click='add(index)' :key='index'>
+                            <li v-for='(item,index) in removeChannel' @click="add('removeChannel', index)" :key='index'>
+                                <a href='javascript:;'>{{item.classname}}</a>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li v-for='(item,index) in channel' @click="add('channel', index)" :key='index'>
                                 <a href='javascript:;'>{{item.classname}}</a>
                             </li>
                         </ul>
@@ -31,12 +36,14 @@
     </transition>
 </template>
 <script>
+import { get_local_cache, set_local_cache } from '@/config/cache'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
     name: 'channel',
     data() {
         return {
-            channel: ''
+            channel: '',
+            removeChannel: []
         }
     },
     computed: {
@@ -50,6 +57,9 @@ export default {
         indexColumn() {
             this.set_indexColumn(this.indexColumn)
             this.set_indexActive('news_recommend')
+        },
+        removeChannel() {
+            set_local_cache('removeChannel', this.removeChannel)
         }
     },
     methods: {
@@ -62,16 +72,40 @@ export default {
         ...mapActions('index', [
             'get_channel_data'
         ]),
-        add(index) {
-            let addEle = this.channel.splice(index, 1)
-            this.indexColumn.push(...addEle)
+        // 获取可以添加的栏目数据
+        get_channel() {
+            this.get_channel_data()
+            .then(res => {
+                if (res) {
+                    this.channel = res
+                }
+            })
         },
+        // 获取移除的频道
+        get_removeChannel() {
+            let removeChannel = JSON.parse(get_local_cache('removeChannel'))
+            if (removeChannel) {
+                this.removeChannel = removeChannel
+            }
+        },
+        // 添加栏目
+        add(type, index) {
+            if (type === 'channel') {
+                let addEle = this.channel.splice(index, 1)
+                this.indexColumn.push(...addEle)
+            } else if (type === 'removeChannel') {
+                let addEle = this.removeChannel.splice(index, 1)
+                this.indexColumn.push(...addEle)
+            }
+        },
+        // 移除栏目
         remove(item, index) {
             if (item.classpath !== 'news_recommend') {
                 let removeEle = this.indexColumn.splice(index, 1)
-                this.channel.push(...removeEle)
+                this.removeChannel.push(...removeEle)
             }
         },
+        // 增减栏目之后，同步page、location对象
         sync() {
             let pageObj = {}
             let locationObj = {}
@@ -90,23 +124,15 @@ export default {
             }
             this.set_indexPage(pageObj)
             this.set_indexLocation(locationObj)
-        },
-        get_channel() {
-            this.get_channel_data()
-            .then(res => {
-                if (res) {
-                    this.channel = res
-                }
-            })
         }
     },
     mounted() {
+        this.get_removeChannel()
         this.get_channel()
     },
     deactivated() {
         this.sync()
     }
-
 }
 </script>
 <style lang='stylus'>
@@ -128,14 +154,14 @@ export default {
                 line-height: 2em;
                 background-color: #f5f5f5;
                 color: #666;
+                margin-bottom: 0.266rem;
             }
-            ul {
+            ul{
                 margin: 0.266rem 0;
                 li {
                     display: inline-block;
                     width: 25%;
                     margin-bottom: 0.266rem;
-                    -webkit-animation: zoomIn .3s ease;
                     animation: zoomIn .3s ease;
                     a {
                         display: block;

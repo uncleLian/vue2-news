@@ -160,7 +160,7 @@ export default {
         background-color: #f4f5f6;
         border-bottom: 1px solid #ddd;
         /*更多栏目*/
-        /*padding-right: 40px;*/  
+        /*padding-right: 40px;  */
         .nav_ul {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;

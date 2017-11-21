@@ -20,6 +20,11 @@
                     <section class="column">
                         <p class="title">点击添加以下频道</p>
                         <ul>
+                            <li v-for='(item,index) in removeChannel' @click="add('removeChannel', index)" :key='index'>
+                                <a href='javascript:;'>{{item.classname}}</a>
+                            </li>
+                        </ul>
+                        <ul>
                             <li v-for='(item,index) in channel' @click='add(index)' :key='index'>
                                 <a href='javascript:;'>{{item.classname}}</a>
                             </li>
@@ -31,6 +36,7 @@
     </transition>
 </template>
 <script>
+import { getCache, setCache } from '@/config/cache'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
     data() {
@@ -42,7 +48,8 @@ export default {
                 {classname: 'Test23', classid: 23, classpath: 't4'},
                 {classname: 'Test24', classid: 24, classpath: 't5'},
                 {classname: 'Test25', classid: 25, classpath: 't6'}
-            ]
+            ],
+            removeChannel: []
         }
     },
     computed: {
@@ -56,6 +63,9 @@ export default {
         indexColumn() {
             this.set_indexColumn(this.indexColumn)
             this.set_indexActive('news_recommend')
+        },
+        removeChannel() {
+            setCache('removeChannel', this.removeChannel)
         }
     },
     methods: {
@@ -77,16 +87,28 @@ export default {
                 }
             })
         },
+        // 获取移除的频道
+        get_removeChannel() {
+            let removeChannel = JSON.parse(getCache('removeChannel'))
+            if (removeChannel) {
+                this.removeChannel = removeChannel
+            }
+        },
         // 添加栏目
-        add(index) {
-            let addEle = this.channel.splice(index, 1)
-            this.indexColumn.push(...addEle)
+        add(type, index) {
+            if (type === 'channel') {
+                let addEle = this.channel.splice(index, 1)
+                this.indexColumn.push(...addEle)
+            } else if (type === 'removeChannel') {
+                let addEle = this.removeChannel.splice(index, 1)
+                this.indexColumn.push(...addEle)
+            }
         },
         // 移除栏目
         remove(item, index) {
             if (item.classpath !== 'news_recommend') {
                 let removeEle = this.indexColumn.splice(index, 1)
-                this.channel.push(...removeEle)
+                this.removeChannel.push(...removeEle)
             }
         },
         // 增减栏目之后，同步page、location对象
@@ -112,6 +134,7 @@ export default {
     },
     mounted() {
         // this.get_channel()
+        this.get_removeChannel()
     },
     deactivated() {
         this.sync()
