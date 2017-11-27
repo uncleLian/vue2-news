@@ -17,7 +17,7 @@
 > [lib-flexible（淘宝适配库）](https://github.com/amfe/lib-flexible)、[IconFont（阿里巴巴图标库）](http://www.iconfont.cn/)、[babel-polyfill（解决Vue在IE上报错的问题和在华为自带浏览器上项目空白的问题）](https://www.cnblogs.com/princesong/p/6728250.html)、[qs（解决axios表单提交问题）](https://www.npmjs.com/package/qs)
 
 
-> [ES6/7（JS语法）](https://github.com/lukehoban/es6features)、[Stylus（css预处理器）](https://github.com/stylus/stylus)、[ESlint（JS风格规范）](https://github.com/standard/standard/blob/master/docs/RULES-zhcn.md)、[webpack3（资源处理）](https://github.com/webpack/webpack)、
+> [ES6/7（JS语法）](https://github.com/lukehoban/es6features)、[Stylus（css预处理器）](https://github.com/stylus/stylus)、[ESlint（JS风格规范）](https://github.com/standard/standard/blob/master/docs/RULES-zhcn.md)、[webpack3（资源处理）](https://github.com/webpack/webpack)
 
 ## 说明
 > 开发环境 macOS 10.12.6、Chrome 61、 nodejs 8.4.0
@@ -309,7 +309,7 @@ npm run build
 欢迎热爱学习、忠于分享的朋友一起来交流
 - QQ：771674109
 - WX：L771674109
-- Vue交流群：338241465
+- Vue交流群：338241465 —— 广州-小鑫
 
 ## License
 

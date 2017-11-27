@@ -1,0 +1,41 @@
+html{
+  font-size: 37.5px; /* 解决UC浏览，rem适配问题 https://www.cnblogs.com/chenrong/articles/4686601.html */
+}
+.content{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding-top: 1.335rem;
+}
+.content.isIOS {
+    padding-top: 1.87rem;
+}
+.container{
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+}
+
+.bottomLoad{
+    width: 100%;
+    position: relative;
+    background: #fff;
+}
+
+.bottomLoad div{
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 14px;
+    color: #999;
+}
+.mint-indicator-wrapper{
+    z-index: 1001;
+}
+
+section:last-of-type .topFooter{
+    border: none!important;
+}
