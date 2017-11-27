@@ -36,7 +36,7 @@ export default {
     color: #999;
     margin-top: 6px;
     overflow: hidden;
-    font-size: 0.267rem;
+    font-size: x-small;
     -webkit-transform: scale(0.8);
     transform: scale(0.8);
     span {

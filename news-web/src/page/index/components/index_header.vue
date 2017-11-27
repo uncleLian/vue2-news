@@ -165,6 +165,7 @@ export default {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             white-space: nowrap;
+            font-size: 0;
             &::-webkit-scrollbar {
                 width: 0px;
                 height: 0px;

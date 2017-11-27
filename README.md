@@ -3,7 +3,6 @@
 ![image](https://img.shields.io/badge/vue--router-3.0.1-blue.svg)
 ![image](https://img.shields.io/badge/vuex-3.0.1-blue.svg)
 ![image](https://img.shields.io/badge/mint--ui-2.2.10-blue.svg)
-![image](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ## 前言
 
@@ -13,19 +12,19 @@
 
 ## 技术栈
 
-> vue2、vuex3、vue-router3、vue-awesome-swiper、vue-quill-editor
+> [vue](https://cn.vuejs.org/v2/guide/)、[vue-router](https://router.vuejs.org/zh-cn/essentials/getting-started.html)、[vuex](https://vuex.vuejs.org/zh-cn/getting-started.html)、[vue-awesome-swiper（轮播图）](https://github.com/surmon-china/vue-awesome-swiper)、[vue-quill-editor（富文本）](https://github.com/surmon-china/vue-quill-editor)、[axios（请求库）](https://github.com/axios/axios)、[mint-ui（饿了么移动端UI库）](http://mint-ui.github.io/docs/#/zh-cn2)
 
-> axios、mint-ui、flexible.js、IconFont
+> [lib-flexible（淘宝适配库）](https://github.com/amfe/lib-flexible)、[IconFont（阿里巴巴图标库）](http://www.iconfont.cn/)、[babel-polyfill（解决Vue在IE上报错的问题和在华为自带浏览器上项目空白的问题）](https://www.cnblogs.com/princesong/p/6728250.html)、[qs（解决axios表单提交问题）](https://www.npmjs.com/package/qs)
 
-> ES6/7、Stylus、ESlint、webpack3、
+
+> [ES6/7（JS语法）](https://github.com/lukehoban/es6features)、[Stylus（css预处理器）](https://github.com/stylus/stylus)、[ESlint（JS风格规范）](https://github.com/standard/standard/blob/master/docs/RULES-zhcn.md)、[webpack3（资源处理）](https://github.com/webpack/webpack)、
 
 ## 说明
+> 开发环境 macOS 10.12.6、Chrome 61、 nodejs 8.4.0
 
 > 如果对您有帮助，您可以点右上角 "Star"一下， 您的支持是我最大的动力！非常感谢！^_^ 🌹
 
 > 或者您可以 "follow" 一下，我会不断开源更多的有趣实用的项目
-
-> 开发环境 macOS 10.12.6、Chrome 61、 nodejs 8.4.0
 
 > 如有问题请直接在 Issues 中提，或者您发现问题并有非常好的解决方案，欢迎 PR 👍
 
@@ -45,13 +44,13 @@
 
 > 1、请把项目里的mint-ui.common.js文件替换掉 node_modules/minit-ui/lib/mint-ui.common.js文件。主要优化下拉动作和左右滑动的体验。详细查看文章 [饿了么mint-ui库loadmore组件的下拉问题](http://liansixin.win/2017/08/01/mint-ui/)
 
-> 2、该项目使用vue-router的hash模式，项目里写了许多用来记录页面滚动条位置的代码，有点不优雅，其最终原因都是为了能实现首页下拉和左右滑动切换栏目的功能。如需history模式的实例。请参考第一阶段和第三阶段的项目vue2-echo、vue2-health
+> 2、该项目使用vue-router的hash模式，项目里有自己实现用来记录页面滚动位置的代码，大家可以参考。如需history模式的实例。请参考第一阶段和第三阶段的项目vue2-echo、vue2-health
 
 > 3、native端某些代码在浏览器里是不能生效的，这些是用于手机app的，如：获取设备uuid、微信客户端登录等。技术是利用cordova打包成app和使用cordova的一些插件。具体请查看[cordova官网](http://cordova.axuer.com/)
 
 > 4、如果运行项目是灰屏，那可能是打开了app.vue文件beforeRouteEnter钩子的代码。这个主要是用于app需要保证加载完cordova插件才能进入项目。浏览器打开这段代码是进不到项目的。
 
-> 5、关于后台文章管理，操作的都是真实后台数据，虽然没什么价值，但为了大家都能查看一个很真的数据信息，请勿随意捣乱原有的数据哈，可以新建任务去操作查看效果，谢谢啦。
+> 5、关于后台文章管理，操作的都是真实后台数据，为了大家都能查看一个很真的数据信息，请勿随意修改原有数据，可以新建任务去操作查看效果，谢谢啦。
 
 ## 效果演示 
 
@@ -70,15 +69,15 @@
 ## 功能
 
 #### 共同功能
-- [x] 下拉上滑请求数据
-- [x] 左右滑动切换栏目
+- [x] 下拉上滑
+- [x] 左右滑动切换
 - [x] 点击头部回到页面顶部（指令）
 - [x] 右滑返回上一页（指令）
 - [x] 视频播放的加载、重播指示以及悬浮等功能
 - [x] 热点文章和搜索推荐（后台算法）
 - [x] 文章标签（后台算法）
 - [x] 分享功能（移动端分享网址，native端微信分享）
-- [x] 搜索功能
+- [x] 搜索功能（关键字高亮显示）
 
 #### 移动端
 - [x] 刷新保持页面的数据和状态
@@ -86,12 +85,12 @@
 - [x] 下载页（目前只支持下载Android包）
 
 #### native端
-- [x] 增减栏目
-- [x] 浏览历史
+- [x] 动态增减栏目
+- [x] 阅读历史
 - [x] 微信客户端登录
 - [x] 点赞、收藏、评论
-- [x] 删除浏览历史、收藏、评论
-- [x] 持久保存用户的登录状态、浏览历史、收藏等数据
+- [x] 删除阅读历史、收藏、评论
+- [x] 持久保存用户的登录状态、阅读历史、收藏等数据
 - [x] 后台文章管理（发表、修改、删除、撤回、预览等功能）
 - [x] 启动广告页
 - [x] 热更新、版本更新
@@ -298,7 +297,7 @@
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:8088
+# serve with hot reload at localhost:8084 or localhost:8086
 npm run dev
 
 # build for production with minification

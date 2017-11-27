@@ -176,6 +176,7 @@ menu_width = 1.06rem
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             white-space: nowrap;
+            font-size: 0;
             &::-webkit-scrollbar {
                 width: 0;
                 height: 0;
