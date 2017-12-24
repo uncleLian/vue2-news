@@ -6,37 +6,39 @@
 
 ## 前言
 
-该项目UI模仿今日头条，但我尽可能地做了许多修改，我不是做UI设计的，如何还看得过去，右上角点个 "star" 支持一下吧🌹
-
 该项目包括移动端和native端，移动端共4个页面，native端共20个页面，涉及文章的分类、展示、阅读、推荐、搜索和用户的登录、评论、收藏以及后台文章编辑等等，是一个完整的生态链。其复杂度不用说大家也能感受到。如果这个项目能驾驭的了，你的Vue使用能力已经达到一定水平了，相信大部分公司的单页面应用也就不在话下。
 
 ## 技术栈
-
-> [vue](https://cn.vuejs.org/v2/guide/)、[vue-router](https://router.vuejs.org/zh-cn/essentials/getting-started.html)、[vuex](https://vuex.vuejs.org/zh-cn/getting-started.html)、[vue-awesome-swiper（轮播图）](https://github.com/surmon-china/vue-awesome-swiper)、[vue-quill-editor（富文本）](https://github.com/surmon-china/vue-quill-editor)、[axios（请求库）](https://github.com/axios/axios)、[mint-ui（饿了么移动端UI库）](http://mint-ui.github.io/docs/#/zh-cn2)
-
-> [lib-flexible（淘宝适配库）](https://github.com/amfe/lib-flexible)、[IconFont（阿里巴巴图标库）](http://www.iconfont.cn/)、[babel-polyfill（解决Vue在IE上报错的问题和在华为自带浏览器上项目空白的问题）](https://www.cnblogs.com/princesong/p/6728250.html)、[qs（解决axios表单提交问题）](https://www.npmjs.com/package/qs)
-
-
-> [ES6/7（JS语法）](https://github.com/lukehoban/es6features)、[Stylus（css预处理器）](https://github.com/stylus/stylus)、[ESlint（JS风格规范）](https://github.com/standard/standard/blob/master/docs/RULES-zhcn.md)、[webpack3（资源处理）](https://github.com/webpack/webpack)
+1. [vue](https://cn.vuejs.org/v2/guide/)
+2. [vue-router](https://router.vuejs.org/zh-cn/essentials/getting-started.html)
+3. [vuex](https://vuex.vuejs.org/zh-cn/getting-started.html)
+4. [axios（请求库）](https://github.com/axios/axios)
+5. [mint-ui（饿了么移动端UI库）](http://mint-ui.github.io/docs/#/zh-cn2)
+6. [vue-awesome-swiper（轮播图）](https://github.com/surmon-china/vue-awesome-swiper)
+7. [jquery](https://github.com/jquery/jquery)
+8. [vue-quill-editor（富文本）](https://github.com/surmon-china/vue-quill-editor)
+9. [amfe-flexible（淘宝适配库）](https://github.com/amfe/lib-flexible)
+10. [IconFont（阿里巴巴图标库）](http://www.iconfont.cn/)
+11. [Stylus（css预处理器）](https://github.com/stylus/stylus)
+12. [ES6/7（JS语法）](https://github.com/lukehoban/es6features)
+13. [ESlint（JS语法规范）](https://github.com/standard/standard/blob/master/docs/RULES-zhcn.md)
 
 ## 说明
-> 开发环境 macOS 10.12.6、Chrome 61、 nodejs 8.4.0
+> 如果对您有帮助，您可以点右上角 "star"一下， 您的支持是我最大的动力！非常感谢！^_^ 🌹
 
-> 如果对您有帮助，您可以点右上角 "Star"一下， 您的支持是我最大的动力！非常感谢！^_^ 🌹
+> 或者您可以 "follow（关注）" 一下，我会不断开源更多实用的项目。
 
-> 或者您可以 "follow" 一下，我会不断开源更多的有趣实用的项目
-
-> 如有问题请直接在 Issues 中提，或者您发现问题并有非常好的解决方案，欢迎 PR 👍
+> 如有问题可以直接在 Issues 中提，或者加入我们vue群更进一步地交流。
 
 > 该项目是此开源系列的其中一个阶段，更多内容查看下方的最终目标
 
 ## 最终目标
 
-- 第一阶段：echo回声（移动端，难度：简单 ~ 中等） —— [仓库地址](https://github.com/uncleLian/vue2-echo) —— [项目演示地址](http://echo.liansixin.win)
+- 第一阶段：echo回声（移动端，难度：简单 ~ 中等） —— [仓库地址](https://github.com/uncleLian/vue2-echo) —— [演示地址](http://echo.liansixin.win)
 
-- 第二阶段：今日头条（移动端 & native，难度：困难） —— [仓库地址](https://github.com/uncleLian/vue2-news) —— [移动端演示地址](http://toutiao.liansixin.win)， [native端演示地址](http://native.liansixin.win)
+- 第二阶段：今日头条（移动端 & native，难度：困难） —— [仓库地址](https://github.com/uncleLian/vue2-news) —— [web演示地址](http://toutiao.liansixin.win)， [native端演示地址](http://native.liansixin.win)
 
-- 第三阶段：头条号（pc端，难度：中等 ~ 困难） —— [仓库地址](https://github.com/uncleLian/vue2-health) —— 还在开发，敬请期待！（已实现核心功能）
+- 第三阶段：头条号（pc端，难度：中等 ~ 困难） —— [仓库地址](https://github.com/uncleLian/vue2-health) —— [演示地址](http://health.liansixin.win)  （还在开发，敬请期待！已实现核心功能）
 
 ##### 注：此系列只关注前端项目的实现，后端等知识不是此系列的范围，但会告知一二。
 
