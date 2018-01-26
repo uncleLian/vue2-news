@@ -36,8 +36,8 @@
     </transition>
 </template>
 <script>
-import { getCache, setCache } from '@/config/cache'
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+import cache from '@/utils/cache'
+import { mapState, mapActions, mapMutations } from 'vuex'
 export default {
     data() {
         return {
@@ -53,7 +53,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('index', [
+        ...mapState('index', [
           'indexPage',
           'indexLocation',
           'indexColumn'
@@ -65,7 +65,7 @@ export default {
             this.set_indexActive('news_recommend')
         },
         removeChannel() {
-            setCache('removeChannel', this.removeChannel)
+            cache.setSession('removeChannel', this.removeChannel)
         }
     },
     methods: {

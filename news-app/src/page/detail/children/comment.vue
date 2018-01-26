@@ -132,6 +132,7 @@ export default {
         padding-bottom: 48px;
         .container {
             .abstract{
+                font-size: 12px;
                 padding: 15px 16px 22px;
                 border-bottom: 1px solid #eee;
                 .title {

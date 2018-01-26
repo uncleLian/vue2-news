@@ -6,7 +6,7 @@
     </swiper>
 </template>
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapState, mapGetters, mapMutations } from 'vuex'
 import pullContainer from './pullContainer'
 export default {
     components: { pullContainer },
@@ -21,10 +21,12 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('index', [
+        ...mapState('index', [
             'indexActive',
-            'activeIndex',
             'indexColumn'
+        ]),
+        ...mapGetters('index', [
+            'activeMeta'
         ])
     },
     watch: {
@@ -38,7 +40,7 @@ export default {
             'set_indexSwiper'
         ]),
         slideTo(second) {
-            this.$refs.mySwiper.swiper.slideTo(this.activeIndex, second, true) // 让swiper滚动到index位置
+            this.$refs.mySwiper.swiper.slideTo(this.activeMeta.index, second, true) // 让swiper滚动到index位置
         },
         slideChangeCallBack(swiper) {
             let index = swiper.activeIndex

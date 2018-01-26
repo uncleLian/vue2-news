@@ -30,6 +30,7 @@ export default new Router({
                     children: [
                         // channel页面
                         {
+                            name: 'channel',
                             path: 'channel',
                             component: channel
                         }

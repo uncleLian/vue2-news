@@ -2,8 +2,7 @@
     <!-- 加载更多 -->
     <div class="container" :class="type" v-infinite-scroll="loadBottomAjax" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
         <!-- 请求提示 -->
-        <my-loading :visible="loading"/>
-        <my-error :visible='error' :method='init'/>
+        <my-loading :visible="loading" :reload="init" />
 
         <!-- 顶部提示 -->
         <div class="globalTip">
@@ -35,7 +34,7 @@
     </div>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
     props: ['type'],
     data() {
@@ -49,18 +48,18 @@ export default {
             bottomLock: false,      // 上滑开关
             bottomLoading: true,    // 底部loading
             bottomNoData: false,    // 底部nothing
-            loading: false,
-            error: false
+            loading: false
         }
     },
     computed: {
+        ...mapState('index', [
+          'indexActive',
+          'indexPage',
+          'indexLocation',
+          'indexSwiper'
+        ]),
         ...mapGetters('index', [
-          'indexActive',        // active的栏目
-          'indexPage',          // 记录栏目page的对象
-          'indexLocation',      // 记录栏目location的对象
-          'activePage',         // active的page
-          'activeLocation',     // active的location
-          'indexSwiper'         // 是否正在swiper的boolean值
+          'activeMeta'
         ])
     },
     watch: {
@@ -90,7 +89,8 @@ export default {
         init() {
             // active栏目第一次请求数据
             if (this.indexActive === this.type && this.contentJson.length === 0) {
-                this.classPage = this.activePage
+                this.loading = 'loading'
+                this.classPage = this.activeMeta.page
                 // 获取banner数据
                 this.get_banner_data().then(res => {
                     if (res) {
@@ -103,13 +103,14 @@ export default {
                         this.stickJson = res
                     }
                 })
-                this.get_listItem_cache(this.indexActive)   // 获取active栏目的缓存, 缓存？直接设置 : 发送请求
+                // 栏目的缓存？缓存 : 发送请求
+                this.get_listItem_cache(this.indexActive)
                 .then(res => {
                     if (res) {
                         this.contentJson = res
                         this.handleLocaltion('get')
+                        this.loading = false
                     } else {
-                        this.loading = true
                         this.loadTopAjax()
                     }
                 })
@@ -124,23 +125,26 @@ export default {
                     this.contentJson.unshift(...res)
                     this.dataCount = res.length
                     this.classPage++
-                    $(`.container.${this.type} .dataCount`).slideDown(200).delay(1000).slideUp(200) // 文章数量提示
-                    this.newLookHere()  // 加载历史记录方法
+                     // 文章数量提示
+                    $(`.container.${this.type} .dataCount`).slideDown(200).delay(1000).slideUp(200)
+                    // 加载历史记录方法
+                    this.newLookHere()
                 } else {
-                    $(`.container.${this.type} .noNewData`).slideDown(200).delay(1000).slideUp(200) // 没有文章数据提示
+                    // 没有文章数据提示
+                    $(`.container.${this.type} .noNewData`).slideDown(200).delay(1000).slideUp(200)
                 }
                 this.$refs.loadmore.onTopLoaded()   // mint-ui 下拉组件的方法
-                this.error = false  // 这是为了请求错误时点击重新加载之后，去除错误的提示(第一次加载的错误提示)
-                $(`.container.${this.type} .requestFail`).hide()    // 同理（下载加载的错误提示）
+                this.loading = false
+                $(`.container.${this.type} .requestFail`).hide()
             })
             .catch(err => {
                 console.log('loadTop发生错误', err)
                 if (this.contentJson.length > 0) {
                     $(`.container.${this.type} .requestFail`).show()
+                    this.loading = false
                 } else {
-                   this.error = true
+                   this.loading = 'error'
                 }
-                this.loading = false
             })
         },
         // 底部上滑请求
@@ -186,7 +190,7 @@ export default {
             if (this.indexActive === this.type) {
                 if (type === 'get') {
                     this.$nextTick(() => {
-                        $(`.container.${this.type}`).scrollTop(this.activeLocation)
+                        $(`.container.${this.type}`).scrollTop(this.activeMeta.location)
                    })
                 } else if (type === 'set') {
                     let scrollTop = $(`.container.${this.type}`).scrollTop()

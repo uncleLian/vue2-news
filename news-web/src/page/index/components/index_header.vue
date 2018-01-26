@@ -26,18 +26,20 @@
     </div>
 </template>
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapState, mapGetters, mapMutations } from 'vuex'
 export default {
     computed: {
+        ...mapState('index', [
+            'indexActive',
+            'indexColumn'
+        ]),
         ...mapGetters('index', [
-            'indexActive',  // 当前ative的栏目
-            'activeIndex',  // 当前active的栏目的数组位置
-            'indexColumn'   // 栏目数据
+            'activeMeta'
         ])
     },
     watch: {
         indexActive() {
-            this.slideTo(this.activeIndex)
+            this.slideTo(this.activeMeta.index)
         }
     },
     methods: {

@@ -32,6 +32,7 @@ export default {
             }
             fetch('POST', 'power', params).then(res => {
                 if (res.data) {
+                    console.log('editor:', res.data)
                     commit('set_isEditor', res.data)
                 }
             })

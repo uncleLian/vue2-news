@@ -1,3 +1,4 @@
+// 判断方向
 function GetSlideDirection(startX, startY, endX, endY, move) {
     let dy = startY - endY
     let dx = endX - startX
@@ -20,7 +21,7 @@ function GetSlideDirection(startX, startY, endX, endY, move) {
 }
 
 // 根据触摸方向做相应需求
-export function swiper(el, direction, type, vm) {
+export default function swiper(el, direction, type, vm) {
     if (!el || !direction) {
         return
     }
@@ -52,13 +53,4 @@ export function swiper(el, direction, type, vm) {
             vm.$router.go(-1)
         }
     }, false)
-}
-
-// 点击滚动到顶部
-export function goTop(el, eventType, vm) {
-    if (eventType === 'click') {
-        $(el).on('click', () => {
-            $(vm.$el.querySelector('.container')).animate({scrollTop: 0})
-        })
-    }
 }

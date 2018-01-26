@@ -17,7 +17,7 @@ const ajaxURL = {
     Search: 'search.php'                // 搜索
 }
 
-export var fetch = async(type = 'POST', url = '', data = {}) => {
+export var request = async(type = 'POST', url = '', data = {}) => {
     let result
     type = type.toUpperCase()
     url = ajaxURL[url]

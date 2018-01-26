@@ -36,8 +36,7 @@
         <!-- 分享组件 -->
         <my-share ref="share"/>
         <!-- 请求提示 -->
-        <my-loading :visible='loading'/>
-        <my-error fixed :visible='error' :method='init'/>
+        <my-loading :visible='loading' :reload='init'/>
     </div>
 </template>
 <script>
@@ -45,7 +44,7 @@ import myArticle from './components/article'
 import myTags from './components/tags'
 import myRecommend from './components/recommend'
 import myShare from './components/share'
-import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 export default {
     name: 'detail',
     components: { myArticle, myTags, myRecommend, myShare },
@@ -56,15 +55,15 @@ export default {
             classid: '',        // 文章classid（分类）
             datafrom: '',       // 数据来源
             articleJson: {},    // 文章数据
-            loading: true,
+            loading: 'loading',
             error: false
         }
     },
     computed: {
-        ...mapGetters('index', [
+        ...mapState('index', [
             'indexColumn'
         ]),
-        ...mapGetters('detail', [
+        ...mapState('detail', [
             'location'
         ])
     },
@@ -106,7 +105,7 @@ export default {
         },
         // 获取文章数据
         get_Article() {
-            this.loading = true
+            this.loading = 'loading'
             let params = {
                 'id': this.id,
                 'datafrom': this.datafrom
@@ -115,15 +114,13 @@ export default {
             .then(res => {
                 if (res) {
                     this.articleJson = res
-                    this.loading = false
                     this.handleLocaltion('get')
                 }
-                this.error = false
+                this.loading = false
             })
             .catch(err => {
                 console.log(err)
-                this.error = true
-                this.loading = false
+                this.loading = 'error'
             })
         },
         // 数据统计

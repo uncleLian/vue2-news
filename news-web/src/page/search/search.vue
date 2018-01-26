@@ -59,8 +59,7 @@
         </div>
 
         <!-- 请求提示 -->
-        <my-loading :visible='loading'/>
-        <my-error fixed :visible='error' :method='get_search'/>
+        <my-loading :visible='loading' :reload='get_search' />
     </div>
 </template>
 <script>
@@ -78,8 +77,7 @@ export default {
             bottomLock: false,          // 上滑开关
             bottomStatus: 'loading',    // 上滑底部状态
             bottomTip: false,           // bottom提示
-            loading: false,
-            error: false
+            loading: false
         }
     },
     watch: {
@@ -104,7 +102,7 @@ export default {
         ]),
         // 获取热点数据
         get_hot() {
-            this.loading = true
+            this.loading = 'loading'
             this.get_hot_data()
             .then(res => {
                 if (res.data) {
@@ -117,14 +115,13 @@ export default {
             })
             .catch(err => {
                 console.log(err)
-                this.loading = false
+                this.loading = 'error'
             })
         },
         // 获取搜索数据
         get_search() {
             if (this.key) {
-                this.error = false
-                this.loading = true
+                this.loading = 'loading'
                 this.search_state = 'search'
                 $('#search .container').scrollTop(0)
                 this.$router.replace(`/search?key=${this.key}`)
@@ -143,8 +140,7 @@ export default {
                 .catch(err => {
                     console.log(err)
                     this.search_state = 'empty'
-                    this.loading = false
-                    this.error = true
+                    this.loading = 'error'
                 })
             }
         },
@@ -250,6 +246,7 @@ export default {
                     color: #666;
                     padding-left: 0.13rem;
                     margin: 0;
+                    outline: none;
                     -webkit-appearance: none;
                     &::-webkit-input-placeholder{color:#c8c8c9;font-size: 12px}
                     &::-moz-placeholder{color:#c8c8c9;font-size: 12px}
