@@ -251,6 +251,7 @@ export default {
                     color: #666;
                     padding-left: 0.13rem;
                     margin: 0;
+                    outline: none;
                     -webkit-appearance: none;
                     &::-webkit-input-placeholder{color:#c8c8c9;font-size: 12px}
                     &::-moz-placeholder{color:#c8c8c9;font-size: 12px}
