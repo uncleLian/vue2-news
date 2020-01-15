@@ -30,13 +30,13 @@ Vue学习系列
 
 ## 注意
 
-> 1、本地运行项目请把项目里的mint-ui.common.js文件替换掉 node_modules/minit-ui/lib/mint-ui.common.js文件。主要优化下拉动作和左右滑动的体验。详细查看文章 [饿了么mint-ui库loadmore组件的下拉问题](http://liansixin.win/2017/08/01/mint-ui/)
+> 1、本地运行项目请把项目里的mint-ui.common.js文件替换掉 node_modules/minit-ui/lib/mint-ui.common.js文件。主要优化下拉动作和左右滑动的体验。
 
 > 2、下载App安装包请使用手机浏览器下载。
 
 ## 项目演示
 
-[项目演示请戳这里 ](http://toutiao.liansixin.win)（请使用手机模式预览）
+[ 在线链接 ](http://toutiao.liansixin.win)（请使用手机模式预览）
 
 <img src="https://github.com/uncleLian/vue2-news/raw/master/screenshots/web_QRcode.png" width="250" height="250"/>
 
