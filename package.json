@@ -16,7 +16,7 @@
     "babel-polyfill": "^6.26.0",
     "jquery": "^3.2.1",
     "mint-ui": "^2.2.13",
-    "qs": "^6.5.1",
+    "qs": "^6.5.3",
     "vue": "^2.5.13",
     "vue-awesome-swiper": "^2.6.7",
     "vue-router": "^3.0.1",
